@@ -24,10 +24,6 @@
 #include <pthread-errnos.h>
 #include <structsem.h>
 
-
-/* For the calculation see asm/vsyscall.h.  */
-#define VSYSCALL_ADDR_vgettimeofday	0xffffffffff600000
-
 	.text
 
 	.globl	sem_timedwait
@@ -196,9 +192,10 @@ sem_timedwait:
 	addq	$1, NWAITERS(%r12)
 
 7:	xorl	%esi, %esi
-	movq	%rsp, %rdi
-	movq	$VSYSCALL_ADDR_vgettimeofday, %rax
-	callq	*%rax
+	movq	%rsp,%rdi
+	/* This call works because we directly jump to a system call entry
+	   which preserves all the registers.  */
+	call	JUMPTARGET(__gettimeofday)
 
 	/* Compute relative timeout.  */
 	movq	8(%rsp), %rax
