@@ -51,9 +51,6 @@
 	orl	$FUTEX_WAIT_BITSET | FUTEX_CLOCK_REALTIME, reg
 #endif
 
-/* For the calculation see asm/vsyscall.h.  */
-#define VSYSCALL_ADDR_vgettimeofday	0xffffffffff600000
-
 
 	.globl	__lll_robust_lock_wait
 	.type	__lll_robust_lock_wait,@function
@@ -214,10 +211,9 @@ __lll_robust_timedlock_wait:
 	/* Get current time.  */
 	movq	%rsp, %rdi
 	xorl	%esi, %esi
-	movq	$VSYSCALL_ADDR_vgettimeofday, %rax
-	/* This is a regular function call, all caller-save registers
-	   might be clobbered.  */
-	callq	*%rax
+	/* This call works because we directly jump to a system call entry
+	   which preserves all the registers.  */
+	call	JUMPTARGET(__gettimeofday)
 
 	/* Compute relative timeout.  */
 	movq	8(%rsp), %rax
