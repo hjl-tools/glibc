@@ -100,6 +100,8 @@ __pthread_cond_timedwait:
 	mov	%RSI_LP, dep_mutex(%rdi)
 
 22:
+	xorl	%r15d, %r15d
+
 #ifndef __ASSUME_FUTEX_CLOCK_REALTIME
 #  ifdef PIC
 	cmpl	$0, __have_futex_clock_realtime(%rip)
@@ -401,8 +403,6 @@ __pthread_cond_timedwait:
 
 #ifndef __ASSUME_FUTEX_CLOCK_REALTIME
 .Lreltmo:
-	xorl	%r15d, %r15d
-
 	/* Get internal lock.  */
 	movl	$1, %esi
 	xorl	%eax, %eax
