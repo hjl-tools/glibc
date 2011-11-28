@@ -20,6 +20,8 @@
 #
 #	Makefile for malloc routines
 #
+include ../option-groups.mak
+
 subdir	:= malloc
 
 all:
@@ -43,8 +45,14 @@ install-lib := libmcheck.a
 non-lib.a := libmcheck.a
 
 # Additional library.
+ifeq ($(OPTION_EGLIBC_MEMUSAGE),y)
 extra-libs = libmemusage
 extra-libs-others = $(extra-libs)
+
+ifdef OPTION_EGLIBC_MEMUSAGE_DEFAULT_BUFFER_SIZE
+CPPFLAGS-memusage += -D__OPTION_EGLIBC_MEMUSAGE_DEFAULT_BUFFER_SIZE=$(OPTION_EGLIBC_MEMUSAGE_DEFAULT_BUFFER_SIZE)
+endif
+endif
 
 libmemusage-routines = memusage
 libmemusage-inhibit-o = $(filter-out .os,$(object-suffixes))
@@ -76,7 +84,7 @@ endif
 # Unless we get a test for the availability of libgd which also works
 # for cross-compiling we disable the memusagestat generation in this
 # situation.
-ifneq ($(cross-compiling),yes)
+ifeq ($(cross-compiling)$(OPTION_EGLIBC_MEMUSAGE),noy)
 # If the gd library is available we build the `memusagestat' program.
 ifneq ($(LIBGD),no)
 others: $(objpfx)memusage
@@ -113,15 +121,15 @@ $(objpfx)libmcheck.a: $(objpfx)mcheck-init.o
 
 lib: $(objpfx)libmcheck.a
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
 ifeq (yes,$(build-shared))
 ifneq ($(PERL),no)
 tests: $(objpfx)tst-mtrace.out
 $(objpfx)tst-mtrace.out: tst-mtrace.sh $(objpfx)tst-mtrace
-	$(SHELL) -e $< $(common-objpfx)
+	$(SHELL) -e $< $(common-objpfx) '$(cross-test-wrapper)'
 endif
 endif
-endif
+# eglibc: endif
 
 tst-mcheck-ENV = MALLOC_CHECK_=3
 
@@ -136,13 +144,17 @@ sLIBdir := $(shell echo $(slibdir) | sed 's,lib\(\|64\)$$,\\\\$$LIB,')
 $(objpfx)mtrace: mtrace.pl
 	rm -f $@.new
 	sed -e 's|@PERL@|$(PERL)|' -e 's|@XXX@|$(address-width)|' \
-	    -e 's|@VERSION@|$(version)|' $^ > $@.new \
+	    -e 's|@VERSION@|$(version)|' \
+	    -e 's|@PKGVERSION@|$(PKGVERSION)|' \
+	    -e 's|@REPORT_BUGS_TO@|$(REPORT_BUGS_TO)|' $^ > $@.new \
 	&& rm -f $@ && mv $@.new $@ && chmod +x $@
 
 $(objpfx)memusage: memusage.sh
 	rm -f $@.new
 	sed -e 's|@BASH@|$(BASH)|' -e 's|@VERSION@|$(version)|' \
-	    -e 's|@SLIBDIR@|$(sLIBdir)|' -e 's|@BINDIR@|$(bindir)|' $^ > $@.new \
+	    -e 's|@SLIBDIR@|$(sLIBdir)|' -e 's|@BINDIR@|$(bindir)|' \
+	    -e 's|@PKGVERSION@|$(PKGVERSION)|' \
+	    -e 's|@REPORT_BUGS_TO@|$(REPORT_BUGS_TO)|' $^ > $@.new \
 	&& rm -f $@ && mv $@.new $@ && chmod +x $@
 
 

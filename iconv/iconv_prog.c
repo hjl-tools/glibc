@@ -36,6 +36,7 @@
 #ifdef _POSIX_MAPPED_FILES
 # include <sys/mman.h>
 #endif
+#include <gnu/option-groups.h>
 #include <charmap.h>
 #include <gconv_int.h>
 #include "iconv_prog.h"
@@ -222,10 +223,17 @@ main (int argc, char *argv[])
 	      bool to_wrong =
 		(iconv_open (to_code, "UTF-8") == (iconv_t) -1
 		 && errno == EINVAL);
+#if __OPTION_EGLIBC_LOCALE_CODE
 	      const char *from_pretty =
 		(from_code[0] ? from_code : nl_langinfo (CODESET));
 	      const char *to_pretty =
 		(orig_to_code[0] ? orig_to_code : nl_langinfo (CODESET));
+#else
+	      const char *from_pretty =
+		(from_code[0] ? from_code : "ANSI_X3.4-1968");
+	      const char *to_pretty =
+                 (orig_to_code[0] ? orig_to_code : "ANSI_X3.4-1968");
+#endif
 
 	      if (from_wrong)
 		{
@@ -401,13 +409,16 @@ parse_opt (int key, char *arg, struct argp_state *state)
 static char *
 more_help (int key, const char *text, void *input)
 {
+  char *tp = NULL;
   switch (key)
     {
     case ARGP_KEY_HELP_EXTRA:
       /* We print some extra information.  */
-      return strdup (gettext ("\
+      if (asprintf (&tp, gettext ("\
 For bug reporting instructions, please see:\n\
-<http://www.gnu.org/software/libc/bugs.html>.\n"));
+%s.\n"), REPORT_BUGS_TO) < 0)
+	return NULL;
+      return tp;
     default:
       break;
     }
@@ -419,7 +430,7 @@ For bug reporting instructions, please see:\n\
 static void
 print_version (FILE *stream, struct argp_state *state)
 {
-  fprintf (stream, "iconv (GNU %s) %s\n", PACKAGE, VERSION);
+  fprintf (stream, "iconv %s%s\n", PKGVERSION, VERSION);
   fprintf (stream, gettext ("\
 Copyright (C) %s Free Software Foundation, Inc.\n\
 This is free software; see the source for copying conditions.  There is NO\n\

@@ -19,11 +19,14 @@
 #
 #	Sub-makefile for nscd portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= nscd
 
-routines := nscd_getpw_r nscd_getgr_r nscd_gethst_r nscd_getai \
+routines-$(OPTION_EGLIBC_INET) += \
+	     nscd_getpw_r nscd_getgr_r nscd_gethst_r nscd_getai \
 	    nscd_initgroups nscd_getserv_r
-aux	:= nscd_helper
+aux-$(OPTION_EGLIBC_INET) += nscd_helper
 
 include ../Makeconfig
 
@@ -35,15 +38,19 @@ nscd-modules := nscd connections pwdcache getpwnam_r getpwuid_r grpcache \
 		getsrvbynm_r getsrvbypt_r servicescache \
 		dbg_log nscd_conf nscd_stat cache mem nscd_setup_thread \
 		xmalloc xstrdup aicache initgrcache gai res_hconf
-
+ifneq (y,$(OPTION_EGLIBC_NIS))
+# If we haven't build libnsl.so, then we'll need to include our
+# own copy of nis_hash.
+nscd-modules += nis_hash
+endif
 ifeq ($(have-thread-library),yes)
 
 ifneq (yesyes,$(have-fpie)$(build-shared))
-others += nscd
+others-$(OPTION_EGLIBC_INET) += nscd
 endif
-install-sbin := nscd
+install-sbin-$(OPTION_EGLIBC_INET) += nscd
 
-extra-objs := $(nscd-modules:=.o)
+extra-objs-$(OPTION_EGLIBC_INET) += $(nscd-modules:=.o)
 
 endif
 
@@ -77,7 +84,8 @@ LDLIBS-nscd = $(selinux-LIBS)
 
 distribute := nscd.h nscd-client.h dbg_log.h \
 	      $(addsuffix .c, $(filter-out xmalloc,$(all-nscd-modules))) \
-	      nscd.conf nscd.init nscd_proto.h nscd-types.h
+	      nscd.conf nscd.init nscd_proto.h nscd-types.h \
+	      nis_hash.c
 
 include ../Rules
 
@@ -122,6 +130,7 @@ CFLAGS-servicescache.c += $(nscd-cflags)
 CFLAGS-getsrvbynm_r.c += $(nscd-cflags)
 CFLAGS-getsrvbypt_r.c += $(nscd-cflags)
 CFLAGS-res_hconf.c += $(nscd-cflags)
+CFLAGS-nis_hash.c += $(nscd-cflags)
 
 ifeq (yesyes,$(have-fpie)$(build-shared))
 relro-LDFLAGS += -Wl,-z,now
@@ -138,9 +147,15 @@ include $(patsubst %,$(..)cppflags-iterator.mk,$(cpp-srcs-left))
 $(objpfx)nscd: $(nscd-modules:%=$(objpfx)%.o)
 
 ifeq ($(build-shared),yes)
-$(objpfx)nscd: $(common-objpfx)rt/librt.so $(shared-thread-library) \
-	       $(common-objpfx)nis/libnsl.so
+$(objpfx)nscd: $(common-objpfx)rt/librt.so $(shared-thread-library)
 else
-$(objpfx)nscd: $(common-objpfx)rt/librt.a $(static-thread-library) \
-	       $(common-objpfx)nis/libnsl.a
+$(objpfx)nscd: $(common-objpfx)rt/librt.a $(static-thread-library)
+endif
+
+ifeq (y,$(OPTION_EGLIBC_NIS))
+ifeq ($(build-shared),yes)
+$(objpfx)nscd: $(common-objpfx)nis/libnsl.so
+else
+$(objpfx)nscd: $(common-objpfx)nis/libnsl.a
+endif
 endif

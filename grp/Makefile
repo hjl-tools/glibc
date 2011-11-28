@@ -19,6 +19,8 @@
 #
 #	Sub-makefile for grp portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= grp
 headers := grp.h
 
@@ -31,6 +33,9 @@ routines := fgetgrent initgroups setgroups \
 include ../Makeconfig
 
 tests := testgrp
+ifneq (y,$(OPTION_EGLIBC_NSSWITCH))
+LDLIBS-testgrp += $(shell cat $(common-objpfx)nss/fixed-nsswitch-libs)
+endif
 
 ifeq (yes,$(build-shared))
 test-srcs :=  tst_fgetgrent
@@ -47,25 +52,27 @@ endif
 
 ifeq ($(have-thread-library),yes)
 
-CFLAGS-getgrgid_r.c = -DUSE_NSCD=1 -fexceptions
-CFLAGS-getgrnam_r.c = -DUSE_NSCD=1 -fexceptions
+OPTION_EGLIBC_INET-CFLAGS-$(OPTION_EGLIBC_INET) = -DUSE_NSCD=1
+
+CFLAGS-getgrgid_r.c = $(OPTION_EGLIBC_INET-CFLAGS-y) -fexceptions
+CFLAGS-getgrnam_r.c = $(OPTION_EGLIBC_INET-CFLAGS-y) -fexceptions
 CFLAGS-getgrent_r.c = -fexceptions
 CFLAGS-getgrent.c = -fexceptions
 CFLAGS-fgetgrent.c = -fexceptions
 CFLAGS-fgetgrent_r.c = -fexceptions -D_IO_MTSAFE_IO
 CFLAGS-putgrent.c = -fexceptions -D_IO_MTSAFE_IO
-CFLAGS-initgroups.c = -DUSE_NSCD=1 -fexceptions
+CFLAGS-initgroups.c = $(OPTION_EGLIBC_INET-CFLAGS-y) -fexceptions
 CFLAGS-getgrgid.c = -fexceptions
 
 endif
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
 # tst_fgetgrent currently only works with shared libraries
 ifeq (yes,$(build-shared))
 tests: $(objpfx)tst_fgetgrent.out
 $(objpfx)tst_fgetgrent.out: tst_fgetgrent.sh $(objpfx)tst_fgetgrent
 	$(SHELL) -e tst_fgetgrent.sh $(common-objpfx) $(elf-objpfx) \
-		 $(rtld-installed-name)
+		 $(rtld-installed-name) "$(cross-test-wrapper)"
 
 endif
-endif
+# eglibc: endif

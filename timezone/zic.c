@@ -5,6 +5,12 @@
 
 static char	elsieid[] = "@(#)zic.c	8.19";
 
+#ifdef CROSS_ZIC
+#define REPORT_BUGS_TO ""
+#define PKGVERSION ""
+#else
+#include "config.h"
+#endif
 #include "private.h"
 #include "locale.h"
 #include "tzfile.h"
@@ -460,8 +466,9 @@ usage(FILE *stream, int status)
 [ --version ] [ --help ] [ -v ] [ -l localtime ] [ -p posixrules ] \\\n\
 \t[ -d directory ] [ -L leapseconds ] [ -y yearistype ] [ filename ... ]\n\
 \n\
-Report bugs to tz@elsie.nci.nih.gov.\n"),
-		       progname, progname);
+For bug reporting instructions, please see:\n\
+%s.\n"),
+		       progname, progname, REPORT_BUGS_TO);
 	exit(status);
 }
 
@@ -498,7 +505,7 @@ char *	argv[];
 	}
 	for (i = 1; i < argc; ++i)
 		if (strcmp(argv[i], "--version") == 0) {
-			(void) printf("%s\n", elsieid);
+			(void) printf("zic %s%s\n", PKGVERSION, elsieid);
 			exit(EXIT_SUCCESS);
 		} else if (strcmp(argv[i], "--help") == 0) {
 			usage(stdout, EXIT_SUCCESS);

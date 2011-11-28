@@ -138,9 +138,9 @@ before-compile  = $(objpfx)trusted-dirs.h
 generated	:= trusted-dirs.h trusted-dirs.st for-renamed/renamed.so
 generated-dirs	:= for-renamed
 
-ifeq ($(versioning),yes)
+# eglibc: ifeq ($(versioning),yes)
 ld-map		= $(common-objpfx)ld.map
-endif
+# eglibc: endif
 
 ifeq (yes,$(build-shared))
 extra-objs	= $(all-rtld-routines:%=%.os) soinit.os sofini.os interp.os
@@ -178,7 +178,8 @@ tests-static = tst-tls1-static tst-tls2-static tst-stackguard1-static
 ifeq (yesyesyes,$(build-static)$(build-shared)$(elf))
 tests-static += tst-tls9-static
 tst-tls9-static-ENV = \
-       LD_LIBRARY_PATH=$(objpfx):$(common-objpfx):$(common-objpfx)dlfcn
+  EGLIBC_TEST_LD_LIBRARY_PATH=$(objpfx):$(common-objpfx):$(common-objpfx)dlfcn
+tst-tls9-static-WRAPPER = $(..)scripts/run-with-env.sh
 endif
 ifeq (yes,$(have-initfini-array))
 tests-static += tst-array1-static tst-array5-static
@@ -436,7 +437,9 @@ endif
 
 
 common-ldd-rewrite = -e 's%@RTLD@%$(slibdir)/$(rtld-installed-name)%g' \
-		     -e 's%@VERSION@%$(version)%g'
+		     -e 's%@VERSION@%$(version)%g' \
+		     -e 's%@PKGVERSION@%$(PKGVERSION)%g' \
+		     -e 's%@REPORT_BUGS_TO@%$(REPORT_BUGS_TO)%g'
 sh-ldd-rewrite = $(common-ldd-rewrite) -e 's%@BASH@%/bin/sh%g;s/\$$"/"/g'
 bash-ldd-rewrite = $(common-ldd-rewrite) -e 's%@BASH@%$(BASH)%g' \
 		   -e 's%@TEXTDOMAINDIR@%$(msgcatdir)%g'
@@ -478,9 +481,9 @@ test-modules = $(addprefix $(objpfx),$(addsuffix .so,$(strip $(modules-names))))
 generated += $(addsuffix .so,$(strip $(modules-names)))
 
 ifeq (yes,$(build-shared))
-ifeq ($(cross-compiling),no)
+# eglibc: ifeq ($(cross-compiling),no)
 tests: $(objpfx)tst-pathopt.out
-endif
+# eglibc: endif
 endif
 
 $(objpfx)testobj1.so: $(libdl)
@@ -629,7 +632,8 @@ $(objpfx)preloadtest: $(objpfx)testobj6.so
 LDFLAGS-preloadtest = -rdynamic
 $(objpfx)preloadtest.out: $(preloadtest-preloads:%=$(objpfx)%.so)
 preloadtest-ENV = \
-  LD_PRELOAD=$(subst $(empty) ,:,$(strip $(preloadtest-preloads:=.so)))
+  EGLIBC_TEST_LD_PRELOAD=$(subst $(empty) ,:,$(strip $(preloadtest-preloads:=.so)))
+preloadtest-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)loadfail: $(libdl)
 LDFLAGS-loadfail = -rdynamic
@@ -667,6 +671,7 @@ $(objpfx)circlemod2a.so: $(objpfx)circlemod3a.so
 $(objpfx)order: $(addprefix $(objpfx),dep4.so dep3.so dep2.so dep1.so)
 
 $(objpfx)order.out: $(objpfx)order
+	$(cross-test-wrapper) \
 	$(elf-objpfx)$(rtld-installed-name) \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $(objpfx)order > $@
@@ -674,7 +679,8 @@ $(objpfx)order.out: $(objpfx)order
 
 $(objpfx)vismain: $(addprefix $(objpfx),vismod1.so vismod2.so)
 $(objpfx)vismain.out: $(addprefix $(objpfx),vismod3.so)
-vismain-ENV = LD_PRELOAD=$(addprefix $(objpfx),vismod3.so)
+vismain-ENV = EGLIBC_TEST_LD_PRELOAD=$(addprefix $(objpfx),vismod3.so)
+vismain-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)noload: $(objpfx)testobj1.so $(common-objpfx)dlfcn/libdl.so
 LDFLAGS-noload = -rdynamic
@@ -728,7 +734,8 @@ $(objpfx)lateglobal.out: $(objpfx)ltglobmod1.so $(objpfx)ltglobmod2.so
 $(objpfx)tst-pathopt: $(libdl)
 $(objpfx)tst-pathopt.out: tst-pathopt.sh $(objpfx)tst-pathopt \
 			  $(objpfx)pathoptobj.so
-	$(SHELL) -e $< $(common-objpfx)
+	$(SHELL) -e $< $(common-objpfx) "$(cross-test-wrapper)" \
+		$(..)scripts/run-with-env.sh
 
 $(objpfx)initfirst: $(libdl)
 $(objpfx)initfirst.out: $(objpfx)firstobj.so
@@ -906,6 +913,7 @@ ifeq (yesyes,$(have-fpie)$(build-shared))
 CFLAGS-tst-pie1.c += $(pie-ccflag)
 
 $(objpfx)tst-pie1.out: $(objpfx)tst-pie1
+	$(cross-test-wrapper) \
 	$(elf-objpfx)$(rtld-installed-name) \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $< > $@
@@ -1005,31 +1013,38 @@ $(objpfx)tst-dlmopen3: $(libdl)
 $(objpfx)tst-dlmopen3.out: $(objpfx)tst-dlmopen1mod.so
 
 $(objpfx)tst-audit1.out: $(objpfx)tst-auditmod1.so
-tst-audit1-ENV = LD_AUDIT=$(objpfx)tst-auditmod1.so
+tst-audit1-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod1.so
+tst-audit1-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-audit2.out: $(objpfx)tst-auditmod1.so
-tst-audit2-ENV = LD_AUDIT=$(objpfx)tst-auditmod1.so
+tst-audit2-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod1.so
+tst-audit2-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-audit3: $(objpfx)tst-auditmod3a.so
 $(objpfx)tst-audit3.out: $(objpfx)tst-auditmod3b.so
-tst-audit3-ENV = LD_AUDIT=$(objpfx)tst-auditmod3b.so
+tst-audit3-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod3b.so
+tst-audit3-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-audit4: $(objpfx)tst-auditmod4a.so
 $(objpfx)tst-audit4.out: $(objpfx)tst-auditmod4b.so
-tst-audit4-ENV = LD_AUDIT=$(objpfx)tst-auditmod4b.so
+tst-audit4-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod4b.so
+tst-audit4-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-audit5: $(objpfx)tst-auditmod5a.so
 $(objpfx)tst-audit5.out: $(objpfx)tst-auditmod5b.so
-tst-audit5-ENV = LD_AUDIT=$(objpfx)tst-auditmod5b.so
+tst-audit5-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod5b.so
+tst-audit5-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-audit6: $(objpfx)tst-auditmod6a.so
 $(objpfx)tst-audit6.out: $(objpfx)tst-auditmod6b.so \
 			 $(objpfx)tst-auditmod6c.so
-tst-audit6-ENV = LD_AUDIT=$(objpfx)tst-auditmod6b.so:$(objpfx)tst-auditmod6c.so
+tst-audit6-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod6b.so:$(objpfx)tst-auditmod6c.so
+tst-audit6-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-audit7: $(objpfx)tst-auditmod7a.so
 $(objpfx)tst-audit7.out: $(objpfx)tst-auditmod7b.so
-tst-audit7-ENV = LD_AUDIT=$(objpfx)tst-auditmod7b.so
+tst-audit7-ENV = EGLIBC_TEST_LD_AUDIT=$(objpfx)tst-auditmod7b.so
+tst-audit7-WRAPPER = $(..)scripts/run-with-env.sh
 
 $(objpfx)tst-global1: $(libdl)
 $(objpfx)tst-global1.out: $(objpfx)testobj6.so $(objpfx)testobj2.so
@@ -1037,6 +1052,7 @@ $(objpfx)tst-global1.out: $(objpfx)testobj6.so $(objpfx)testobj2.so
 $(objpfx)order2: $(libdl)
 $(objpfx)order2.out: $(objpfx)order2 $(objpfx)order2mod1.so \
 		     $(objpfx)order2mod2.so
+	$(cross-test-wrapper) \
 	$(elf-objpfx)$(rtld-installed-name) \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $(objpfx)order2 > $@
@@ -1046,7 +1062,7 @@ $(objpfx)order2mod4.so: $(objpfx)order2mod3.so
 $(objpfx)order2mod2.so: $(objpfx)order2mod3.so
 order2mod2.so-no-z-defs = yes
 
-tst-stackguard1-ARGS = --command "$(built-program-cmd) --child"
+tst-stackguard1-ARGS = --command "$(local-built-program-cmd) --child"
 tst-stackguard1-static-ARGS = --command "$(objpfx)tst-stackguard1-static --child"
 
 $(objpfx)tst-leaks1: $(libdl)
@@ -1175,6 +1191,7 @@ $(objpfx)tst-unique2: $(libdl) $(objpfx)tst-unique2mod1.so
 $(objpfx)tst-unique2.out: $(objpfx)tst-unique2mod2.so
 
 $(objpfx)tst-initorder.out: $(objpfx)tst-initorder
+	$(cross-test-wrapper) \
 	$(elf-objpfx)${rtld-installed-name} \
 	  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)) \
 	  $< > $@

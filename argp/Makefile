@@ -19,6 +19,8 @@
 #
 #	Makefile for argp.
 #
+include ../option-groups.mak
+
 subdir	:= argp
 
 headers		= argp.h

@@ -21,16 +21,18 @@
 #
 subdir	:= catgets
 
+include ../option-groups.mak
+
 headers		= nl_types.h
 distribute	= catgetsinfo.h config.h xopen-msg.sed test1.msg test2.msg \
 		  test-gencat.sh sample.SJIS
-routines	= catgets open_catalog
-others		= gencat
-install-bin	= gencat
-extra-objs	= $(gencat-modules:=.o)
+routines-$(OPTION_EGLIBC_CATGETS)    := catgets open_catalog
+others-$(OPTION_EGLIBC_CATGETS)      := gencat
+install-bin-$(OPTION_EGLIBC_CATGETS) := gencat
+extra-objs-$(OPTION_EGLIBC_CATGETS)  := $(gencat-modules:=.o)
 
-tests = tst-catgets
-test-srcs = test-gencat
+tests-$(OPTION_EGLIBC_CATGETS)       := tst-catgets
+test-srcs-$(OPTION_EGLIBC_CATGETS)   := test-gencat
 
 gencat-modules	= xmalloc
 
@@ -53,9 +55,11 @@ generated-dirs = de
 
 tst-catgets-ENV = NLSPATH="$(objpfx)%l/%N.cat" LANG=de
 
-ifneq ($(cross-compiling),yes)
+# eglibc: ifneq ($(cross-compiling),yes)
+ifeq (y,$(OPTION_EGLIBC_CATGETS))
 tests: $(objpfx)de/libc.cat $(objpfx)test1.cat $(objpfx)test2.cat \
        $(objpfx)test-gencat.out
+endif
 # This test just checks whether the program produces any error or not.
 # The result is not tested.
 $(objpfx)test1.cat: test1.msg $(objpfx)gencat
@@ -83,4 +87,4 @@ $(objpfx)test-gencat.out: test-gencat.sh $(objpfx)test-gencat \
 $(objpfx)sample.SJIS.cat: sample.SJIS $(objpfx)gencat
 	GCONV_PATH=$(common-objpfx)iconvdata LC_ALL=C \
 	$(built-program-cmd) -H $(objpfx)test-gencat.h < $(word 1,$^) > $@
-endif
+# eglibc: endif

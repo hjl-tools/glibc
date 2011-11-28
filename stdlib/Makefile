@@ -19,6 +19,8 @@
 #
 #	Makefile for stdlib routines
 #
+include ../option-groups.mak
+
 subdir	:= stdlib
 
 headers	:= stdlib.h bits/stdlib.h bits/stdlib-ldbl.h			      \
@@ -28,7 +30,7 @@ headers	:= stdlib.h bits/stdlib.h bits/stdlib-ldbl.h			      \
 	   ucontext.h sys/ucontext.h					      \
 	   alloca.h fmtmsg.h
 
-routines	:=							      \
+routines-y	:=							      \
 	atof atoi atol atoll						      \
 	abort								      \
 	bsearch qsort msort						      \
@@ -37,7 +39,6 @@ routines	:=							      \
 	quick_exit at_quick_exit cxa_at_quick_exit			      \
 	abs labs llabs							      \
 	div ldiv lldiv							      \
-	mblen mbstowcs mbtowc wcstombs wctomb				      \
 	random random_r rand rand_r					      \
 	drand48 erand48 lrand48 nrand48 mrand48 jrand48			      \
 	srand48 seed48 lcong48						      \
@@ -50,9 +51,18 @@ routines	:=							      \
 	strtof_l strtod_l strtold_l					      \
 	system canonicalize						      \
 	a64l l64a							      \
-	rpmatch strfmon strfmon_l getsubopt xpg_basename fmtmsg		      \
-	strtoimax strtoumax wcstoimax wcstoumax				      \
+	getsubopt xpg_basename						      \
+	strtoimax strtoumax						      \
 	getcontext setcontext makecontext swapcontext
+routines-$(OPTION_EGLIBC_LOCALE_CODE) +=				      \
+	strfmon strfmon_l
+routines-$(OPTION_POSIX_C_LANG_WIDE_CHAR) +=				      \
+	mblen mbstowcs mbtowc wcstombs wctomb				      \
+	wcstoimax wcstoumax
+ifeq (yy,$(OPTION_EGLIBC_LOCALE_CODE)$(OPTION_POSIX_REGEXP))
+routines-y += rpmatch
+endif
+routines-$(OPTION_EGLIBC_FMTMSG) += fmtmsg
 aux =	grouping groupingwc tens_in_limb
 
 # These routines will be omitted from the libc shared object.
@@ -62,17 +72,19 @@ static-only-routines = atexit at_quick_exit
 
 distribute	:= exit.h grouping.h abort-instr.h isomac.c tst-fmtmsg.sh   \
 		   allocalim.h
-test-srcs	:= tst-fmtmsg
-tests		:= tst-strtol tst-strtod testmb testrand testsort testdiv   \
+test-srcs-$(OPTION_EGLIBC_FMTMSG) := tst-fmtmsg
+tests		:= tst-strtol tst-strtod testrand testsort testdiv          \
 		   test-canon test-canon2 tst-strtoll tst-environ	    \
 		   tst-xpg-basename tst-random tst-random2 tst-bsearch	    \
 		   tst-limits tst-rand48 bug-strtod tst-setcontext	    \
-		   test-a64l tst-qsort tst-system testmb2 bug-strtod2	    \
-		   tst-atof1 tst-atof2 tst-strtod2 tst-strtod3 tst-rand48-2 \
-		   tst-makecontext tst-strtod4 tst-strtod5 tst-qsort2	    \
-		   tst-makecontext2 tst-strtod6 tst-unsetenv1		    \
-		   tst-makecontext3
-
+		   test-a64l tst-qsort tst-system bug-strtod2		    \
+		   tst-atof1 tst-atof2 tst-strtod2 tst-rand48-2             \
+		   tst-makecontext tst-qsort2 tst-makecontext2 tst-strtod6  \
+		   tst-unsetenv1 tst-makecontext3
+tests-$(OPTION_EGLIBC_LOCALE_CODE) \
+		+= tst-strtod3 tst-strtod4 tst-strtod5 testmb2
+tests-$(OPTION_POSIX_C_LANG_WIDE_CHAR) \
+		+= testmb
 include ../Makeconfig
 
 ifeq ($(build-shared),yes)
@@ -125,9 +137,11 @@ testmb2-ENV = LOCPATH=$(common-objpfx)localedata
 # Run a test on the header files we use.
 tests: $(objpfx)isomac.out
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
+ifeq (y,$(OPTION_EGLIBC_FMTMSG))
 tests: $(objpfx)tst-fmtmsg.out
 endif
+# eglibc: endif
 
 $(objpfx)isomac.out: $(objpfx)isomac
 	$(dir $<)$(notdir $<) '$(CC)'  \

@@ -19,6 +19,8 @@
 #
 #	Specific makefile for stdio-common.
 #
+include ../option-groups.mak
+
 subdir	:= stdio-common
 
 headers	:= stdio_ext.h printf.h bits/printf-ldbl.h
@@ -29,7 +31,7 @@ routines	:=							      \
 	vfprintf vprintf printf_fp reg-printf printf-prs printf_fphex	      \
 	reg-modifier reg-type						      \
 	printf_size fprintf printf snprintf sprintf asprintf dprintf	      \
-	vfwprintf vfscanf vfwscanf					      \
+	vfscanf								      \
 	fscanf scanf sscanf						      \
 	perror psignal							      \
 	tmpfile tmpfile64 tmpnam tmpnam_r tempnam tempname		      \
@@ -39,12 +41,18 @@ routines	:=							      \
 	isoc99_scanf isoc99_vscanf isoc99_fscanf isoc99_vfscanf isoc99_sscanf \
 	isoc99_vsscanf							      \
 	psiginfo
-
-install-others = $(inst_includedir)/bits/stdio_lim.h
+# Ideally, _itowa and itowa-digits would be in this option group as
+# well, but it is used unconditionally by printf_fp and printf_fphex,
+# and it didn't seem straightforward to disentangle it.
+routines-$(OPTION_POSIX_C_LANG_WIDE_CHAR) +=				      \
+	vfwprintf vfwscanf
 
 include ../Makeconfig
 
-aux	:= errlist siglist printf-parsemb printf-parsewc fxprintf
+install-headers-nosubdir: $(inst_includedir)/bits/stdio_lim.h
+
+aux	:= errlist siglist printf-parsemb fxprintf
+aux-$(OPTION_POSIX_C_LANG_WIDE_CHAR) += printf-parsewc
 distribute := _itoa.h _itowa.h _i18n_number.h \
 	      printf-parse.h stdio_lim.h.in tst-unbputc.sh tst-printf.sh
 
@@ -52,15 +60,21 @@ tests := tstscanf test_rdwr test-popen tstgetln test-fseek \
 	 temptest tst-fileno test-fwrite tst-ungetc tst-ferror \
 	 xbug errnobug \
 	 bug1 bug2 bug3 bug4 bug5 bug6 bug7 bug8 bug9 bug10 bug11 bug12 bug13 \
-	 tfformat tiformat tllformat tstdiomisc tst-printfsz tst-wc-printf \
+	 tfformat tiformat tllformat tstdiomisc tst-printfsz \
 	 scanf1 scanf2 scanf3 scanf4 scanf5 scanf7 scanf8 scanf9 scanf10 \
-	 scanf11 scanf12 tst-tmpnam tst-cookie tst-obprintf tst-sscanf \
-	 tst-swprintf tst-fseek tst-fmemopen test-vfprintf tst-gets \
-	 tst-perror tst-sprintf tst-rndseek tst-fdopen tst-fphex bug14 bug15 \
+	 scanf11 scanf12 tst-tmpnam tst-cookie tst-obprintf \
+	 tst-fseek tst-fmemopen tst-gets \
+	 tst-sprintf tst-rndseek tst-fdopen tst-fphex \
 	 tst-popen tst-unlockedio tst-fmemopen2 tst-put-error tst-fgets \
-	 tst-fwrite bug16 bug17 tst-swscanf tst-sprintf2 bug18 bug18a \
-	 bug19 bug19a tst-popen2 scanf13 scanf14 scanf15 bug20 bug21 bug22 \
-	 scanf16 scanf17 tst-setvbuf1 tst-grouping
+	 tst-fwrite bug16 bug17 tst-sprintf2 bug18 \
+	 bug19 tst-popen2 scanf14 scanf15 bug21 bug22 scanf16 scanf17 \
+	 tst-setvbuf1
+tests-$(OPTION_EGLIBC_LOCALE_CODE) \
+      += tst-sscanf tst-swprintf bug15 test-vfprintf bug14 scanf13 tst-grouping
+tests-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO) \
+      += tst-perror bug19a bug20
+tests-$(OPTION_POSIX_C_LANG_WIDE_CHAR) \
+      += bug18a tst-swscanf tst-wc-printf
 
 test-srcs = tst-unbputc tst-printf
 
@@ -69,7 +83,7 @@ include ../Rules
 $(inst_includedir)/bits/stdio_lim.h: $(common-objpfx)bits/stdio_lim.h $(+force)
 	$(do-install)
 
-ifeq ($(cross-compiling),no)
+# eglibc: ifeq ($(cross-compiling),no)
 .PHONY: do-tst-unbputc do-tst-printf
 tests: do-tst-unbputc do-tst-printf
 
@@ -80,7 +94,7 @@ $(objpfx)tst-unbputc.out: $(objpfx)tst-unbputc tst-unbputc.sh
 do-tst-printf: $(objpfx)tst-printf.out
 $(objpfx)tst-printf.out: $(objpfx)tst-printf tst-printf.sh
 	$(SHELL) -e tst-printf.sh $(common-objpfx) '$(run-program-prefix)'
-endif
+# eglibc: endif
 
 CFLAGS-vfprintf.c = -Wno-uninitialized
 CFLAGS-vfwprintf.c = -Wno-uninitialized

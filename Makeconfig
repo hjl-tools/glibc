@@ -577,17 +577,25 @@ sysdep-library-path = \
 $(subst $(empty) ,:,$(strip $(patsubst -Wl$(comma)-rpath-link=%, %,\
 				       $(filter -Wl$(comma)-rpath-link=%,\
 						$(sysdep-LDFLAGS)))))
-run-program-prefix = $(if $(filter $(notdir $(built-program-file)),\
-				   $(tests-static) $(xtests-static)),, \
-			  $(elf-objpfx)$(rtld-installed-name) \
-			  --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)))
+# Never use $(run-via-rtld-prefix) for the statically-linked %-bp test
+# programs, or for tests listed in tests-static or xtests-static.
+run-via-rtld-prefix =							      \
+  $(if $(strip $(filter $(notdir $(built-program-file)),		      \
+			$(tests-static) $(xtests-static))		      \
+	       $(filter %-bp,$(built-program-file))),,			      \
+       $(elf-objpfx)$(rtld-installed-name)				      \
+	 --library-path $(rpath-link)$(patsubst %,:%,$(sysdep-library-path)))
 else
-run-program-prefix =
+run-via-rtld-prefix =
 endif
-# Never use $(run-program-prefix) for the statically-linked %-bp test programs
-built-program-cmd = $(patsubst %,$(run-program-prefix),\
-			$(filter-out %-bp,$(built-program-file))) \
-		    $(built-program-file)
+run-program-prefix = $(cross-test-wrapper) $($*-WRAPPER) \
+	             $(run-via-rtld-prefix)
+built-program-cmd = $(cross-test-wrapper) $($*-WRAPPER) \
+		    $(run-via-rtld-prefix) $(built-program-file)
+
+# Same as built-program-cmd, but without the cross-test-wrapper.  Used 
+# to run programs from the test machine, as in nptl/tst-cancel7.
+local-built-program-cmd = $(run-via-rtld-prefix) $(built-program-file)
 
 ifndef LD
 LD := ld -X
@@ -935,6 +943,24 @@ dlfcn =
 libdl =
 endif
 endif
+
+# Generate a header file that #defines preprocessor symbols indicating
+# which option groups are enabled.  Note that the option-groups.config file
+# may not exist at all.
+before-compile += $(common-objpfx)gnu/option-groups.h
+common-generated += gnu/option-groups.h gnu/option-groups.stmp
+headers += gnu/option-groups.h
+$(common-objpfx)gnu/option-groups.h: $(common-objpfx)gnu/option-groups.stmp; @:
+$(common-objpfx)gnu/option-groups.stmp:					\
+		$(..)scripts/option-groups.awk				\
+		$(..)option-groups.defaults				\
+		$(wildcard $(common-objpfx)option-groups.config)
+	$(make-target-directory)
+	@rm -f ${@:stmp=T} $@
+	LC_ALL=C $(AWK) -f $^ > ${@:stmp=T}
+	$(move-if-change) ${@:stmp=T} ${@:stmp=h}
+	touch $@
+
 
 # These are the subdirectories containing the library source.  The order
 # is more or less arbitrary.  The sorting step will take care of the

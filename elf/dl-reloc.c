@@ -186,7 +186,7 @@ _dl_relocate_object (struct link_map *l, struct r_scope_elem *scope[],
       && __builtin_expect (l->l_info[DT_BIND_NOW] != NULL, 0))
     lazy = 0;
 
-  if (__builtin_expect (GLRO(dl_debug_mask) & DL_DEBUG_RELOC, 0))
+  if (__builtin_expect (GLRO_dl_debug_mask & DL_DEBUG_RELOC, 0))
     _dl_debug_printf ("\nrelocation processing: %s%s\n",
 		      l->l_name[0] ? l->l_name : rtld_progname,
 		      lazy ? " (lazy)" : "");
@@ -274,6 +274,17 @@ _dl_relocate_object (struct link_map *l, struct r_scope_elem *scope[],
 	   relocations.  If the shared object lacks a PLT (for example
 	   if it only contains lead function) the l_info[DT_PLTRELSZ]
 	   will be NULL.  */
+#ifdef ELF_MACHINE_NO_PLT
+	l->l_reloc_result = calloc (sizeof (l->l_reloc_result[0]), 1);
+	if (l->l_reloc_result == NULL)
+	  {
+	    errstring = N_("\
+%s: out of memory to store relocation results for %s\n");
+	    _dl_fatal_printf (errstring,
+			      rtld_progname ?: "<program name unknown>",
+			      l->l_name);
+	  }
+#else
 	if (l->l_info[DT_PLTRELSZ] == NULL)
 	  {
 	    errstring = N_("%s: no PLTREL found in object %s\n");
@@ -291,6 +302,7 @@ _dl_relocate_object (struct link_map *l, struct r_scope_elem *scope[],
 %s: out of memory to store relocation results for %s\n");
 	    goto fatal;
 	  }
+#endif
       }
 #endif
   }
