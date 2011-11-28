@@ -79,6 +79,10 @@ extern int errno;
 #endif
 #include "hash-string.h"
 
+#ifdef _LIBC
+# include <gnu/option-groups.h>
+#endif
+
 /* Thread safetyness.  */
 #ifdef _LIBC
 # include <bits/libc-lock.h>
@@ -451,8 +455,10 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 #endif
 
 #ifdef _LIBC
+#if __OPTION_EGLIBC_LOCALE_CODE
   __libc_rwlock_define (extern, __libc_setlocale_lock attribute_hidden)
   __libc_rwlock_rdlock (__libc_setlocale_lock);
+#endif
 #endif
 
   __libc_rwlock_rdlock (_nl_state_lock);
@@ -472,7 +478,11 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
   search.category = category;
 # ifdef HAVE_PER_THREAD_LOCALE
 #  ifdef _LIBC
+#   if __OPTION_EGLIBC_LOCALE_CODE
   localename = strdupa (__current_locale_name (category));
+#   else
+  localename = "C";
+#   endif
 #  endif
   search.localename = localename;
 # endif
@@ -496,7 +506,9 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 	retval = (char *) (*foundp)->translation;
 
 # ifdef _LIBC
+#if __OPTION_EGLIBC_LOCALE_CODE
       __libc_rwlock_unlock (__libc_setlocale_lock);
+#endif
 # endif
       __libc_rwlock_unlock (_nl_state_lock);
       return retval;
@@ -613,7 +625,9 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 	{
 	no_translation:
 	  FREE_BLOCKS (block_list);
+#if __OPTION_EGLIBC_LOCALE_CODE
 	  __libc_rwlock_unlock (__libc_setlocale_lock);
+#endif
 	  __libc_rwlock_unlock (_nl_state_lock);
 	  __set_errno (saved_errno);
 	  return (plural == 0
@@ -727,7 +741,9 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 	      if (plural)
 		retval = plural_lookup (domain, n, retval, retlen);
 
+#if __OPTION_EGLIBC_LOCALE_CODE
 	      __libc_rwlock_unlock (__libc_setlocale_lock);
+#endif
 	      __libc_rwlock_unlock (_nl_state_lock);
 	      return retval;
 	    }
@@ -1348,7 +1364,11 @@ guess_category_value (category, categoryname)
      `LC_xxx', and `LANG'.  On some systems this can be done by the
      `setlocale' function itself.  */
 #ifdef _LIBC
+# if __OPTION_EGLIBC_LOCALE_CODE
   retval = __current_locale_name (category);
+# else
+  retval = "C";
+# endif
 #else
   retval = _nl_locale_name (category, categoryname);
 #endif

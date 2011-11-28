@@ -22,15 +22,26 @@ subdir := localedata
 
 all: # Make this the default target; it will be defined in Rules.
 
-# List with all available character set descriptions.
-charmaps := $(filter-out $(addprefix charmaps/, CVS RCS SCCS %~), \
-				     $(wildcard charmaps/[A-I]*) \
-				     $(wildcard charmaps/[J-Z]*))
+include ../option-groups.mak
 
 # List with all available character set descriptions.
-locales := $(filter-out $(addprefix locales/, CVS RCS SCCS %~), \
-				    $(wildcard locales/*))
+all-charmaps := $(filter-out $(addprefix charmaps/, CVS RCS SCCS %~), \
+					 $(wildcard charmaps/[A-I]*) \
+					 $(wildcard charmaps/[J-Z]*))
 
+# List with all available character set descriptions.
+all-locales := $(filter-out $(addprefix locales/, CVS RCS SCCS %~), \
+			    $(wildcard locales/*))
+
+# If the EGLIBC_LOCALES option group is not enabled, trim the
+# list of charmap and locale source files.
+ifeq ($(OPTION_EGLIBC_LOCALES),y)
+charmaps := $(all-charmaps)
+locales  := $(all-locales)
+else
+charmaps := 
+locales  := locales/POSIX
+endif
 
 subdir-dirs = tests-mbwc
 vpath %.c tests-mbwc
@@ -61,7 +72,7 @@ generated-dirs := $(ld-test-names) tt_TT de_DE.437			\
 		  $(addprefix tstfmon_,$(fmon-tests))			\
 
 distribute := CHECKSUMS README SUPPORTED ChangeLog			\
-	      $(charmaps) $(locales)					\
+	      $(all-charmaps) $(all-locales)				\
 	      tst-rpmatch.sh tst-locale.sh tst-fmon.sh sort-test.sh	\
 	      tst-fmon.data $(test-input-data) $(ld-test-srcs)		\
 	      th_TH.in cs_CZ.in tst-mbswcs.sh tst-trans.sh tst-ctype.sh \
@@ -76,7 +87,7 @@ distribute := CHECKSUMS README SUPPORTED ChangeLog			\
 # Get $(inst_i18ndir) defined.
 include ../Makeconfig
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
 locale_test_suite := tst_iswalnum tst_iswalpha tst_iswcntrl            \
 		     tst_iswctype tst_iswdigit tst_iswgraph            \
 		     tst_iswlower tst_iswprint tst_iswpunct            \
@@ -92,15 +103,19 @@ locale_test_suite := tst_iswalnum tst_iswalpha tst_iswcntrl            \
 		     tst_wcsxfrm tst_wctob tst_wctomb tst_wctrans      \
 		     tst_wctype tst_wcwidth
 
-tests = $(locale_test_suite) tst-digits tst-setlocale bug-iconv-trans \
+# Since these tests build their own locale files, they're not
+# dependent on the OPTION_EGLIBC_LOCALES option group.  But they do
+# need the locale functions to be present.
+tests-$(OPTION_EGLIBC_LOCALE_CODE) \
+     += $(locale_test_suite) tst-digits tst-setlocale bug-iconv-trans \
 	tst-leaks tst-mbswcs6 tst-xlocale1 tst-xlocale2 bug-usesetlocale \
 	tst-strfmon1 tst-sscanf tst-strptime bug-setlocale1
-ifeq (yes,$(build-shared))
+ifeq (yesy,$(build-shared)$(OPTION_EGLIBC_LOCALE_CODE))
 ifneq (no,$(PERL))
 tests: $(objpfx)mtrace-tst-leaks
 endif
 endif
-endif
+# eglibc: endif
 
 # Files to install.
 install-others := $(addprefix $(inst_i18ndir)/, \
@@ -130,10 +145,10 @@ CFLAGS-tst-mbswcs5.c = -Wno-format
 CFLAGS-tst-trans.c = -Wno-format
 
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
 # We have to generate locales
 LOCALES := de_DE.ISO-8859-1 de_DE.UTF-8 en_US.ANSI_X3.4-1968 \
-	   en_US.ISO-8859-1 ja_JP.EUC-JP da_DK.ISO-8859-1 \
+	   en_US.ISO-8859-1 en_US.UTF-8 ja_JP.EUC-JP da_DK.ISO-8859-1 \
 	   hr_HR.ISO-8859-2 sv_SE.ISO-8859-1 ja_JP.SJIS fr_FR.ISO-8859-1 \
 	   vi_VN.TCVN5712-1 nb_NO.ISO-8859-1 nn_NO.ISO-8859-1 \
 	   tr_TR.UTF-8 cs_CZ.UTF-8 zh_TW.EUC-TW fa_IR.UTF-8 fr_FR.UTF-8 \
@@ -150,15 +165,24 @@ generated-dirs += $(LOCALES)
 $(addprefix $(objpfx),$(CTYPE_FILES)): %: \
   gen-locale.sh $(common-objpfx)locale/localedef Makefile \
   $(addprefix charmaps/,$(CHARMAPS)) $(addprefix locales/,$(LOCALE_SRCS))
-	@$(SHELL) -e gen-locale.sh $(common-objpfx) '$(built-program-cmd)' $@
+	@$(SHELL) -e gen-locale.sh $(common-objpfx)	\
+		 '$(if $(cross-localedef), 		\
+		       $(cross-localedef),		\
+		       $(built-program-cmd))'		\
+		 $@
 
 $(addsuffix .out,$(addprefix $(objpfx),$(tests))): %: \
   $(addprefix $(objpfx),$(CTYPE_FILES))
 
+ifeq (y,$(OPTION_EGLIBC_LOCALE_CODE))
 tests: $(objpfx)sort-test.out $(objpfx)tst-fmon.out $(objpfx)tst-locale.out \
        $(objpfx)tst-rpmatch.out $(objpfx)tst-trans.out \
-       $(objpfx)tst-mbswcs.out $(objpfx)tst-ctype.out $(objpfx)tst-wctype.out \
+       $(objpfx)tst-mbswcs.out $(objpfx)tst-ctype.out \
        $(objpfx)tst-langinfo.out $(objpfx)tst-numeric.out
+ifeq (y,$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO))
+tests: $(objpfx)tst-wctype.out
+endif
+endif
 
 $(objpfx)sort-test.out: sort-test.sh $(objpfx)collate-test $(objpfx)xfrm-test \
 		       $(test-input-data) $(addprefix $(objpfx),$(CTYPE_FILES))
@@ -203,9 +227,14 @@ $(objpfx)tst-langinfo.out: tst-langinfo.sh $(objpfx)tst-langinfo \
 	$(SHELL) -e $< $(common-objpfx) '$(built-program-cmd)'
 $(objpfx)tst-digits.out: $(objpfx)tst-locale.out
 $(objpfx)tst-mbswcs6.out: $(addprefix $(objpfx),$(CTYPE_FILES))
-endif
+# eglibc: endif
 
 include SUPPORTED
+
+# Only install locale data if OPTION_EGLIBC_LOCALES is selected.
+ifneq ($(OPTION_EGLIBC_LOCALES),y)
+SUPPORTED-LOCALES :=
+endif
 
 INSTALL-SUPPORTED-LOCALES=$(addprefix install-, $(SUPPORTED-LOCALES))
 

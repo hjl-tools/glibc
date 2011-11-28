@@ -29,6 +29,7 @@
 #include "_itoa.h"
 #include "_itowa.h"
 #include <locale/localeinfo.h>
+#include <gnu/option-groups.h>
 
 /* #define NDEBUG 1*/		/* Undefine this for debugging assertions.  */
 #include <assert.h>
@@ -144,10 +145,18 @@ __printf_fphex (FILE *fp,
   int done = 0;
 
   /* Nonzero if this is output on a wide character stream.  */
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   int wide = info->wide;
+#else
+  /* This should never be called on a wide-oriented stream when
+     OPTION_POSIX_C_LANG_WIDE_CHAR is disabled, but the compiler can't
+     be trusted to figure that out.  */
+  const int wide = 0;
+#endif
 
 
   /* Figure out the decimal point character.  */
+#if __OPTION_EGLIBC_LOCALE_CODE
   if (info->extra == 0)
     {
       decimal = _NL_CURRENT (LC_NUMERIC, DECIMAL_POINT);
@@ -161,6 +170,10 @@ __printf_fphex (FILE *fp,
     }
   /* The decimal point character must never be zero.  */
   assert (*decimal != '\0' && decimalwc != L'\0');
+#else
+  decimal = ".";
+  decimalwc = L'.';
+#endif
 
 
   /* Fetch the argument value.	*/

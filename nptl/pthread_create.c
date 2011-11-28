@@ -28,6 +28,7 @@
 #include <libc-internal.h>
 #include <resolv.h>
 #include <kernel-features.h>
+#include <gnu/option-groups.h>
 
 #include <shlib-compat.h>
 
@@ -236,8 +237,10 @@ start_thread (void *arg)
   THREAD_SETMEM (pd, cpuclock_offset, now);
 #endif
 
+#if __OPTION_EGLIBC_INET
   /* Initialize resolver state pointer.  */
   __resp = &pd->res;
+#endif
 
   /* Allow setxid from now onwards.  */
   if (__builtin_expect (atomic_exchange_acq (&pd->setxid_futex, 0) == -2, 0))
@@ -307,8 +310,10 @@ start_thread (void *arg)
   /* Run the destructor for the thread-local data.  */
   __nptl_deallocate_tsd ();
 
+#if __OPTION_EGLIBC_INET
   /* Clean up any state libc stored in thread-local variables.  */
   __libc_thread_freeres ();
+#endif
 
   /* If this is the last thread we terminate the process now.  We
      do not notify the debugger, it might just irritate it if there

@@ -32,6 +32,7 @@
 #include <sys/mman.h>
 #include <sys/syslog.h>
 #include <execinfo.h>
+#include <gnu/option-groups.h>
 
 /* Abort with an error message.  */
 #include <not-cancel.h>
@@ -171,6 +172,7 @@ __libc_message (int do_abort, const char *fmt, ...)
 
   if (do_abort)
     {
+#if __OPTION_EGLIBC_BACKTRACE
       if (do_abort > 1 && written)
 	{
 	  void *addrs[64];
@@ -193,6 +195,7 @@ __libc_message (int do_abort, const char *fmt, ...)
 	      close_not_cancel_no_status (fd2);
 	    }
 	}
+#endif /* __OPTION_EGLIBC_BACKTRACE */
 
       /* Terminate the process.  */
       abort ();

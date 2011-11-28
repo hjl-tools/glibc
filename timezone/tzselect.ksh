@@ -1,6 +1,8 @@
 #! @KSH@
 
 VERSION='@(#)tzselect.ksh	8.2'
+PKGVERSION='@PKGVERSION@'
+REPORT_BUGS_TO='@REPORT_BUGS_TO@'
 
 # Ask the user about the time zone, and output the resulting TZ value to stdout.
 # Interact with the user via stderr and stdin.
@@ -50,12 +52,13 @@ if [ "$1" = "--help" ]; then
 Usage: tzselect
 Select a time zone interactively.
 
-Report bugs to tz@elsie.nci.nih.gov.
+For bug reporting instructions, please see:
+$REPORT_BUGS_TO.
 EOF
     exit 0
 elif [ "$1" = "--version" ]; then
     cat <<EOF
-tzselect $VERSION
+tzselect $PKGVERSION$VERSION
 EOF
     exit 0
 fi

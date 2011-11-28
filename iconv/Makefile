@@ -19,6 +19,8 @@
 #
 #	Makefile for iconv.
 #
+include ../option-groups.mak
+
 subdir	:= iconv
 
 include ../Makeconfig
@@ -70,6 +72,9 @@ CPPFLAGS-linereader = -DNOT_IN_libc
 CPPFLAGS-strtab = -DNOT_IN_libc
 CPPFLAGS-charmap = -DNOT_IN_libc
 CPPFLAGS-charmap-dir = -DNOT_IN_libc
+ifneq (y,$(OPTION_EGLIBC_SPAWN))
+CPPFLAGS-charmap-dir.c += -DNO_UNCOMPRESS
+endif
 
 include ../Rules
 
@@ -79,9 +84,9 @@ $(inst_bindir)/iconv: $(objpfx)iconv_prog $(+force)
 $(objpfx)iconv_prog: $(iconv_prog-modules:%=$(objpfx)%.o)
 $(objpfx)iconvconfig: $(iconvconfig-modules:%=$(objpfx)%.o)
 
-ifneq ($(cross-compiling),yes)
+# eglibc: ifneq ($(cross-compiling),yes)
 xtests: test-iconvconfig
-endif
+# eglibc: endif
 
 .PHONY: test-iconvconfig
 test-iconvconfig: /dev/null $(objpfx)iconvconfig

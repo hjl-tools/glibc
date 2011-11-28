@@ -19,6 +19,9 @@
 
 ifeq ($(subdir),nptl)
 libpthread-sysdep_routines += errno-loc
+ifeq ($(OPTION_EGLIBC_BIG_MACROS),n)
+sysdep_routines += small-macros-fns
+endif
 endif
 
 ifeq ($(subdir),rt)

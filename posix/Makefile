@@ -19,6 +19,8 @@
 #
 #	Sub-makefile for POSIX portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= posix
 
 headers	:= sys/utsname.h sys/times.h sys/wait.h sys/types.h unistd.h	      \
@@ -48,15 +50,25 @@ routines :=								      \
 	getuid geteuid getgid getegid getgroups setuid setgid group_member    \
 	getpgid setpgid getpgrp bsd-getpgrp setpgrp getsid setsid	      \
 	getresuid getresgid setresuid setresgid				      \
-	getlogin getlogin_r setlogin					      \
 	pathconf sysconf fpathconf					      \
-	glob glob64 fnmatch regex					      \
+	glob glob64 fnmatch						      \
 	confstr								      \
 	getopt getopt1 getopt_init					      \
 	sched_setp sched_getp sched_sets sched_gets sched_yield sched_primax  \
 	sched_primin sched_rr_gi sched_getaffinity sched_setaffinity	      \
-	getaddrinfo gai_strerror wordexp				      \
 	pread pwrite pread64 pwrite64					      \
+	posix_madvise							      \
+	get_child_max sched_cpucount sched_cpualloc sched_cpufree
+
+routines-$(OPTION_EGLIBC_INET) += getaddrinfo gai_strerror 
+
+ifeq (y,$(OPTION_POSIX_REGEXP_GLIBC))
+routines-$(OPTION_POSIX_REGEXP) += regex
+else
+routines-$(OPTION_POSIX_REGEXP) += xregex
+endif
+
+routines-$(OPTION_EGLIBC_SPAWN) +=					      \
 	spawn_faction_init spawn_faction_destroy spawn_faction_addclose	      \
 	spawn_faction_addopen spawn_faction_adddup2			      \
 	spawnattr_init spawnattr_destroy				      \
@@ -64,41 +76,55 @@ routines :=								      \
 	spawnattr_getflags spawnattr_setflags				      \
 	spawnattr_getpgroup spawnattr_setpgroup spawn spawnp spawni	      \
 	spawnattr_getsigmask spawnattr_getschedpolicy spawnattr_getschedparam \
-	spawnattr_setsigmask spawnattr_setschedpolicy spawnattr_setschedparam \
-	posix_madvise							      \
-	get_child_max sched_cpucount sched_cpualloc sched_cpufree
+	spawnattr_setsigmask spawnattr_setschedpolicy spawnattr_setschedparam
+routines-$(OPTION_EGLIBC_GETLOGIN) += getlogin getlogin_r
+routines-$(OPTION_EGLIBC_WORDEXP) += wordexp
+routines-$(OPTION_EGLIBC_BSD) += setlogin
 
 include ../Makeconfig
 
 aux		:= init-posix environ
-tests		:= tstgetopt testfnm runtests runptests	     \
+tests		:= tstgetopt testfnm runtests \
 		   tst-preadwrite tst-preadwrite64 test-vfork regexbug1 \
-		   tst-getlogin tst-mmap tst-getaddrinfo tst-truncate \
-		   tst-truncate64 tst-fork tst-fnmatch tst-regexloc tst-dir \
-		   tst-chmod bug-regex1 bug-regex2 bug-regex3 bug-regex4 \
-		   tst-gnuglob tst-regex bug-regex5 bug-regex6 bug-regex7 \
-		   bug-regex8 bug-regex9 bug-regex10 bug-regex11 bug-regex12 \
-		   bug-regex13 bug-regex14 bug-regex15 bug-regex16 \
-		   bug-regex17 bug-regex18 bug-regex19 bug-regex20 \
-		   bug-regex21 bug-regex22 bug-regex23 bug-regex24 \
-		   bug-regex25 bug-regex26 bug-regex27 bug-regex28 \
-		   bug-regex29 bug-regex30 bug-regex31 bug-regex32 \
-		   tst-nice tst-nanosleep tst-regex2 \
-		   transbug tst-rxspencer tst-pcre tst-boost \
-		   bug-ga1 tst-vfork1 tst-vfork2 tst-vfork3 tst-waitid \
-		   tst-getaddrinfo2 bug-glob1 bug-glob2 bug-glob3 tst-sysconf \
+		   tst-getlogin tst-mmap tst-truncate \
+		   tst-truncate64 tst-fork tst-dir \
+		   tst-chmod bug-regex2 bug-regex3 bug-regex4 \
+		   tst-gnuglob bug-regex6 bug-regex7 \
+		   bug-regex8 bug-regex9 bug-regex10 bug-regex12 \
+		   bug-regex14 bug-regex15 \
+		   bug-regex21 bug-regex24 \
+		   bug-regex27 bug-regex28 bug-regex29 bug-regex30 \
+		   bug-regex31 \
+		   tst-nice tst-nanosleep \
+		   transbug \
+		   tst-vfork1 tst-vfork2 tst-vfork3 tst-waitid \
+		   bug-glob1 bug-glob2 bug-glob3 tst-sysconf \
 		   tst-execvp1 tst-execvp2 tst-execlp1 tst-execlp2 \
 		   tst-execv1 tst-execv2 tst-execl1 tst-execl2 \
 		   tst-execve1 tst-execve2 tst-execle1 tst-execle2 \
-		   tst-execvp3 tst-execvp4 tst-rfc3484 tst-rfc3484-2 \
-		   tst-rfc3484-3 \
-		   tst-getaddrinfo3 tst-fnmatch2 tst-cpucount tst-cpuset \
+		   tst-execvp3 tst-execvp4 \
+		   tst-fnmatch2 tst-cpucount tst-cpuset \
 		   bug-getopt1 bug-getopt2 bug-getopt3 bug-getopt4 \
 		   bug-getopt5 tst-getopt_long1
-xtests		:= bug-ga2
+tests-$(OPTION_EGLIBC_LOCALE_CODE)					    \
+		+= tst-fnmatch tst-regexloc bug-regex1 bug-regex5 \
+		   bug-regex23 bug-regex25 bug-regex32
+tests-$(OPTION_EGLIBC_INET) \
+	        += tst-getaddrinfo bug-ga1 tst-getaddrinfo2 \
+		   tst-rfc3484 tst-rfc3484-2 tst-rfc3484-3 tst-getaddrinfo3
+tests-$(OPTION_POSIX_REGEXP_GLIBC) \
+		+= runptests bug-regex11 bug-regex13 bug-regex16 \
+		   tst-regex2 tst-rxspencer tst-pcre tst-boost
+ifeq (yy,$(OPTION_EGLIBC_LOCALE_CODE)$(OPTION_POSIX_REGEXP_GLIBC))
+tests           += tst-regex bug-regex17 bug-regex18 bug-regex19 bug-regex20 \
+		   bug-regex22 bug-regex26
+endif
+xtests-$(OPTION_EGLIBC_INET) += bug-ga2
 ifeq (yes,$(build-shared))
 test-srcs	:= globtest
-tests           += wordexp-test tst-exec tst-spawn
+tests           += tst-exec
+tests-$(OPTION_EGLIBC_SPAWN) += tst-spawn
+tests-$(OPTION_EGLIBC_WORDEXP) += wordexp-test
 endif
 others		:= getconf
 install-bin	:= getconf
@@ -128,18 +154,24 @@ otherlibs += $(wildcard $(nssobjdir)/libnss_files.a \
 			$(resolvobjdir)/libresolv.a)
 endif
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
 # globtest and wordexp-test currently only works with shared libraries
 ifeq (yes,$(build-shared))
-tests: $(objpfx)globtest.out $(objpfx)wordexp-tst.out
+tests: $(objpfx)globtest.out
 $(objpfx)globtest.out: globtest.sh $(objpfx)globtest
 	$(SHELL) -e globtest.sh $(common-objpfx) $(elf-objpfx) \
-		 $(rtld-installed-name)
+		 $(rtld-installed-name) '$(cross-test-wrapper)'
+LDLIBS-globtest += $(shell cat $(common-objpfx)nss/fixed-nsswitch-libs)
+ifeq (y,$(OPTION_EGLIBC_WORDEXP))
+tests: $(objpfx)wordexp-tst.out
 $(objpfx)wordexp-tst.out: wordexp-tst.sh $(objpfx)wordexp-test
 	$(SHELL) -e wordexp-tst.sh $(common-objpfx) $(elf-objpfx) \
-		 $(rtld-installed-name)
+		 $(rtld-installed-name) '$(cross-test-wrapper)'
 endif
 endif
+# eglibc: endif
+
+OPTION_EGLIBC_INET-CFLAGS-$(OPTION_EGLIBC_INET) = -DUSE_NSCD=1
 
 # If we will use the generic uname implementation, we must figure out what
 # it will say by examining the system, and write the results in config-name.h.
@@ -150,7 +182,7 @@ $(objpfx)config-name.h: $(..)scripts/config-uname.sh $(common-objpfx)config.make
 	mv -f $@.new $@
 
 CFLAGS-regex.c = -Wno-strict-prototypes
-CFLAGS-getaddrinfo.c = -DRESOLVER -fexceptions -DUSE_NSCD
+CFLAGS-getaddrinfo.c = -DRESOLVER -fexceptions $(OPTION_EGLIBC_INET-CFLAGS-y)
 CFLAGS-pread.c = -fexceptions -fasynchronous-unwind-tables
 CFLAGS-pread64.c = -fexceptions -fasynchronous-unwind-tables
 CFLAGS-pwrite.c = -fexceptions -fasynchronous-unwind-tables
@@ -186,8 +218,8 @@ CFLAGS-execlp.os = -fomit-frame-pointer
 tstgetopt-ARGS = -a -b -cfoobar --required foobar --optional=bazbug \
 		--none random --col --color --colour
 
-tst-exec-ARGS = -- $(built-program-cmd)
-tst-spawn-ARGS = -- $(built-program-cmd)
+tst-exec-ARGS = -- $(local-built-program-cmd)
+tst-spawn-ARGS = -- $(local-built-program-cmd)
 tst-dir-ARGS = `pwd` `cd $(common-objdir)/$(subdir); pwd` `cd $(common-objdir); pwd` $(objpfx)tst-dir
 tst-chmod-ARGS = $(objdir)
 tst-vfork3-ARGS = --test-dir=$(objpfx)
@@ -208,7 +240,10 @@ bug-regex23-ENV = LOCPATH=$(common-objpfx)localedata
 bug-regex25-ENV = LOCPATH=$(common-objpfx)localedata
 bug-regex26-ENV = LOCPATH=$(common-objpfx)localedata
 bug-regex30-ENV = LOCPATH=$(common-objpfx)localedata
-tst-rxspencer-ARGS = --utf8 rxspencer/tests
+tst-rxspencer-ARGS = rxspencer/tests
+ifeq (y,$(OPTION_EGLIBC_LOCALE_CODE))
+tst-rxspencer-ARGS += --utf8 
+endif
 tst-rxspencer-ENV = LOCPATH=$(common-objpfx)localedata
 tst-pcre-ARGS = PCRE.tests
 tst-boost-ARGS = BOOST.tests
@@ -232,13 +267,18 @@ endif
 # Run a test on the header files we use.
 # XXX Please note that for now we ignore the result of this test.
 tests: $(objpfx)annexc.out
-ifeq (no,$(cross-compiling))
-tests: $(objpfx)bug-regex2-mem $(objpfx)bug-regex14-mem \
-  $(objpfx)bug-regex21-mem $(objpfx)bug-regex31-mem $(objpfx)tst-rxspencer-mem\
-  $(objpfx)tst-pcre-mem $(objpfx)tst-boost-mem $(objpfx)tst-getconf.out \
+# eglibc: ifeq (no,$(cross-compiling))
+tests: $(objpfx)bug-regex2-mem \
+  $(objpfx)bug-regex21-mem \
+  $(objpfx)bug-regex31-mem \
+  $(objpfx)tst-getconf.out \
   $(objpfx)bug-glob2-mem $(objpfx)tst-vfork3-mem $(objpfx)tst-fnmatch-mem
-xtests: $(objpfx)bug-ga2-mem
+ifeq (y,($OPTION_POSIX_REGEXP_GLIBC))
+tests: $(objpfx)bug-regex14-mem $(objpfx)tst-rxspencer-mem \
+  $(objpfx)tst-pcre-mem $(objpfx)tst-boost-mem 
 endif
+xtests: $(objpfx)bug-ga2-mem
+# eglibc: endif
 
 $(objpfx)annexc.out: $(objpfx)annexc
 	-$(dir $<)$(notdir $<) '$(CC)' \
@@ -296,7 +336,8 @@ $(objpfx)tst-boost-mem: $(objpfx)tst-boost.out
 	$(common-objpfx)malloc/mtrace $(objpfx)tst-boost.mtrace > $@
 
 $(objpfx)tst-getconf.out: tst-getconf.sh $(objpfx)getconf
-	$(SHELL) -e $< $(common-objpfx) $(elf-objpfx) $(rtld-installed-name)
+	$(SHELL) -e $< $(common-objpfx) $(elf-objpfx) \
+		'$(cross-test-wrapper)' $(rtld-installed-name)
 
 ifeq (yes,$(build-shared))
 $(objpfx)tst-regex: $(common-objpfx)rt/librt.so
@@ -325,15 +366,36 @@ $(inst_libexecdir)/getconf: $(inst_bindir)/getconf \
 	  mv -f $@/$$spec.new $@/$$spec; \
 	done < $(objpfx)getconf.speclist
 
-$(objpfx)getconf.speclist: $(objpfx)getconf
+# eglibc: If we are cross-compiling, build cross-getconf utility and use it
+# instead of getconf.
+
+# We moved a piece of confstr.c to confstr.inc to share the later with
+# cross-getconf.c.
+confstr.c: confstr.inc
+
 ifeq (no,$(cross-compiling))
-	LC_ALL=C GETCONF_DIR=/dev/null \
-	$(run-program-prefix) $< _POSIX_V7_WIDTH_RESTRICTED_ENVS > $@.new
-	LC_ALL=C GETCONF_DIR=/dev/null \
-	$(run-program-prefix) $< _POSIX_V6_WIDTH_RESTRICTED_ENVS >> $@.new
-	LC_ALL=C GETCONF_DIR=/dev/null \
-	$(run-program-prefix) $< _XBS5_WIDTH_RESTRICTED_ENVS >> $@.new
+getconf-dep = $(objpfx)getconf
+getconf-cmd = $(run-program-prefix) $(objpfx)getconf
 else
-	> $@.new
+getconf-dep = $(objpfx)cross-getconf
+getconf-cmd = $(objpfx)cross-getconf
+
+# Get configuration defines for cross-getconf by preprocessing confstr.c.
+$(objpfx)cross-getconf.h: confstr.c
+	$(compile.c) -E -dM -o - | grep "define _POSIX_V7_ILP32_OFF32\|define _POSIX_V7_ILP32_OFFBIG\|define _POSIX_V7_LP64_OFF64\|define _POSIX_V7_LPBIG_OFFBIG\|_POSIX_V6_ILP32_OFF32\|define _POSIX_V6_ILP32_OFFBIG\|define _POSIX_V6_LP64_OFF64\|define _POSIX_V6_LPBIG_OFFBIG\|_XBS5_ILP32_OFF32\|define _XBS5_ILP32_OFFBIG\|define _XBS5_LP64_OFF64\|define _XBS5_LPBIG_OFFBIG" > $(objpfx)cross-getconf.h
+
+cross-getconf-CFLAGS = -O -I$(objpfx)
+
+$(objpfx)cross-getconf: cross-getconf.c $(objpfx)cross-getconf.h
+	$(native-compile)
 endif
+
+$(objpfx)getconf.speclist: $(getconf-dep)
+	LC_ALL=C GETCONF_DIR=/dev/null \
+		$(getconf-cmd) _POSIX_V7_WIDTH_RESTRICTED_ENVS > $@.new
+	LC_ALL=C GETCONF_DIR=/dev/null \
+		$(getconf-cmd) _POSIX_V6_WIDTH_RESTRICTED_ENVS >> $@.new
+	LC_ALL=C GETCONF_DIR=/dev/null \
+		$(getconf-cmd) _XBS5_WIDTH_RESTRICTED_ENVS >> $@.new
 	mv -f $@.new $@
+# eglibc: end.
