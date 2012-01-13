@@ -1,0 +1,594 @@
+2012-01-09  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* malloc/malloc.c (sYSMALLOc): Free the old top chunk with a
+	multiple of MALLOC_ALIGNMENT in size.
+	(_int_free): Check chunk size is a multiple of MALLOC_ALIGNMENT.
+
+2012-01-02  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* config.make.in (use-default-syscall-macros): Removed.
+	* configure.in (use_default_syscall_macros): Likewise.
+	* configure: Regenerated.
+
+	* sysdeps/unix/sysv/linux/Makefile: Don't check
+	use-default-syscall-macros.
+
+	* sysdeps/unix/sysv/linux/x86_64/Makefile
+	(syscall-list-64bit-options): Add -D__LP64__.
+
+	* sysdeps/x86_64/preconfigure: Don't set use_default_syscall_macros.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	PR libc/12495
+	* malloc/malloc.c (sYSMALLOc): Don't update correction with
+	front_misalign.
+
+2007-11-30  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	PR libc/12495
+	* malloc/malloc.c (MALLOC_ALIGNMENT): Use __alignof__ (long double).
+	(SMALLBIN_CORRECTION): New.
+	(MIN_LARGE_SIZE, smallbin_index): Use it to handle 16-byte alignment.
+	(largebin_index_32_big): New.
+	(largebin_index): Use it for 16-byte alignment.
+	(sYSMALLOc): Handle MALLOC_ALIGNMENT > 2 * SIZE_SZ.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* stdio-common/_itoa.c (_itoa_base_table): Don't define if
+	PREFER_LONG_LONG is defined.
+	(_itoa): Use long long if PREFER_LONG_LONG is defined.
+	* stdio-common/_itowa.c (_itowa): Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/x32/dl-machine.h: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/x32/Makefile: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/x32/divdi3.c: New.
+	* sysdeps/x86_64/x32/ffs.c: Likewise.
+	* sysdeps/x86_64/x32/gmp-mparam.h: Likewise.
+	* sysdeps/x86_64/x32/symbol-hacks.h: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/stackinfo.h (stackinfo_get_sp): Use RSP_LP.
+	(stackinfo_sub_sp): Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/tst-auditmod1.c: Support la_x32_gnu_pltenter and
+	la_x32_gnu_pltexit.
+	(pltexit): Cast int_retval to ptrdiff_t.
+	* elf/tst-auditmod3b.c: Likewise.
+	* elf/tst-auditmod4b.c: Likewise.
+	* elf/tst-auditmod5b.c: Likewise.
+	* elf/tst-auditmod6b.c: Likewise.
+	* elf/tst-auditmod6c.c: Likewise.
+	* elf/tst-auditmod7b.c: Likewise.
+
+	* sysdeps/generic/ldsodefs.h (audit_ifaces): Add x32_gnu_pltenter
+	and x32_gnu_pltexit.
+
+	* sysdeps/x86_64/bits/link.h: Check __x86_64__ instead of
+	__ELF_NATIVE_CLASS.
+	(la_x32_gnu_pltenter): New.
+	(la_x32_gnu_pltexit): Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-machine.h: Replace Elf64_XXX with ElfW(XXX).
+	Replace ELF64_R_TYPE with ELF32_R_TYPE.
+	(elf_machine_load_address): Use ASM_ADDR.
+	(elf_machine_rela): Handle R_X86_64_RELATIVE64 for x32.  For x32,
+	sign extend relocation result to 64bit for R_X86_64_DTPOFF64
+	and R_X86_64_TPOFF64, and don't process R_X86_64_64.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-irel.h: Replace Elf64_XXX with ElfW(XXX).
+	Replace ELF64_R_TYPE with ELF32_R_TYPE.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-tls.h (dl_tls_index): Replace long with
+	long long.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-tlsdesc.h (tlsdesc): Pad for x32.
+	(dl_tls_index): Replace long with long long.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/dl-trampoline.S: Check if RTLD_SAVESPACE_SSE
+	is 32byte aligned.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/fpu/bits/mathinline.h: Don't include
+	<bits/wordsize.h>.
+	(__signbitf): Check __x86_64__ instead of __WORDSIZE.
+	(__signbit): Likwise.
+	(lrintf): Likwise.
+	(lrint): Likwise.
+	(llrintf): Likwise.
+	(llrint): Likwise.
+	(fmaxf): Likwise.
+	(fmax): Likwise.
+	(fminf): Likwise.
+	(fmin): Likwise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/fpu/math_private.h (EXTRACT_WORDS64): Use
+	long long int instead of long int.
+	(INSERT_WORDS64): Likwise.
+	(__isnan): Likwise.
+	(__isinf_ns): Likewise.
+	(__finite): Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/jmpbuf-unwind.h (_JMPBUF_CFA_UNWINDS_ADJ): Cast
+	_Unwind_GetCFA return to _Unwind_Ptr first.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/bits/mathdef.h: Don't include <bits/wordsize.h>.
+	Check __x86_64__ instead of __WORDSIZE.
+	* sysdeps/x86_64/bits/setjmp.h: Likewise.
+	* sysdeps/x86_64/fpu/bits/fenv.h: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/bits/byteswap.h: Don't include
+	<bits/wordsize.h>.
+	(__bswap_32): Check __x86_64__ instead of __WORDSIZE.  Also
+	check __corei7__.
+	(__bswap_64): Check __x86_64__ instead of __WORDSIZE.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/bits/atomic.h (__arch_compare_and_exchange_val_64_acq):
+	Use long long on 64bit integer.
+	(__arch_c_compare_and_exchange_val_64_acq): Likewise.
+	(atomic_exchange_acq): Likewise.
+	(__arch_exchange_and_add_body): Likewise.
+	(__arch_add_body): Likewise.
+	(atomic_add_negative): Likewise.
+	(atomic_add_zero): Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/strcmp-sse42.S: Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/memcpy-ssse3.S: Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/memcpy-ssse3-back.S: Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/multiarch/memcmp-sse4.S: Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* x86_64/dl-trampoline.h: Use R10_LP to load frame size.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/strcmp.S: Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/memcpy.S: Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/elf/start.S: Include <sysdep.h>.  Simulate
+	popping 4byte argument count for x32.  Use RXX_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/__longjmp.S: Use RXX_LP.
+	* sysdeps/x86_64/setjmp.S: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/sysctl.c: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/sendfile64.c: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/pselect.c: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/syscalls.list: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/init-first.c: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/getdents.c: New.
+	* sysdeps/unix/sysv/linux/x86_64/x32/llseek.S: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/gettimeofday.c: New.
+	* sysdeps/unix/sysv/linux/x86_64/x32/time.c: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/preadv.c: New.
+	* sysdeps/unix/sysv/linux/x86_64/x32/pwritev.c: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/Makefile: New.
+	* sysdeps/unix/sysv/linux/x86_64/x32/getcpu.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/sched_getcpu-static.c:
+	Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/sched_getcpu.S: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/fallocate.c: New.
+	* sysdeps/unix/sysv/linux/x86_64/x32/posix_fadvise.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/posix_fallocate.c: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/alphasort.c: New.
+	* sysdeps/unix/sysv/linux/x86_64/x32/alphasort64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/fseeko.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/fseeko64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/ftello.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/ftello64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/ftw.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/ftw64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/glob.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/iofgetpos.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/iofgetpos64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/iofopen.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/iofopen64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/iofsetpos.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/iofsetpos64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/lockf.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/lockf64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkostemp.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkostemp64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkstemp.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/mkstemp64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/scandir.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/scandir64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/scandirat.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/scandirat64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/tmpfile.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/tmpfile64.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/versionsort.c: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/x32/versionsort64.c: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/dl-cache.h: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sigaction.c (RESTORE2): Replace
+	8byte data alignment with LP_SIZE alignment.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/clone.S: Load pointer to TID
+	into R10_LP.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/Makefile (gen-as-const-headers):
+	Add sigaltstack.sym.
+
+	* sysdeps/unix/sysv/linux/x86_64/____longjmp_chk.S: Include
+	"sigaltstack.h".
+	(____longjmp_chk): Use RXX_LP, sizeSS, oSS_FLAGS, oSS_SP and
+	oSS_SIZE for alternate signal stack.
+
+	* sysdeps/unix/sysv/linux/x86_64/sigaltstack.sym: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/makecontext.c (__makecontext):
+	Use "unsigned long long int" instead of "unsigned long int".
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sigcontextinfo.h: Include
+	<stdint.h>.
+	(GET_PC): Cast to uintptr_t first.
+	(GET_FRAME): Likewise.
+	(GET_STACK): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/debugreg.h: Don't include
+	<bits/wordsize.h>.  Check __x86_64__ instead of __WORDSIZE.
+	(DR_CONTROL_RESERVED): Use ULL instead of UL suffix.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/procfs.h (elf_greg_t): Use
+	"unsigned long long int" if __x86_64__ is defined.
+	Check __x86_64__ instead of __WORDSIZE.
+	(elf_prstatus): Use "unsigned long long int" instead of
+	"unsigned long int" if __x86_64__ is defined.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/reg.h: Don't
+	include <bits/wordsize.h>.  Check __x86_64__ instead of
+	__WORDSIZE.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/ucontext.h: Don't
+	include <bits/wordsize.h>.  Check __x86_64__ instead of
+	__WORDSIZE.
+	(greg_t): Use "long long int" if __x86_64__ is defined.
+	(mcontext_t): Replace "unsigned long" with "unsigned long long".
+	(ucontext_t): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/user.h: Don't
+	include <bits/wordsize.h>.  Check __x86_64__ instead of
+	__WORDSIZE.
+	(user_regs_struct): Use "unsigned long long" instead of
+	"unsigned long" if __x86_64__ is defined.
+	(user): Likewise.  Pad if __LP64__ isn't defined.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sys/msg.h: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/ldd-rewrite.sed: Support x32.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/bits/wordsize.h: Moved to ...
+	* sysdeps/x86_64/64/bits/wordsize.h: Here.
+	(__WORDSIZE_COMPAT32): Removed.
+
+	* sysdeps/x86_64/x32/bits/wordsize.h: New.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/Implies: Moved to ...
+	* sysdeps/unix/sysv/linux/x86_64/64/Implies: Here. 
+
+	* sysdeps/x86_64/Implies: Moved to ...
+	* sysdeps/x86_64/64/Implies: Here.  Prepend x86_64/fpu.
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/Implies: New.
+	* sysdeps/x86_64/x32/Implies: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/a.out.h: Don't include
+	<bits/wordsize.h>.  Check __x86_64__ instead of __WORDSIZE.
+	* sysdeps/unix/sysv/linux/x86_64/bits/fcntl.h: Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/msq.h: Don't include
+	<bits/wordsize.h>.
+	(msgqnum_t): Use __UNATIVE_LONG_TYPE.
+	(msglen_t): Likewise.
+	(msqid_ds): Check __x86_64__ instead of __WORDSIZE.  Use
+	__UNATIVE_LONG_TYPE.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/sem.h (semid_ds): Use
+	__UNATIVE_LONG_TYPE.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/shm.h (shmatt_t): Use
+	__UNATIVE_LONG_TYPE.
+	(shmid_ds): Add __unused1 and __unused2 only if __x86_64__ isn't
+	defined.  Use __UNATIVE_LONG_TYPE.
+	(shminfo): Use __UNATIVE_LONG_TYPE.
+	(shm_info): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/sigcontext.h: Don't
+	include <bits/wordsize.h>.  Check __x86_64__ instead of
+	__WORDSIZE.
+	(sigcontext): Use "unsigned long long int" instead of
+	"unsigned long int" if __x86_64__ is defined.  Pad if __LP64__
+	isn't defined.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/stat.h (_STAT_VER_SVR4):
+	Check __x86_64__ instead of __WORDSIZE.
+	(_STAT_VER_LINUX): Likewise.
+	(stat): Check __x86_64__ instead of __WORDSIZE.  Use
+	__UNATIVE_LONG_TYPE.
+	(stat64): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/bits/ipc.h: New.
+	* sysdeps/unix/sysv/linux/x86_64/bits/ipctypes.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/mqueue.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/resource.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/statfs.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/statvfs.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/timex.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/utmp.h: Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/bits/utmpx.h: Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/tls-macros.h (TLS_LE): Use mov instead of movq to load
+	thread pointer.
+	(TLS_IE): Use mov/add instead of movq/addq to load thread
+	pointer.
+	(TLS_GD_PREFIX): New.
+	(TLS_GD): Use it.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/stackguard-macros.h (STACK_CHK_GUARD): Add x32 version.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/cache.c (print_entry): Handle FLAG_X8664_LIBX32.
+
+	* sysdeps/generic/ldconfig.h (FLAG_X8664_LIBX32): New.
+
+	* sysdeps/unix/sysv/linux/i386/readelflib.c (process_elf_file):
+	Handle x32 libraries.
+	* sysdeps/unix/sysv/linux/x86_64/readelflib.c (process_elf_file):
+	Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/dl-cache.h (add_system_dir): New
+	Don't include <sysdeps/unix/sysv/linux/sparc/dl-cache.h>.
+
+	* sysdeps/unix/sysv/linux/x86_64/ldconfig.h
+	(SYSDEP_KNOWN_INTERPRETER_NAMES): Add /libx32/ld-linux-x32.so.2.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* stdlib/longlong.h (count_leading_zeros): Use long long builtin
+	for x86-64.
+	(count_trailing_zeros): Likewise.
+
+2011-11-21  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* elf/elf.h (R_X86_64_RELATIVE64): New.
+	(R_X86_64_NUM): Updated.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/x86_64/ffsll.c: Add ffsl alias only if __LP64__ is
+	defined.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_lround.c: Moved to ...
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_llround.c: This.  Updated.
+
+	* sysdeps/ieee754/dbl-64/wordsize-64/s_lround.c: Empty file.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* time/mktime.c (ydhms_diff): Check TIME_T_MAX instead of
+	LONG_MAX.
+
+	* time/offtime.c (__offtime): Add more overflow check.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* bits/types.h (__snseconds_t): New.
+	* bits/typesizes.h (__SNSECONDS_T_TYPE): Likewise.
+	* sysdeps/unix/bsd/bsd4.4/freebsd/bits/typesizes.h (__SNSECONDS_T_TYPE):
+	Likewise.
+	* sysdeps/unix/sysv/linux/s390/bits/typesizes.h (__SNSECONDS_T_TYPE):
+	Likewise.
+	* sysdeps/unix/sysv/linux/sparc/bits/typesizes.h (__SNSECONDS_T_TYPE):
+	Likewise.
+
+	* time/time.h (timespec): Use __snseconds_t on tv_nsec.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/unix/sysv/linux/x86_64/sysdep.h
+	(VSYSCALL_ADDR_vgettimeofday): New.
+	(VSYSCALL_ADDR_vtime): Likewise.
+	(VSYSCALL_ADDR_vgetcpu): Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/gettimeofday.c
+	(VSYSCALL_ADDR_vgettimeofday): Removed.
+	* sysdeps/unix/sysv/linux/x86_64/init-first.c
+	(VSYSCALL_ADDR_vgetcpu): Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/sched_getcpu.S
+	(VSYSCALL_ADDR_vgetcpu): Likewise.
+	* sysdeps/unix/sysv/linux/x86_64/time.c (VSYSCALL_ADDR_vtime):
+	Likewise.
+
+	* sysdeps/unix/sysv/linux/x86_64/x32/sysdep.h: New.
+	* sysdeps/x86_64/x32/sysdep.h: Likewise.
+
+	* sysdeps/x86_64/sysdep.h (LP_SIZE): New.
+	(MOVE_LP): Likewise.
+	(ADD_LP): Likewise.
+	(SUB_LP): Likewise.
+	(CMP_LP): Likewise.
+	(ASM_ADDR): Likewise.
+	(RAX_LP): New.
+	(RBP_LP): Likewise.
+	(RBX_LP): Likewise.
+	(RCX_LP): Likewise.
+	(RDI_LP): Likewise.
+	(RSI_LP): Likewise.
+	(RSP_LP): Likewise.
+	(R8_LP): Likewise.
+	(R9_LP): Likewise.
+	(R10_LP): Likewise.
+	(R10_LP): Likewise.
+	(R11_LP): Likewise.
+	(R12_LP): Likewise.
+	(R13_LP): Likewise.
+	(R14_LP): Likewise.
+	(R15_LP): Likewise.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* shlib-versions: Move ld name for x86_64-.*-linux.* to ...
+	* sysdeps/x86_64/64/shlib-versions: Here.  New.
+
+	* sysdeps/x86_64/x32/shlib-versions: New.
+
+2011-11-18  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* Makeconfig ($(common-objpfx)gnu/lib-names.stmp): Depend on
+	$(lib-names_awk) instead of scripts/lib-names.awk.
+
+	* Makefile ($(inst_includedir)/gnu/stubs.h): Depend on
+	$(stubs-biarch_h) instead of include/stubs-biarch.h.
+	(data-machine): New.
+	(check-data): Use it.
+
+	* config.make.in (data-machine): New.
+	(stubs-biarch_h): Likewise.
+	(lib-names_awk): Likewise.
+	(use-default-syscall-macros): Likewise.
+
+	* configure.in: Add sysdeps preconfigure fragment support.
+	(data_machine): Substitute.
+	(stubs_biarch_h): Set to include/stubs-biarch.h if not set.
+	Substitute.
+	(lib_names_awk): Set to scripts/lib-names.awk if not set.
+	Substitute.
+	(use_default_syscall_macros): Set to yes if not set.
+	Substitute.
+	* configure: Regenerated.
+
+	* scripts/data/c++-types-x32-linux-gnu.data: New.
+	* sysdeps/unix/sysv/linux/x86_64/stubs-triarch.h: Likewise.
+	* sysdeps/x86_64/lib-names.awk: Likewise.
+	* sysdeps/x86_64/preconfigure: Likewise.
+	* sysdeps/x86_64/stubs-biarch.h: Likewise.
+
+	* sysdeps/unix/sysv/linux/Makefile ($(objpfx)syscall-%.h
+	$(objpfx)syscall-%.d): Defined only if
+	$(use-default-syscall-macros) is set to yes.
+
+	* sysdeps/unix/sysv/linux/configure.in: Require kernel 2.6.35
+	or above for x32.  Check x86_64/x64 instead of x86_64.
+	* sysdeps/unix/sysv/linux/configure: Regenerated.
+
+	* sysdeps/x86_64/preconfigure (stubs_biarch_h): Set to
+	sysdeps/x86_64/stubs-biarch.h.
+
+	* sysdeps/unix/sysv/linux/x86_64/Makefile (64bit-predefine): Add
+	__LP64__.
+	($(objpfx)syscall-%.h $(objpfx)syscall-%.d): New.
