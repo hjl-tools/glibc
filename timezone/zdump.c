@@ -11,6 +11,7 @@ static char	elsieid[] = "@(#)zdump.c	8.9";
 ** You can use this code to help in verifying other implementations.
 */
 
+#include "config.h"
 #include "stdio.h"	/* for stdout, stderr, perror */
 #include "string.h"	/* for strcpy */
 #include "sys/types.h"	/* for time_t */
@@ -241,8 +242,9 @@ usage(const char *progname, FILE *stream, int status)
 	(void) fprintf(stream,
 _("%s: usage is %s [ --version ] [ --help ] [ -v ] [ -c [loyear,]hiyear ] zonename ...\n\
 \n\
-Report bugs to tz@elsie.nci.nih.gov.\n"),
-		       progname, progname);
+For bug reporting instructions, please see:\n\
+%s.\n"),
+		       progname, progname, REPORT_BUGS_TO);
 	exit(status);
 }
 
@@ -280,7 +282,7 @@ char *	argv[];
 	progname = argv[0];
 	for (i = 1; i < argc; ++i)
 		if (strcmp(argv[i], "--version") == 0) {
-			(void) printf("%s\n", elsieid);
+			(void) printf("zdump %s%s\n", PKGVERSION, elsieid);
 			exit(EXIT_SUCCESS);
 		} else if (strcmp(argv[i], "--help") == 0) {
 			usage(progname, stdout, EXIT_SUCCESS);

@@ -244,7 +244,7 @@ dl_open_worker (void *a)
   if (__builtin_expect (new->l_searchlist.r_list != NULL, 0))
     {
       /* Let the user know about the opencount.  */
-      if (__builtin_expect (GLRO(dl_debug_mask) & DL_DEBUG_FILES, 0))
+      if (__builtin_expect (GLRO_dl_debug_mask & DL_DEBUG_FILES, 0))
 	_dl_debug_printf ("opening file=%s [%lu]; direct_opencount=%u\n\n",
 			  new->l_name, new->l_ns, new->l_direct_opencount);
 
@@ -503,7 +503,7 @@ cannot load any more object with static TLS"));
 #endif
 
   /* Let the user know about the opencount.  */
-  if (__builtin_expect (GLRO(dl_debug_mask) & DL_DEBUG_FILES, 0))
+  if (__builtin_expect (GLRO_dl_debug_mask & DL_DEBUG_FILES, 0))
     _dl_debug_printf ("opening file=%s [%lu]; direct_opencount=%u\n\n",
 		      new->l_name, new->l_ns, new->l_direct_opencount);
 }

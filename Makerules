@@ -106,6 +106,7 @@ $(common-objpfx)%.latest: $(common-objpfx)abi-versions.h
 	sed -n '/ VERSION_$*_/{s/^.*_\([A-Z0-9_]*\).*$$/\1/;h;};$${g;p;}' \
 	    $(common-objpfx)abi-versions.h > $@T
 	mv -f $@T $@
+abi_versions_file := $(common-objpfx)abi-versions.h
 endif # avoid-generated
 endif # $(versioning) = yes
 
@@ -319,7 +320,9 @@ endif
 
 # Generate version maps, but wait until sysdep-subdirs is known
 ifeq ($(sysd-sorted-done),t)
-ifeq ($(versioning),yes)
+# eglibc: Even when not using symbol versioning we still need to generate
+# eglibc: version maps to make all the necessary symbols global.
+# eglibc: ifeq ($(versioning),yes)
 -include $(common-objpfx)sysd-versions
 $(addprefix $(common-objpfx),$(version-maps)): $(common-objpfx)sysd-versions
 common-generated += $(version-maps)
@@ -347,7 +350,7 @@ $(common-objpfx)Versions.all: $(..)scripts/firstversions.awk \
 # See %.v/%.v.i implicit rules in Makeconfig.
 $(common-objpfx)Versions.v.i: $(wildcard $(subdirs:%=$(..)%/Versions)) \
 			      $(wildcard $(sysdirs:%=%/Versions)) \
-			      $(common-objpfx)abi-versions.h \
+			      $(abi_versions_file) \
 			      $(sysd-versions-force)
 $(common-objpfx)sysd-versions: $(common-objpfx)Versions.all \
 			       $(common-objpfx)Versions.v \
@@ -356,11 +359,12 @@ $(common-objpfx)sysd-versions: $(common-objpfx)Versions.all \
 	  cat $(word 2,$^) \
 	  | LC_ALL=C $(AWK) -v buildroot=$(common-objpfx) -v defsfile=$< \
 			    -v move_if_change='$(move-if-change)' \
+			    -v versioning=$(versioning) \
 			    -f $(word 3,$^); \
 	) > $@T
 	mv -f $@T $@
 endif # avoid-generated
-endif # $(versioning) = yes
+# eglibc: endif # $(versioning) = yes
 endif # sysd-sorted-done
 
 # Generate .dT files as we compile.
@@ -406,6 +410,25 @@ define sed-remove-objpfx
 endef
 endif
 
+# Include targets in the selected option groups.
+aux                  += $(aux-y)
+extra-libs           += $(extra-libs-y)
+extra-libs-others    += $(extra-libs-others-y)
+extra-objs           += $(extra-objs-y)
+install-bin          += $(install-bin-y)
+install-others       += $(install-others-y)
+install-sbin         += $(install-sbin-y)
+modules              += $(modules-y)
+others               += $(others-y)
+others-pie           += $(others-pie-y)
+routines             += $(routines-y)
+static-only-routines += $(static-only-routines-y)
+sysdep_routines      += $(sysdep_routines-y)
+test-srcs            += $(test-srcs-y)
+tests                += $(tests-y)
+xtests               += $(xtests-y)
+
+
 # Modify the list of routines we build for different targets
 
 ifeq (yesyes,$(build-shared)$(elf))
@@ -436,12 +459,12 @@ ifeq (yes,$(build-shared))
 
 # Reference map file only when versioning is selected and a map file name
 # is given.
-ifeq ($(versioning),yes)
+# eglibc: ifeq ($(versioning),yes)
 map-file = $(firstword $($(@F:.so=-map)) \
 		       $(addprefix $(common-objpfx), \
 				   $(filter $(@F:.so=.map),$(version-maps))))
 load-map-file = $(map-file:%=-Wl,--version-script=%)
-endif
+# eglibc: endif
 
 # Pattern rule to build a shared object from an archive of PIC objects.
 # This must come after the installation rules so Make doesn't try to
@@ -638,17 +661,26 @@ generated += libc_pic.opts libc_pic.os.clean
 libc_pic_clean := .clean
 endif
 
+ifneq ($(versioning),yes)
+# When EGLIBC is built without symbol versioning, local copy of
+# unwind-dw2-fde-glibc.c is not compiled, so we need to link against
+# libgcc_eh to get _Unwind_Find_FDE.
+libc_gcclibs := -lgcc_eh
+endif
 # Use our own special initializer and finalizer files for libc.so.
 $(common-objpfx)libc.so: $(elfobjdir)/soinit.os \
 			 $(common-objpfx)libc_pic.os$(libc_pic_clean) \
 			 $(elfobjdir)/sofini.os \
 			 $(elfobjdir)/interp.os $(elfobjdir)/ld.so \
 			 $(shlib-lds)
-	$(build-shlib)
-ifeq ($(versioning),yes)
+	$(build-shlib) $(libc_gcclibs)
+# eglibc: ifeq ($(versioning),yes)
 $(common-objpfx)libc.so: $(common-objpfx)libc.map
-endif
+# eglibc: endif
 common-generated += libc.so libc_pic.os
+ifndef subdir
+install-extras := soinit.o sofini.o
+endif
 ifdef libc.so-version
 $(common-objpfx)libc.so$(libc.so-version): $(common-objpfx)libc.so
 	$(make-link)
@@ -892,6 +924,7 @@ endef
 installed-libcs := $(foreach o,$(filter-out .os,$(object-suffixes-for-libc)),\
 			     $(inst_libdir)/$(patsubst %,$(libtype$o),\
 						     $(libprefix)$(libc-name)))
+installed-libcs := $(installed-libcs) $(inst_libdir)/libc_pic.a
 install: $(installed-libcs)
 $(installed-libcs): $(inst_libdir)/lib$(libprefix)%: lib $(+force)
 	$(make-target-directory)
@@ -919,6 +952,22 @@ versioned := $(strip $(foreach so,$(install-lib.so),\
 
 install-lib.so-versioned := $(filter $(versioned), $(install-lib.so))
 install-lib.so-unversioned := $(filter-out $(versioned), $(install-lib.so))
+
+# Install the _pic.a files for versioned libraries, and corresponding
+# .map files.
+# libpthread_pic.a breaks mklibs, so don't install it and its map.
+install-lib := $(install-lib) $(install-lib.so-versioned:%.so=%_pic.a)
+install-lib := $(filter-out libpthread_pic.a,$(install-lib))
+# Despite having a soname libhurduser and libmachuser do not use symbol
+# versioning, so don't install the corresponding .map files.
+ifeq ($(versioning),yes)
+install-map := $(patsubst %.so,%.map,\
+			$(foreach L,$(install-lib.so-versioned),$(notdir $L)))
+install-map := $(filter-out libhurduser.map libmachuser.map libpthread.map,$(install-map))
+ifndef subdir
+install-map := $(install-map) libc.map
+endif
+endif
 
 # For versioned libraries, we install three files:
 #	$(inst_libdir)/libfoo.so	-- for linking, symlink or ld script
@@ -1159,9 +1208,22 @@ $(addprefix $(inst_includedir)/,$(headers-nonh)): $(inst_includedir)/%: \
 endif	# headers-nonh
 endif	# headers
 
+ifdef install-map
+$(addprefix $(inst_libdir)/,$(patsubst lib%.map,lib%_pic.map,$(install-map))): \
+  $(inst_libdir)/lib%_pic.map: $(common-objpfx)lib%.map $(+force)
+	$(do-install)
+endif
+
+ifdef install-extras
+$(addprefix $(inst_libdir)/libc_pic/,$(install-extras)): \
+  $(inst_libdir)/libc_pic/%.o: $(elfobjdir)/%.os $(+force)
+	$(do-install)
+endif
+
 .PHONY: install-bin-nosubdir install-bin-script-nosubdir \
 	install-rootsbin-nosubdir install-sbin-nosubdir install-lib-nosubdir \
-	install-data-nosubdir install-headers-nosubdir
+	install-data-nosubdir install-headers-nosubdir install-map-nosubdir \
+	install-extras-nosubdir
 install-bin-nosubdir: $(addprefix $(inst_bindir)/,$(install-bin))
 install-bin-script-nosubdir: $(addprefix $(inst_bindir)/,$(install-bin-script))
 install-rootsbin-nosubdir: \
@@ -1174,6 +1236,10 @@ install-data-nosubdir: $(addprefix $(inst_datadir)/,$(install-data))
 install-headers-nosubdir: $(addprefix $(inst_includedir)/,$(headers))
 install-others-nosubdir: $(install-others)
 install-others-programs-nosubdir: $(install-others-programs)
+install-map-nosubdir: $(addprefix $(inst_libdir)/,\
+		       $(patsubst lib%.map,lib%_pic.map,$(install-map)))
+install-extras-nosubdir: $(addprefix $(inst_libdir)/libc_pic/,\
+		       $(install-extras))
 
 # We need all the `-nosubdir' targets so that `install' in the parent
 # doesn't depend on several things which each iterate over the subdirs.
@@ -1183,7 +1249,8 @@ install-%:: install-%-nosubdir ;
 
 .PHONY: install install-no-libc.a-nosubdir
 install-no-libc.a-nosubdir: install-headers-nosubdir install-data-nosubdir \
-			    install-lib-nosubdir install-others-nosubdir
+			    install-lib-nosubdir install-others-nosubdir \
+			    install-map-nosubdir install-extras-nosubdir
 ifeq ($(build-programs),yes)
 install-no-libc.a-nosubdir: install-bin-nosubdir install-bin-script-nosubdir \
 			    install-rootsbin-nosubdir install-sbin-nosubdir \

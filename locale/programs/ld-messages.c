@@ -25,6 +25,7 @@
 #include <regex.h>
 #include <string.h>
 #include <sys/uio.h>
+#include <gnu/option-groups.h>
 
 #include <assert.h>
 
@@ -124,6 +125,7 @@ No definition for %s category found"), "LC_MESSAGES"));
     }
   else
     {
+#if __OPTION_POSIX_REGEXP
       int result;
       regex_t re;
 
@@ -140,6 +142,7 @@ No definition for %s category found"), "LC_MESSAGES"));
 	}
       else if (result != 0)
 	regfree (&re);
+#endif
     }
 
   if (messages->noexpr == NULL)
@@ -158,6 +161,7 @@ No definition for %s category found"), "LC_MESSAGES"));
     }
   else
     {
+#if __OPTION_POSIX_REGEXP
       int result;
       regex_t re;
 
@@ -174,6 +178,7 @@ No definition for %s category found"), "LC_MESSAGES"));
 	}
       else if (result != 0)
 	regfree (&re);
+#endif
     }
 }
 
@@ -184,49 +189,15 @@ messages_output (struct localedef_t *locale, const struct charmap_t *charmap,
 {
   struct locale_messages_t *messages
     = locale->categories[LC_MESSAGES].messages;
-  struct iovec iov[2 + _NL_ITEM_INDEX (_NL_NUM_LC_MESSAGES)];
-  struct locale_file data;
-  uint32_t idx[_NL_ITEM_INDEX (_NL_NUM_LC_MESSAGES)];
-  size_t cnt = 0;
+  struct locale_file file;
 
-  data.magic = LIMAGIC (LC_MESSAGES);
-  data.n = _NL_ITEM_INDEX (_NL_NUM_LC_MESSAGES);
-  iov[cnt].iov_base = (void *) &data;
-  iov[cnt].iov_len = sizeof (data);
-  ++cnt;
-
-  iov[cnt].iov_base = (void *) idx;
-  iov[cnt].iov_len = sizeof (idx);
-  ++cnt;
-
-  idx[cnt - 2] = iov[0].iov_len + iov[1].iov_len;
-  iov[cnt].iov_base = (char *) messages->yesexpr;
-  iov[cnt].iov_len = strlen (iov[cnt].iov_base) + 1;
-  ++cnt;
-
-  idx[cnt - 2] = idx[cnt - 3] + iov[cnt - 1].iov_len;
-  iov[cnt].iov_base = (char *) messages->noexpr;
-  iov[cnt].iov_len = strlen (iov[cnt].iov_base) + 1;
-  ++cnt;
-
-  idx[cnt - 2] = idx[cnt - 3] + iov[cnt - 1].iov_len;
-  iov[cnt].iov_base = (char *) messages->yesstr;
-  iov[cnt].iov_len = strlen (iov[cnt].iov_base) + 1;
-  ++cnt;
-
-  idx[cnt - 2] = idx[cnt - 3] + iov[cnt - 1].iov_len;
-  iov[cnt].iov_base = (char *) messages->nostr;
-  iov[cnt].iov_len = strlen (iov[cnt].iov_base) + 1;
-  ++cnt;
-
-  idx[cnt - 2] = idx[cnt - 3] + iov[cnt - 1].iov_len;
-  iov[cnt].iov_base = (char *) charmap->code_set_name;
-  iov[cnt].iov_len = strlen (iov[cnt].iov_base) + 1;
-
-  assert (cnt + 1 == 2 + _NL_ITEM_INDEX (_NL_NUM_LC_MESSAGES));
-
-  write_locale_data (output_path, LC_MESSAGES, "LC_MESSAGES",
-		     2 + _NL_ITEM_INDEX (_NL_NUM_LC_MESSAGES), iov);
+  init_locale_data (&file, _NL_ITEM_INDEX (_NL_NUM_LC_MESSAGES));
+  add_locale_string (&file, messages->yesexpr);
+  add_locale_string (&file, messages->noexpr);
+  add_locale_string (&file, messages->yesstr);
+  add_locale_string (&file, messages->nostr);
+  add_locale_string (&file, charmap->code_set_name);
+  write_locale_data (output_path, LC_MESSAGES, "LC_MESSAGES", &file);
 }
 
 

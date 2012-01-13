@@ -21,6 +21,7 @@ sysdep_routines += sysctl clone llseek umount umount2 readahead \
 		   setfsuid setfsgid makedev epoll_pwait signalfd \
 		   eventfd eventfd_read eventfd_write prlimit
 
+
 CFLAGS-gethostid.c = -fexceptions
 CFLAGS-tst-writev.c += "-DARTIFICIAL_LIMIT=0x80000000-__getpagesize()"
 
@@ -34,7 +35,7 @@ sysdep_headers += sys/mount.h sys/acct.h sys/sysctl.h \
 		  bits/a.out.h sys/inotify.h sys/signalfd.h sys/eventfd.h \
 		  sys/timerfd.h sys/fanotify.h
 
-install-others += $(inst_includedir)/bits/syscall.h
+install-headers-nosubdir: $(inst_includedir)/bits/syscall.h
 
 tests += tst-clone
 

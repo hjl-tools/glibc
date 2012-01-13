@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+#include <gnu/option-groups.h>
 
 static int
 t1 (void)
@@ -87,6 +88,7 @@ F (void)
   printf ("expected \"-inf -INF -inf -INF -inf -INF -inf -INF\", got \"%s\"\n",
 	  buf);
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   swprintf (wbuf, sizeof wbuf / sizeof (wbuf[0]), L"%a %A %e %E %f %F %g %G",
 	    nanval, nanval, nanval, nanval, nanval, nanval, nanval, nanval);
   result |= wcscmp (wbuf, L"nan NAN nan NAN nan NAN nan NAN") != 0;
@@ -110,6 +112,7 @@ F (void)
   result |= wcscmp (wbuf, L"-inf -INF -inf -INF -inf -INF -inf -INF") != 0;
   printf ("expected L\"-inf -INF -inf -INF -inf -INF -inf -INF\", got L\"%S\"\n",
 	  wbuf);
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 
   lnanval = NAN;
 
@@ -141,6 +144,7 @@ F (void)
   printf ("expected \"-inf -INF -inf -INF -inf -INF -inf -INF\", got \"%s\"\n",
 	  buf);
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   swprintf (wbuf, sizeof wbuf / sizeof (wbuf[0]),
 	    L"%La %LA %Le %LE %Lf %LF %Lg %LG",
 	    lnanval, lnanval, lnanval, lnanval,
@@ -170,6 +174,7 @@ F (void)
   result |= wcscmp (wbuf, L"-inf -INF -inf -INF -inf -INF -inf -INF") != 0;
   printf ("expected L\"-inf -INF -inf -INF -inf -INF -inf -INF\", got L\"%S\"\n",
 	  wbuf);
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 
   return result;
 }

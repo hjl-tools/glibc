@@ -21,15 +21,16 @@
 
 #include <sys/uio.h>
 
+#include "obstack.h"
 #include "linereader.h"
 #include "localedef.h"
 
-
-/* Header of the locale data files.  */
-struct locale_file
-{
-  int magic;
-  int n;
+/* Structure for storing the contents of a category file.  */
+struct locale_file {
+  size_t n_elements, next_element;
+  uint32_t *offsets;
+  struct obstack data;
+  int structure_stage;
 };
 
 
@@ -65,11 +66,74 @@ extern void write_all_categories (struct localedef_t *definitions,
 				  const char *locname,
 				  const char *output_path);
 
-/* Write out the data.  */
-extern void write_locale_data (const char *output_path, int catidx,
-			       const char *category, size_t n_elem,
-			       struct iovec *vec);
+extern int swap_endianness_p;
 
+extern unsigned int uint32_align_mask;
+
+/* Change the output to be big-endian if BIG_ENDIAN is true and
+   little-endian otherwise.  */
+static inline void
+set_big_endian (int big_endian)
+{
+  swap_endianness_p = ((big_endian != 0) != (__BYTE_ORDER == __BIG_ENDIAN));
+}
+
+/* Swap the order of the bytes in VALUE.  */
+static inline uint32_t
+swap_uint32 (uint32_t value)
+{
+  return (((value & 0x000000ff) << 24)
+	  | ((value & 0x0000ff00) << 8)
+	  | ((value & 0x00ff0000) >> 8)
+	  | ((value & 0xff000000) >> 24));
+}
+
+/* Munge VALUE so that, when stored, it has the correct byte order
+   for the output files.  */
+static inline uint32_t
+maybe_swap_uint32 (uint32_t value)
+{
+  return swap_endianness_p ? swap_uint32 (value) : value;
+}
+
+/* Likewise, but munge an array of N uint32_ts starting at ARRAY.  */
+static inline void
+maybe_swap_uint32_array (uint32_t *array, size_t n)
+{
+  if (swap_endianness_p)
+    while (n-- > 0)
+      array[n] = swap_uint32 (array[n]);
+}
+
+/* Like maybe_swap_uint32_array, but the array of N elements is at
+   the end of OBSTACK's current object.  */
+static inline void
+maybe_swap_uint32_obstack (struct obstack *obstack, size_t n)
+{
+  maybe_swap_uint32_array ((uint32_t *) obstack_next_free (obstack) - n, n);
+}
+
+/* Write out the data.  */
+extern void init_locale_data (struct locale_file *file, size_t n_elements);
+extern void align_locale_data (struct locale_file *file, size_t boundary);
+extern void add_locale_empty (struct locale_file *file);
+extern void add_locale_raw_data (struct locale_file *file, const void *data,
+				 size_t size);
+extern void add_locale_raw_obstack (struct locale_file *file,
+				    struct obstack *obstack);
+extern void add_locale_string (struct locale_file *file, const char *string);
+extern void add_locale_wstring (struct locale_file *file,
+				const uint32_t *string);
+extern void add_locale_uint32 (struct locale_file *file, uint32_t value);
+extern void add_locale_uint32_array (struct locale_file *file,
+				     const uint32_t *data, size_t n_elems);
+extern void add_locale_char (struct locale_file *file, char value);
+extern void start_locale_structure (struct locale_file *file);
+extern void end_locale_structure (struct locale_file *file);
+extern void start_locale_prelude (struct locale_file *file);
+extern void end_locale_prelude (struct locale_file *file);
+extern void write_locale_data (const char *output_path, int catidx,
+			       const char *category, struct locale_file *file);
 
 /* Entrypoints for the parsers of the individual categories.  */
 
@@ -218,5 +282,50 @@ extern void identification_finish (struct localedef_t *locale,
 extern void identification_output (struct localedef_t *locale,
 				   const struct charmap_t *charmap,
 				   const char *output_path);
+
+static inline size_t
+wcslen_uint32 (const uint32_t *str)
+{
+  size_t len = 0;
+  while (str[len] != 0)
+    len++;
+  return len;
+}
+
+static inline int
+wmemcmp_uint32 (const uint32_t *s1, const uint32_t *s2, size_t n)
+{
+  while (n-- != 0)
+    {
+      int diff = *s1++ - *s2++;
+      if (diff != 0)
+	return diff;
+    }
+  return 0;
+}
+
+static inline int
+wcscmp_uint32 (const uint32_t *s1, const uint32_t *s2)
+{
+  while (*s1 != 0 && *s1 == *s2)
+    s1++, s2++;
+  return *s1 - *s2;
+}
+
+static inline uint32_t *
+wmemcpy_uint32 (uint32_t *s1, const uint32_t *s2, size_t n)
+{
+  return memcpy (s1, s2, n * sizeof (uint32_t));
+}
+
+static inline uint32_t *
+wcschr_uint32 (const uint32_t *s, uint32_t ch)
+{
+  do
+    if (*s == ch)
+      return (uint32_t *) s;
+  while (*s++ != 0);
+  return 0;
+}
 
 #endif /* locfile.h */

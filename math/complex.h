@@ -87,7 +87,7 @@ __BEGIN_DECLS
 #if (__STDC__ - 0 || __GNUC__ - 0) \
     && (!(defined __NO_LONG_DOUBLE_MATH && defined _LIBC) \
 	|| defined __LDBL_COMPAT)
-# ifdef __LDBL_COMPAT
+# if defined __LDBL_COMPAT || defined __NO_LONG_DOUBLE_MATH
 #  undef __MATHDECL_1
 #  define __MATHDECL_1(type, function, args) \
   extern type __REDIRECT_NTH(__MATH_PRECNAME(function), args, function)

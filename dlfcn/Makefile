@@ -16,6 +16,8 @@
 # Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 # 02111-1307 USA.
 
+include ../option-groups.mak
+
 subdir		:= dlfcn
 headers		:= bits/dlfcn.h dlfcn.h
 extra-libs	:= libdl
@@ -42,7 +44,9 @@ endif
 ifeq (yes,$(build-shared))
 tests = glrefmain failtest tst-dladdr default errmsg1 tstcxaatexit \
 	bug-dlopen1 bug-dlsym1 tst-dlinfo bug-atexit1 bug-atexit2 \
-	bug-atexit3 tstatexit
+	tstatexit
+
+tests-$(OPTION_EGLIBC_CXX_TESTS) += bug-atexit3 
 endif
 modules-names = glreflib1 glreflib2 glreflib3 failtestmod defaultmod1 \
 		defaultmod2 errmsg1mod modatexit modcxaatexit \
@@ -57,8 +61,10 @@ ifeq (yesyesyes,$(build-static)$(build-shared)$(elf))
 tests += tststatic tststatic2
 tests-static += tststatic tststatic2
 modules-names += modstatic modstatic2
-tststatic-ENV = LD_LIBRARY_PATH=$(objpfx):$(common-objpfx):$(common-objpfx)elf
-tststatic2-ENV = LD_LIBRARY_PATH=$(objpfx):$(common-objpfx):$(common-objpfx)elf
+tststatic-ENV = EGLIBC_TEST_LD_LIBRARY_PATH=$(objpfx):$(common-objpfx):$(common-objpfx)elf
+tststatic-WRAPPER = $(..)scripts/run-with-env.sh
+tststatic2-ENV = EGLIBC_TEST_LD_LIBRARY_PATH=$(objpfx):$(common-objpfx):$(common-objpfx)elf
+tststatic2-WRAPPER = $(..)scripts/run-with-env.sh
 endif
 
 extra-test-objs += $(modules-names:=.os)

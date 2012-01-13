@@ -48,7 +48,7 @@ function do_help {
   echo
 
   printf $"For bug reporting instructions, please see:
-<http://www.gnu.org/software/libc/bugs.html>.
+@REPORT_BUGS_TO@.
 "
   exit 0
 }
@@ -73,7 +73,7 @@ function do_ambiguous {
 while test $# -gt 0; do
   case "$1" in
   --v | --ve | --ver | --vers | --versi | --versio | --version)
-    echo "sotruss (GNU libc) @VERSION@"
+    echo "sotruss @PKGVERSION@@VERSION@"
     printf $"Copyright (C) %s Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

@@ -19,6 +19,8 @@
 #
 #	Sub-makefile for NPTL portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= nptl
 
 headers := pthread.h semaphore.h bits/semaphore.h
@@ -113,7 +115,7 @@ libpthread-routines = nptl-init vars events version \
 		      pt-raise pt-system \
 		      flockfile ftrylockfile funlockfile \
 		      sigaction \
-		      herrno res pt-allocrtsig \
+		      pt-allocrtsig \
 		      pthread_kill_other_threads \
 		      pthread_getaffinity pthread_setaffinity \
 		      pthread_attr_getaffinity pthread_attr_setaffinity \
@@ -131,6 +133,8 @@ libpthread-routines = nptl-init vars events version \
 #		      pthread_setresuid \
 #		      pthread_setgid pthread_setegid pthread_setregid \
 #		      pthread_setresgid
+
+libpthread-routines-$(OPTION_EGLIBC_INET) := herrno res 
 
 libpthread-shared-only-routines = version pt-allocrtsig unwind-forcedunwind
 libpthread-static-only-routines = pthread_atfork
@@ -236,31 +240,41 @@ tests = tst-typesizes \
 	tst-cancel6 tst-cancel7 tst-cancel8 tst-cancel9 tst-cancel10 \
 	tst-cancel11 tst-cancel12 tst-cancel13 tst-cancel14 tst-cancel15 \
 	tst-cancel16 tst-cancel17 tst-cancel18 tst-cancel19 tst-cancel20 \
-	tst-cancel21 tst-cancel22 tst-cancel23 tst-cancel24 tst-cancel25 \
+	tst-cancel21 tst-cancel22 tst-cancel23 tst-cancel25 \
 	tst-cleanup0 tst-cleanup1 tst-cleanup2 tst-cleanup3 tst-cleanup4 \
 	tst-flock1 tst-flock2 \
 	tst-signal1 tst-signal2 tst-signal3 tst-signal4 tst-signal5 \
 	tst-signal6 tst-signal7 \
-	tst-exec1 tst-exec2 tst-exec3 tst-exec4 \
+	tst-exec2 tst-exec3 tst-exec4 \
 	tst-exit1 tst-exit2 tst-exit3 \
 	tst-stdio1 tst-stdio2 \
 	tst-stack1 tst-stack2 tst-stack3 \
 	tst-unload \
 	tst-dlsym1 \
 	tst-sysconf \
-	tst-locale1 tst-locale2 \
+	tst-locale2 \
 	tst-umask1 \
 	tst-popen1 \
 	tst-clock1 \
 	tst-context1 \
 	tst-sched1 \
-	tst-backtrace1 \
 	tst-oddstacklimit \
 	tst-abstime \
 	tst-vfork1 tst-vfork2 tst-vfork1x tst-vfork2x \
 	tst-getpid1 tst-getpid2 tst-getpid3 \
 	tst-initializers1 $(patsubst %,tst-initializers1-%,c89 gnu89 c99 gnu99)
 xtests = tst-setuid1 tst-setuid1-static tst-mutexpp1 tst-mutexpp6 tst-mutexpp10
+
+# This test uses the posix_spawn functions.
+tests-$(OPTION_EGLIBC_SPAWN) += tst-exec1
+
+# This test uses the 'backtrace' functions.
+tests-$(OPTION_EGLIBC_BACKTRACE) += tst-backtrace1
+
+# This test is written in C++.
+tests-$(OPTION_EGLIBC_CXX_TESTS) += tst-cancel24
+
+tests-$(OPTION_EGLIBC_LOCALE_CODE) += tst-locale1 
 
 # Files which must not be linked with libpthread.
 tests-nolibpthread = tst-unload
@@ -287,8 +301,13 @@ tests += tst-cancelx2 tst-cancelx3 tst-cancelx4 tst-cancelx5 \
 	 tst-oncex3 tst-oncex4
 endif
 ifeq ($(build-shared),yes)
-tests += tst-atfork2 tst-tls3 tst-tls4 tst-tls5 tst-_res1 tst-fini1 \
+tests += tst-atfork2 tst-tls3 tst-tls4 tst-tls5 tst-fini1 \
 	 tst-stackguard1
+ifeq ($(versioning),yes)
+# struct __res_state _res is only available with
+# symbol versioning after GLIBC_2.2.
+tests += tst-_res1
+endif
 tests-nolibpthread += tst-fini1
 ifeq ($(have-z-execstack),yes)
 tests += tst-execstack
@@ -436,7 +455,7 @@ CFLAGS-tst-initializers1-c99.c = $(CFLAGS-tst-initializers1-<)
 CFLAGS-tst-initializers1-gnu89.c = $(CFLAGS-tst-initializers1-<)
 CFLAGS-tst-initializers1-gnu99.c = $(CFLAGS-tst-initializers1-<)
 
-tst-cancel7-ARGS = --command "$(built-program-cmd)"
+tst-cancel7-ARGS = --command "exec $(local-built-program-cmd)"
 tst-cancelx7-ARGS = $(tst-cancel7-ARGS)
 tst-umask1-ARGS = $(objpfx)tst-umask1.temp
 
@@ -472,7 +491,8 @@ $(objpfx)tst-tls6.out: tst-tls6.sh $(objpfx)tst-tls5 \
 		       $(objpfx)tst-tls5modc.so $(objpfx)tst-tls5modd.so \
 		       $(objpfx)tst-tls5mode.so $(objpfx)tst-tls5modf.so
 	$(SHELL) -e tst-tls6.sh $(common-objpfx) $(elf-objpfx) \
-		    $(rtld-installed-name)
+		    $(rtld-installed-name) '$(cross-test-wrapper)' \
+		    $(..)scripts/run-with-env.sh
 endif
 
 $(objpfx)tst-dlsym1: $(libdl) $(shared-thread-library)
@@ -555,11 +575,11 @@ $(objpfx)tst-cleanup0.out: /dev/null $(objpfx)tst-cleanup0
 # We only have one kind of startup code files.  Static binaries and
 # shared libraries are build using the PIC version.
 $(objpfx)crti.S: $(objpfx)pt-initfini.s
-	sed -n -e '1,/@HEADER_ENDS/p' \
+	sed -n -e '/^[ 	]*\.file[ 	]/d' -e '1,/@HEADER_ENDS/p' \
 	       -e '/@_.*_PROLOG_BEGINS/,/@_.*_PROLOG_ENDS/p' \
 	       -e '/@TRAILER_BEGINS/,$$p' $< > $@
 $(objpfx)crtn.S: $(objpfx)pt-initfini.s
-	sed -n -e '1,/@HEADER_ENDS/p' \
+	sed -n -e '/^[ 	]*\.file[ 	]/d' -e '1,/@HEADER_ENDS/p' \
 	       -e '/@_.*_EPILOG_BEGINS/,/@_.*_EPILOG_ENDS/p' \
 	       -e '/@TRAILER_BEGINS/,$$p' $< > $@
 
@@ -597,18 +617,19 @@ generated += banner.h
 LDFLAGS-pthread.so += -e __nptl_main
 endif
 
-ifeq (no,$(cross-compiling))
+# eglibc: ifeq (no,$(cross-compiling))
 ifeq (yes,$(build-shared))
 tests: $(objpfx)tst-cancel-wrappers.out
 $(objpfx)tst-cancel-wrappers.out: tst-cancel-wrappers.sh
-	$(SHELL) $< $(common-objpfx)libc_pic.a \
+	$(SHELL) $< '$(NM)' \
+		    $(common-objpfx)libc_pic.a \
 		    $(common-objpfx)libc.a \
 		    $(objpfx)libpthread_pic.a \
 		    $(objpfx)libpthread.a > $@
 endif
-endif
+# eglibc: endif
 
-tst-exec4-ARGS = $(built-program-cmd)
+tst-exec4-ARGS = $(local-built-program-cmd)
 
 $(objpfx)tst-execstack: $(libdl)
 $(objpfx)tst-execstack.out: $(objpfx)tst-execstack-mod.so
@@ -616,7 +637,7 @@ LDFLAGS-tst-execstack = -Wl,-z,noexecstack
 
 $(objpfx)tst-fini1mod.so: $(shared-thread-library)
 
-tst-stackguard1-ARGS = --command "$(built-program-cmd) --child"
+tst-stackguard1-ARGS = --command "$(local-built-program-cmd) --child"
 tst-stackguard1-static-ARGS = --command "$(objpfx)tst-stackguard1-static --child"
 
 # The tests here better do not run in parallel

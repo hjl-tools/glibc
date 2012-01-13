@@ -17,6 +17,7 @@
 # 02111-1307 USA.
 
 # Makefile for intl subdirectory: message handling code from GNU gettext.
+include ../option-groups.mak
 
 subdir = intl
 headers = libintl.h
@@ -58,8 +59,8 @@ $(objpfx)plural.o: plural.c
 
 include ../Rules
 
-ifeq (no,$(cross-compiling))
-ifeq (yes,$(build-shared))
+# eglibc: ifeq (no,$(cross-compiling))
+ifeq (yyyes,$(OPTION_EGLIBC_LOCALES)$(OPTION_EGLIBC_LOCALE_CODE)$(build-shared))
 ifneq ($(strip $(MSGFMT)),:)
 tests: $(objpfx)tst-translit.out $(objpfx)tst-gettext2.out \
        $(objpfx)tst-codeset.out $(objpfx)tst-gettext3.out
@@ -75,15 +76,19 @@ $(objpfx)mtrace-tst-gettext: $(objpfx)tst-gettext.out
 	$(common-objpfx)malloc/mtrace $(objpfx)tst-gettext.mtrace > $@
 $(objpfx)tst-gettext.out: tst-gettext.sh $(objpfx)tst-gettext
 	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/ \
-	  $(objpfx)tst-gettext.mtrace
+	  $(objpfx)tst-gettext.mtrace '$(cross-test-wrapper)'
 $(objpfx)tst-translit.out: tst-translit.sh $(objpfx)tst-translit
-	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/
+	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/ \
+	'$(cross-test-wrapper)'
 $(objpfx)tst-gettext2.out: tst-gettext2.sh $(objpfx)tst-gettext2
-	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/
+	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/ \
+	'$(cross-test-wrapper)'
 $(objpfx)tst-codeset.out: tst-codeset.sh $(objpfx)tst-codeset
-	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/
+	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/ \
+	'$(cross-test-wrapper)'
 $(objpfx)tst-gettext3.out: tst-gettext3.sh $(objpfx)tst-gettext3
-	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/
+	$(SHELL) -e $< $(common-objpfx) $(common-objpfx)intl/ \
+	'$(cross-test-wrapper)'
 $(objpfx)tst-gettext4.out: tst-gettext4.sh $(objpfx)tst-gettext4
 	$(SHELL) -e $< $(common-objpfx) '$(run-program-prefix)' $(common-objpfx)intl/
 $(objpfx)tst-gettext5.out: tst-gettext5.sh $(objpfx)tst-gettext5
@@ -91,7 +96,7 @@ $(objpfx)tst-gettext5.out: tst-gettext5.sh $(objpfx)tst-gettext5
 $(objpfx)tst-gettext6.out: tst-gettext6.sh $(objpfx)tst-gettext6
 	$(SHELL) -e $< $(common-objpfx) '$(run-program-prefix)' $(common-objpfx)intl/
 endif
-endif
+# eglibc: endif
 
 $(objpfx)msgs.h: po2test.sed ../po/de.po
 	$(make-target-directory)

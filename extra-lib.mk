@@ -25,7 +25,9 @@ install-lib := $(install-lib)
 extra-objs := $(extra-objs)
 
 # The modules that go in $(lib).
-all-$(lib)-routines := $($(lib)-routines) $($(lib)-sysdep_routines)
+all-$(lib)-routines := $($(lib)-routines)		\
+	               $($(lib)-routines-y)		\
+		       $($(lib)-sysdep_routines)
 
 # Add each flavor of library to the lists of things to build and install.
 install-lib += $(foreach o,$(object-suffixes-$(lib)),$(lib:lib%=$(libtype$o)))
@@ -85,18 +87,18 @@ $(objpfx)$(patsubst %,$(libtype.oS),$(lib:lib%=%)): \
 	$(build-extra-lib)
 endif
 
-ifeq ($(versioning),yes)
+# eglibc: ifeq ($(versioning),yes)
 # Add the version script to the dependencies of the shared library.
 $(objpfx)$(lib).so: $(firstword $($(lib)-map) \
 				$(addprefix $(common-objpfx), \
 					    $(filter $(lib).map, \
 						     $(version-maps))))
-endif
+# eglibc: endif
 
 endif
 
 # This will define `libof-ROUTINE := LIB' for each of the routines.
-cpp-srcs-left := $($(lib)-routines) $($(lib)-sysdep_routines)
+cpp-srcs-left := $(all-$(lib)-routines)
 ifneq (,$(cpp-srcs-left))
 include $(patsubst %,$(..)cppflags-iterator.mk,$(cpp-srcs-left))
 endif

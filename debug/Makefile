@@ -19,12 +19,14 @@
 #
 #	Sub-makefile for debug portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= debug
 
 headers	:= execinfo.h
 distribute = sigcontextinfo.h register-dump.h frame.h
 
-routines  = backtrace backtracesyms backtracesymsfd noophooks \
+routines  = noophooks \
 	    memcpy_chk memmove_chk mempcpy_chk memset_chk stpcpy_chk \
 	    strcat_chk strcpy_chk strncat_chk strncpy_chk stpncpy_chk \
 	    sprintf_chk vsprintf_chk snprintf_chk vsnprintf_chk \
@@ -33,20 +35,28 @@ routines  = backtrace backtracesyms backtracesymsfd noophooks \
 	    read_chk pread_chk pread64_chk recv_chk recvfrom_chk \
 	    readlink_chk readlinkat_chk getwd_chk getcwd_chk \
 	    realpath_chk ptsname_r_chk fread_chk fread_u_chk \
-	    wctomb_chk wcscpy_chk wmemcpy_chk wmemmove_chk wmempcpy_chk \
-	    wcpcpy_chk wcsncpy_chk wcscat_chk wcsncat_chk wmemset_chk \
-	    wcpncpy_chk \
-	    swprintf_chk vswprintf_chk wprintf_chk fwprintf_chk \
-	    vwprintf_chk vfwprintf_chk fgetws_chk fgetws_u_chk \
-	    confstr_chk getgroups_chk ttyname_r_chk getlogin_r_chk \
-	    gethostname_chk getdomainname_chk wcrtomb_chk mbsnrtowcs_chk \
-	    wcsnrtombs_chk mbsrtowcs_chk wcsrtombs_chk mbstowcs_chk \
-	    wcstombs_chk asprintf_chk vasprintf_chk dprintf_chk \
+	    confstr_chk getgroups_chk ttyname_r_chk \
+	    gethostname_chk getdomainname_chk \
+	    asprintf_chk vasprintf_chk dprintf_chk \
 	    vdprintf_chk obprintf_chk \
 	    longjmp_chk ____longjmp_chk \
 	    fdelt_chk \
 	    stack_chk_fail fortify_fail \
 	    $(static-only-routines)
+routines-$(OPTION_EGLIBC_GETLOGIN) += getlogin_r_chk
+routines-$(OPTION_EGLIBC_BACKTRACE) += backtrace backtracesyms backtracesymsfd 
+routines-$(OPTION_POSIX_WIDE_CHAR_DEVICE_IO)			\
+	 += wprintf_chk fwprintf_chk				\
+	    vwprintf_chk vfwprintf_chk fgetws_chk fgetws_u_chk
+routines-$(OPTION_POSIX_C_LANG_WIDE_CHAR)				\
+	 += wctomb_chk wcscpy_chk wmemcpy_chk wmemmove_chk wmempcpy_chk	\
+	    wcpcpy_chk wcsncpy_chk wcscat_chk wcsncat_chk wmemset_chk	\
+	    wcpncpy_chk							\
+	    swprintf_chk vswprintf_chk					\
+	    wcrtomb_chk mbsnrtowcs_chk					\
+	    wcsnrtombs_chk mbsrtowcs_chk wcsrtombs_chk mbstowcs_chk	\
+	    wcstombs_chk 
+
 static-only-routines := warning-nop stack_chk_fail_local
 
 CFLAGS-backtrace.c = -fno-omit-frame-pointer
@@ -119,10 +129,22 @@ LDFLAGS-tst-lfschk4 = -lstdc++
 LDFLAGS-tst-lfschk5 = -lstdc++
 LDFLAGS-tst-lfschk6 = -lstdc++
 
-tests = backtrace-tst tst-longjmp_chk tst-chk1 tst-chk2 tst-chk3 \
-	tst-lfschk1 tst-lfschk2 tst-lfschk3 test-strcpy_chk test-stpcpy_chk \
-	tst-chk4 tst-chk5 tst-chk6 tst-lfschk4 tst-lfschk5 tst-lfschk6 \
-	tst-longjmp_chk2
+# backtrace_symbols only works if we link with -rdynamic.
+LDFLAGS-tst-backtrace2 = -rdynamic
+LDFLAGS-tst-backtrace3 = -rdynamic
+LDFLAGS-tst-backtrace4 = -rdynamic
+LDFLAGS-tst-backtrace5 = -rdynamic
+LDFLAGS-tst-backtrace6 = -rdynamic
+
+tests = tst-longjmp_chk test-strcpy_chk test-stpcpy_chk tst-longjmp_chk2
+tests-$(OPTION_EGLIBC_LOCALE_CODE) \
+      += tst-chk1 tst-chk2 tst-chk3 tst-lfschk1 tst-lfschk2 tst-lfschk3 
+tests-$(OPTION_EGLIBC_BACKTRACE) \
+      += backtrace-tst tst-backtrace2 tst-backtrace3 tst-backtrace4 \
+         tst-backtrace5 tst-backtrace6
+ifeq (yy,$(OPTION_EGLIBC_LOCALE_CODE)$(OPTION_EGLIBC_CXX_TESTS))
+tests += tst-chk4 tst-chk5 tst-chk6 tst-lfschk4 tst-lfschk5 tst-lfschk6
+endif
 
 extra-libs = libSegFault libpcprofile
 extra-libs-others = $(extra-libs)
@@ -154,7 +176,9 @@ sLIBdir := $(shell echo $(slibdir) | sed 's,lib\(\|64\)$$,\\\\$$LIB,')
 $(objpfx)catchsegv: catchsegv.sh $(common-objpfx)soversions.mk \
 		    $(common-objpfx)config.make
 	slibpfx=`echo $(slibdir)|sed 's/lib\(64\|\)$$/\\\\\\\\$$LIB/'`; \
-	sed -e 's|@VERSION@|$(version)|' -e "s|@SLIB@|$$slibpfx|" $< > $@.new
+	sed -e 's|@VERSION@|$(version)|' -e "s|@SLIB@|$$slibpfx|" \
+	    -e 's|@PKGVERSION@|$(PKGVERSION)|' \
+	    -e 's|@REPORT_BUGS_TO@|$(REPORT_BUGS_TO)|' $< > $@.new
 	chmod 555 $@.new
 	mv -f $@.new $@
 
@@ -163,7 +187,9 @@ $(objpfx)pcprofiledump: $(objpfx)pcprofiledump.o
 $(objpfx)xtrace: xtrace.sh
 	rm -f $@.new
 	sed -e 's|@BASH@|$(BASH)|' -e 's|@VERSION@|$(version)|' \
-	    -e 's|@SLIBDIR@|$(sLIBdir)|' -e 's|@BINDIR@|$(bindir)|' $^ > $@.new \
+	    -e 's|@SLIBDIR@|$(sLIBdir)|' -e 's|@BINDIR@|$(bindir)|' \
+	    -e 's|@PKGVERSION@|$(PKGVERSION)|' \
+	    -e 's|@REPORT_BUGS_TO@|$(REPORT_BUGS_TO)|' $^ > $@.new \
 	&& rm -f $@ && mv $@.new $@ && chmod +x $@
 
 # Depend on libc.so so a DT_NEEDED is generated in the shared objects.

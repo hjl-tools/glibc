@@ -62,8 +62,9 @@ add-chapters = $(wildcard $(foreach d, $(add-ons), ../$d/$d.texi))
 appendices = lang.texi header.texi install.texi maint.texi contrib.texi
 licenses = freemanuals.texi lgpl-2.1.texi fdl-1.1.texi
 
--include texis
-texis: texis.awk $(chapters) $(add-chapters) $(appendices) $(licenses)
+-include $(objpfx)texis
+$(objpfx)texis: texis.awk $(chapters) $(add-chapters) $(appendices) $(licenses)
+	$(make-target-directory)
 	$(AWK) -f $^ > $@.T
 	mv -f $@.T $@
 
@@ -78,11 +79,12 @@ chapters.% top-menu.%: libc-texinfo.sh $(texis) Makefile
 			       '$(appendices) $(licenses)'
 
 libc.dvi libc.pdf libc.info: chapters.texi top-menu.texi dir-add.texi \
-			     libm-err.texi
+			     libm-err.texi pkgvers.texi
 libc.dvi libc.pdf: texinfo.tex
 
 html: libc/index.html
-libc/index.html: chapters.texi top-menu.texi dir-add.texi libm-err.texi
+libc/index.html: chapters.texi top-menu.texi dir-add.texi libm-err.texi \
+		 pkgvers.texi
 	$(MAKEINFO) --html libc.texinfo
 
 # Generate the summary from the Texinfo source files for each chapter.
@@ -109,6 +111,14 @@ stamp-libm-err: libm-err-tab.pl $(wildcard $(foreach dir,$(sysdirs),\
 	pwd=`pwd`; \
 	$(PERL) $< $$pwd/.. > libm-err-tmp
 	$(move-if-change) libm-err-tmp libm-err.texi
+	touch $@
+
+# Package version and bug reporting URL.
+pkgvers.texi: stamp-pkgvers
+stamp-pkgvers:
+	echo "@set PKGVERSION $(PKGVERSION_TEXI)" > pkgvers-tmp
+	echo "@set REPORT_BUGS_TO $(REPORT_BUGS_TEXI)" >> pkgvers-tmp
+	$(move-if-change) pkgvers-tmp pkgvers.texi
 	touch $@
 
 # Generate Texinfo files from the C source for the example programs.

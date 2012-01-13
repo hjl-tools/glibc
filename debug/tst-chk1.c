@@ -32,6 +32,7 @@
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <gnu/option-groups.h>
 
 #define obstack_chunk_alloc malloc
 #define obstack_chunk_free free
@@ -323,6 +324,7 @@ do_test (void)
   snprintf (buf + 8, l0 + 3, "%d", num2);
   CHK_FAIL_END
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   CHK_FAIL_START
   swprintf (wbuf + 8, 3, L"%d", num1);
   CHK_FAIL_END
@@ -330,6 +332,7 @@ do_test (void)
   CHK_FAIL_START
   swprintf (wbuf + 8, l0 + 3, L"%d", num1);
   CHK_FAIL_END
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 # endif
 
   memcpy (buf, str1 + 2, l0 + 9);
@@ -397,6 +400,7 @@ do_test (void)
   CHK_FAIL_END
 #endif
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
 
   /* These ops can be done without runtime checking of object size.  */
   wmemcpy (wbuf, L"abcdefghij", 10);
@@ -621,6 +625,7 @@ do_test (void)
   CHK_FAIL_END
 #endif
 
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 
   /* Now checks for %n protection.  */
 
@@ -1208,6 +1213,7 @@ do_test (void)
 # endif
 #endif
 
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
   if (setlocale (LC_ALL, "de_DE.UTF-8") != NULL)
     {
       assert (MB_CUR_MAX <= 10);
@@ -1364,6 +1370,7 @@ do_test (void)
       puts ("cannot set locale");
       ret = 1;
     }
+#endif /* __OPTION_POSIX_C_LANG_WIDE_CHAR */
 
   fd = posix_openpt (O_RDWR);
   if (fd != -1)

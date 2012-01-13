@@ -19,6 +19,8 @@
 #
 #	Sub-makefile for string portion of library.
 #
+include ../option-groups.mak
+
 subdir	:= string
 
 headers	:= string.h strings.h memory.h endian.h bits/endian.h \
@@ -38,9 +40,11 @@ routines	:= strcat strchr strcmp strcoll strcpy strcspn		\
 		   $(addprefix argz-,append count create ctsep next	\
 				     delete extract insert stringify	\
 				     addsep replace)			\
-		   envz basename					\
+		   basename						\
 		   strcoll_l strxfrm_l string-inlines memrchr		\
 		   xpg-strerror strerror_l
+
+routines-$(OPTION_EGLIBC_ENVZ) += envz 
 
 # Gcc internally generates calls to unbounded memcpy and memset
 # for -fbounded-pointer compiles.  Glibc uses memchr for explicit checks.
@@ -54,15 +58,18 @@ strop-tests	:= memchr memcmp memcpy memmove mempcpy memset memccpy	\
 tests		:= tester inl-tester noinl-tester testcopy test-ffs	\
 		   tst-strlen stratcliff tst-svc tst-inlcall		\
 		   bug-strncat1 bug-strspn1 bug-strpbrk1 tst-bswap	\
-		   tst-strtok tst-strxfrm bug-strcoll1 tst-strfry	\
+		   tst-strtok tst-strfry	\
 		   bug-strtok1 $(addprefix test-,$(strop-tests))	\
-		   bug-envz1 tst-strxfrm2 tst-endian tst-svc2		\
-		   bug-strstr1 bug-strchr1
+		   tst-strxfrm2 tst-endian tst-svc2 bug-strstr1 bug-strchr1
+tests-$(OPTION_EGLIBC_ENVZ) += bug-envz1 
+tests-$(OPTION_EGLIBC_LOCALE_CODE) \
+		+= tst-strxfrm bug-strcoll1
 distribute	:= memcopy.h pagecopy.h tst-svc.expect test-string.h	\
 		   str-two-way.h
 
 
 include ../Rules
+
 
 tester-ENV = LANGUAGE=C
 inl-tester-ENV = LANGUAGE=C
@@ -78,10 +85,10 @@ CFLAGS-test-ffs.c = -fno-builtin
 CFLAGS-tst-inlcall.c = -fno-builtin
 CFLAGS-bug-strstr1.c = -fno-builtin
 
-ifeq ($(cross-compiling),no)
+# eglibc: ifeq ($(cross-compiling),no)
 tests: $(objpfx)tst-svc.out
 $(objpfx)tst-svc.out: tst-svc.input $(objpfx)tst-svc
 	GCONV_PATH=$(common-objpfx)iconvdata LC_ALL=C \
 	  $(built-program-cmd) < $(word 1,$^) > $@
 	@cmp tst-svc.expect $(objpfx)tst-svc.out
-endif
+# eglibc: endif

@@ -20,6 +20,8 @@
 #
 #	Makefile for locales.
 #
+include ../option-groups.mak
+
 subdir	:= locale
 
 headers		= locale.h bits/locale.h langinfo.h xlocale.h
@@ -27,7 +29,7 @@ distribute	= localeinfo.h categories.def iso-639.def iso-3166.def \
 		  iso-4217.def weight.h weightwc.h strlen-hash.h elem-hash.h \
 		  indigits.h indigitswc.h outdigits.h outdigitswc.h \
 		  coll-lookup.h C-translit.h.in C-translit.h gen-translit.pl \
-		  locarchive.h hashval.h \
+		  locarchive.h hashval.h dummy-setlocale.c \
 		  $(addprefix programs/, \
 			      locale.c localedef.c \
 			      $(localedef-modules:=.c) $(locale-modules:=.c) \
@@ -36,22 +38,36 @@ distribute	= localeinfo.h categories.def iso-639.def iso-3166.def \
 			      locfile-kw.gperf locfile-kw.h linereader.h \
 			      locfile.h charmap.h repertoire.h localedef.h \
 			      3level.h charmap-dir.h locarchive.c)
-routines	= setlocale findlocale loadlocale loadarchive \
-		  localeconv nl_langinfo nl_langinfo_l mb_cur_max \
-		  newlocale duplocale freelocale uselocale
-tests		= tst-C-locale tst-locname tst-duplocale
+# catnames is needed by OPTION_EGLIBC_LOCALE_CODE and by the 'intl' code.
+# If we put the latter in an option group, too, we can omit catnames
+# when both option groups are disabled.  libstdc++-v3 needs mb_cur_max.
+routines-y      := catnames mb_cur_max
+routines-$(OPTION_EGLIBC_LOCALE_CODE) \
+		+= setlocale findlocale loadlocale loadarchive \
+		   localeconv nl_langinfo nl_langinfo_l \
+		   newlocale duplocale freelocale uselocale
+ifneq (y,$(OPTION_EGLIBC_LOCALE_CODE))
+routines-y	+= dummy-setlocale
+endif
+tests-$(OPTION_EGLIBC_LOCALE_CODE) += tst-C-locale tst-locname tst-duplocale
 categories	= ctype messages monetary numeric time paper name \
 		  address telephone measurement identification collate
-aux		= $(categories:%=lc-%) $(categories:%=C-%) SYS_libc C_name \
-		  xlocale localename global-locale coll-lookup
-others		= localedef locale
+# C-messages belongs in an intl option group.
+aux-y		:= C-ctype C-time \
+		   SYS_libc C_name xlocale global-locale coll-lookup
+aux-$(OPTION_EGLIBC_LOCALE_CODE) \
+		+= $(filter-out $(aux-y), \
+	                        $(categories:%=lc-%) $(categories:%=C-%)) \
+	           localename
+others-$(OPTION_EGLIBC_LOCALE_CODE) = localedef locale
 #others-static	= localedef locale
-install-bin	= localedef locale
-extra-objs	= $(localedef-modules:=.o) $(localedef-aux:=.o) \
+install-bin	= $(others-y)
+extra-objs-$(OPTION_EGLIBC_LOCALE_CODE) \
+		= $(localedef-modules:=.o) $(localedef-aux:=.o) \
 		  $(locale-modules:=.o) $(lib-modules:=.o)
 
-extra-libs	= libBrokenLocale
-extra-libs-others = $(extra-libs)
+extra-libs-$(OPTION_EGLIBC_LOCALE_CODE) = libBrokenLocale
+extra-libs-others = $(extra-libs-y)
 
 libBrokenLocale-routines = broken_cur_max
 
@@ -105,6 +121,9 @@ CPPFLAGS-locale-programs = -DLOCALE_PATH='$(localepath)' \
 CFLAGS-charmap.c = -Wno-write-strings -Wno-char-subscripts
 CFLAGS-locfile.c = -Wno-write-strings -Wno-char-subscripts
 CFLAGS-charmap-dir.c = -Wno-write-strings
+ifneq (y,$(OPTION_EGLIBC_SPAWN))
+CFLAGS-charmap-dir.c += -DNO_UNCOMPRESS
+endif
 
 # This makes sure -DNOT_IN_libc et al are passed for all these modules.
 cpp-srcs-left := $(addsuffix .c,$(localedef-modules) $(localedef-aux) \

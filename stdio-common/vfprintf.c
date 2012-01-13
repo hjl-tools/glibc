@@ -30,6 +30,7 @@
 #include "_itoa.h"
 #include <locale/localeinfo.h>
 #include <stdio.h>
+#include <gnu/option-groups.h>
 
 /* This code is shared between the standard stdio implementation found
    in GNU C library and the libio implementation originally found in
@@ -117,6 +118,18 @@
 # define _itoa_word(Val, Buf, Base, Case) _itowa_word (Val, Buf, Base, Case)
 # undef EOF
 # define EOF WEOF
+#endif
+
+#if __OPTION_POSIX_C_LANG_WIDE_CHAR
+# define MULTIBYTE_SUPPORT (1)
+#else
+# define MULTIBYTE_SUPPORT (0)
+#endif
+
+#if __OPTION_EGLIBC_LOCALE_CODE
+# define LOCALE_SUPPORT (1)
+#else
+# define LOCALE_SUPPORT (0)
 #endif
 
 #include "_i18n_number.h"
@@ -1089,8 +1102,11 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 # define process_string_arg(fspec) \
     LABEL (form_character):						      \
       /* Character.  */							      \
-      if (is_long)							      \
-	goto LABEL (form_wcharacter);					      \
+      if (is_long)                                                            \
+        {                                                                     \
+          assert (MULTIBYTE_SUPPORT);                                         \
+          goto LABEL (form_wcharacter);                                       \
+        }                                                                     \
       --width;	/* Account for the character itself.  */		      \
       if (!left)							      \
 	PAD (' ');							      \
@@ -1103,6 +1119,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
       break;								      \
 									      \
     LABEL (form_wcharacter):						      \
+      assert (MULTIBYTE_SUPPORT);                                             \
       {									      \
 	/* Wide character.  */						      \
 	char buf[MB_CUR_MAX];						      \
@@ -1165,7 +1182,8 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 		/* Search for the end of the string, but don't search past    \
 		   the length (in bytes) specified by the precision.  Also    \
 		   don't use incomplete characters.  */			      \
-		if (_NL_CURRENT_WORD (LC_CTYPE, _NL_CTYPE_MB_CUR_MAX) == 1)   \
+		if (! LOCALE_SUPPORT                                          \
+                    ||_NL_CURRENT_WORD (LC_CTYPE, _NL_CTYPE_MB_CUR_MAX) == 1) \
 		  len = __strnlen (string, prec);			      \
 		else							      \
 		  {							      \
@@ -1201,6 +1219,7 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
 	  }								      \
 	else								      \
 	  {								      \
+            assert (MULTIBYTE_SUPPORT);                                       \
 	    const wchar_t *s2 = (const wchar_t *) string;		      \
 	    mbstate_t mbstate;						      \
 									      \
@@ -1401,7 +1420,9 @@ vfprintf (FILE *s, const CHAR_T *format, va_list ap)
     LABEL (flag_quote):
       group = 1;
 
-      if (grouping == (const char *) -1)
+      if (! LOCALE_SUPPORT)
+        grouping = NULL;
+      else if (grouping == (const char *) -1)
 	{
 #ifdef COMPILE_WPRINTF
 	  thousands_sep = _NL_CURRENT_WORD (LC_NUMERIC,
@@ -1663,7 +1684,9 @@ do_positional:
     free (workstart);
     workstart = NULL;
 
-    if (grouping == (const char *) -1)
+    if (! LOCALE_SUPPORT)
+      grouping = NULL;
+    else if (grouping == (const char *) -1)
       {
 #ifdef COMPILE_WPRINTF
 	thousands_sep = _NL_CURRENT_WORD (LC_NUMERIC,

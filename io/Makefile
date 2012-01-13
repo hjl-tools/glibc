@@ -19,6 +19,8 @@
 #
 #	Sub-makefile for I/O portion of the library.
 #
+include ../option-groups.mak
+
 subdir	:= io
 
 headers := sys/stat.h bits/stat.h sys/statfs.h bits/statfs.h sys/vfs.h \
@@ -35,7 +37,7 @@ routines :=								\
 	fxstatat fxstatat64						\
 	statfs fstatfs statfs64 fstatfs64				\
 	statvfs fstatvfs statvfs64 fstatvfs64				\
-	umask chmod fchmod lchmod fchmodat				\
+	umask chmod fchmod fchmodat					\
 	mkdir mkdirat							\
 	open open64 openat openat64 close				\
 	read write lseek lseek64 access euidaccess faccessat		\
@@ -48,11 +50,13 @@ routines :=								\
 	ttyname ttyname_r isatty					\
 	link linkat symlink symlinkat readlink readlinkat		\
 	unlink unlinkat rmdir						\
-	ftw ftw64 fts poll ppoll					\
+	poll ppoll							\
 	posix_fadvise posix_fadvise64					\
 	posix_fallocate posix_fallocate64				\
 	sendfile sendfile64 \
 	utimensat futimens
+routines-$(OPTION_EGLIBC_BSD) += lchmod
+routines-$(OPTION_EGLIBC_FTRAVERSE) += ftw ftw64 fts
 
 aux := have_o_cloexec
 
@@ -63,14 +67,16 @@ static-only-routines = stat fstat lstat stat64 fstat64 lstat64	\
 		       fstatat fstatat64 mknod mknodat
 
 others		:= pwd
-test-srcs	:= ftwtest
+test-srcs-$(OPTION_EGLIBC_FTRAVERSE) := ftwtest
 tests		:= test-utime test-stat test-stat2 test-lfs tst-getcwd \
-		   tst-fcntl bug-ftw1 bug-ftw2 bug-ftw3 bug-ftw4 tst-statvfs \
+		   tst-fcntl tst-statvfs \
 		   tst-openat tst-unlinkat tst-fstatat tst-futimesat \
 		   tst-renameat tst-fchownat tst-fchmodat tst-faccessat \
 		   tst-symlinkat tst-linkat tst-readlinkat tst-mkdirat \
-		   tst-mknodat tst-mkfifoat tst-ttyname_r bug-ftw5 \
+		   tst-mknodat tst-mkfifoat tst-ttyname_r \
 		   tst-posix_fallocate
+tests-$(OPTION_EGLIBC_FTRAVERSE) += bug-ftw1 bug-ftw2 bug-ftw3 bug-ftw4 \
+				    bug-ftw5
 
 distribute	:= ftwtest-sh
 
@@ -101,10 +107,23 @@ test-stat2-ARGS = Makefile . $(objpfx)test-stat2
 
 tst-statvfs-ARGS = $(objpfx)tst-statvfs tst-statvfs.c /tmp
 
-ifeq ($(cross-compiling),no)
+# eglibc: ifeq ($(cross-compiling),no)
+ifeq (y,$(OPTION_EGLIBC_FTRAVERSE))
 tests: $(objpfx)ftwtest.out
+endif
+
+ifeq ($(cross-compiling),yes)
+# EGLIBC's cross-testing support does not require the build and host
+# machines to share a /tmp directory, so when cross-testing, construct
+# the sample directory tree for these tests in the build tree.
+ftwtest-tmpdir = TMPDIR=$(common-objpfx)
+endif
 
 $(objpfx)ftwtest.out: $(objpfx)ftwtest
+	$(ftwtest-tmpdir) \
 	$(SHELL) -e ftwtest-sh $(shell cd $(common-objpfx). && pwd)/ \
+		 '$(cross-test-wrapper)' \
+		 $(shell cd $(..)scripts && pwd)/run-with-env.sh \
 		 $(shell cd $(<D) && pwd)/$(<F) > $@
-endif
+
+# eglibc: endif

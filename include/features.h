@@ -320,9 +320,8 @@
 # define __USE_FORTIFY_LEVEL 0
 #endif
 
-/* We do support the IEC 559 math functionality, real and complex.  */
-#define __STDC_IEC_559__		1
-#define __STDC_IEC_559_COMPLEX__	1
+/* Define __STDC_IEC_559__ and other similar macros.  */
+#include <bits/predefs.h>
 
 /* wchar_t uses ISO 10646-1 (2nd ed., published 2000-09-15) / Unicode 3.1.  */
 #define __STDC_ISO_10646__		200009L
@@ -372,6 +371,14 @@
     && !defined __OPTIMIZE_SIZE__ && !defined __NO_INLINE__ \
     && defined __extern_inline
 # define __USE_EXTERN_INLINES	1
+#endif
+
+/* There are some functions that must be declared 'extern inline' even with
+   -Os when building LIBC, or they'll end up undefined.  */
+#if __GNUC_PREREQ (2, 7) && defined __OPTIMIZE__ \
+    && (defined _LIBC || !defined __OPTIMIZE_SIZE__) && !defined __NO_INLINE__ \
+    && defined __extern_inline
+# define __USE_EXTERN_INLINES_IN_LIBC	1
 #endif
 
 

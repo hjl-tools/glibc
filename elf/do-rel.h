@@ -120,7 +120,7 @@ elf_dynamic_do_Rel (struct link_map *map,
 	  for (; relative < r; ++relative)
 	    DO_ELF_MACHINE_REL_RELATIVE (map, l_addr, relative);
 
-#ifdef RTLD_BOOTSTRAP
+#if defined RTLD_BOOTSTRAP && defined DO_VERSIONING
       /* The dynamic linker always uses versioning.  */
       assert (map->l_info[VERSYMIDX (DT_VERSYM)] != NULL);
 #else
@@ -163,7 +163,7 @@ elf_dynamic_do_Rel (struct link_map *map,
 		}
 #endif
 	}
-#ifndef RTLD_BOOTSTRAP
+#if !defined RTLD_BOOTSTRAP || !defined DO_VERSIONING
       else
 	{
 	  for (; r < end; ++r)
