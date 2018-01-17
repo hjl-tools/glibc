@@ -60,6 +60,7 @@
 	.globl _init
 	.type _init, @function
 _init:
+	_CET_ENDBR
 	pushl %ebx
 	/* Maintain 16-byte stack alignment for called functions.  */
 	subl $8, %esp
@@ -79,6 +80,7 @@ _init:
 	.globl _fini
 	.type _fini, @function
 _fini:
+	_CET_ENDBR
 	pushl %ebx
 	subl $8, %esp
 	LOAD_PIC_REG (bx)
