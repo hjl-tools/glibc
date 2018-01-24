@@ -56,11 +56,30 @@
    / PTHREAD_KEY_2NDLEVEL_SIZE)
 
 
+/* Private data in the cleanup buffer.  */
+union pthread_unwind_buf_data
+{
+  /* This is the placeholder of the public version.  */
+  void *pad[4];
 
+  struct
+  {
+    /* Pointer to the previous cleanup buffer.  */
+    struct pthread_unwind_buf *prev;
 
-/* Internal version of the buffer to store cancellation handler
+    /* Backward compatibility: state of the old-style cleanup
+       handler at the time of the previous new-style cleanup handler
+       installment.  */
+    struct _pthread_cleanup_buffer *cleanup;
+
+    /* Cancellation type before the push call.  */
+    int canceltype;
+  } data;
+};
+
+/* Internal full version of the buffer to store cancellation handler
    information.  */
-struct pthread_unwind_buf
+struct full_pthread_unwind_buf
 {
   struct
   {
@@ -71,27 +90,38 @@ struct pthread_unwind_buf
 #endif
   } cancel_jmp_buf[1];
 
-  union
-  {
-    /* This is the placeholder of the public version.  */
-    void *pad[4];
-
-    struct
-    {
-      /* Pointer to the previous cleanup buffer.  */
-      struct pthread_unwind_buf *prev;
-
-      /* Backward compatibility: state of the old-style cleanup
-	 handler at the time of the previous new-style cleanup handler
-	 installment.  */
-      struct _pthread_cleanup_buffer *cleanup;
-
-      /* Cancellation type before the push call.  */
-      int canceltype;
-    } data;
-  } priv;
+  union pthread_unwind_buf_data priv;
 };
 
+/* Internal compatible version of the buffer to store cancellation
+   handler information.  */
+struct compat_pthread_unwind_buf
+{
+  struct
+  {
+    __jmp_buf jmp_buf;
+    int mask_was_saved;
+  } cancel_jmp_buf[1];
+
+  union pthread_unwind_buf_data priv;
+};
+
+/* Internal version of the buffer to store cancellation handler
+   information.  */
+struct pthread_unwind_buf
+{
+  union
+  {
+    /* The common fields of full and compatible versions.  */
+    struct
+    {
+      __jmp_buf jmp_buf;
+      int mask_was_saved;
+    } cancel_jmp_buf[1];
+    struct full_pthread_unwind_buf full;
+    struct compat_pthread_unwind_buf compat;
+  };
+};
 
 /* Opcodes and data types for communication with the signal handler to
    change user/group IDs.  */

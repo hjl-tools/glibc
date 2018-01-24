@@ -18,3 +18,17 @@
 
 /* Need the same setjmp jmp_buf layout in cancel_jmp_buf.  */
 #define NEED_SETJMP_JMP_BUF_LAYOUT 1
+
+/* Wee need to copy feature_1 in pthread_create.  */
+#define THREAD_COPY_CANCEL_JMP_BUF_INFO(descr)				\
+  ((descr)->header.feature_1						\
+   = THREAD_GETMEM (THREAD_SELF, header.feature_1))
+
+/* Get pointer to the priv field from THREAD_SELF, "self", and pointer
+   to the cleanup buffer, "p".  If shadow stack is disabled, use the
+   compatible struct __cancel_jmp_buf_tag.  */
+#define UNWIND_BUF_PRIV(self,p) \
+  (__extension__ ({							\
+     unsigned int feature_1 = THREAD_GETMEM (self, header.feature_1);	\
+     (((feature_1 & (1 << 1)) == 0)					\
+      ? &((p)->compat.priv) : &((p)->full.priv));}))

@@ -18,3 +18,11 @@
 
 /* No need to use the same setjmp jmp_buf layout in cancel_jmp_buf.  */
 #define NEED_SETJMP_JMP_BUF_LAYOUT 0
+
+/* No need to copy info for cancel_jmp_buf.  */
+#define THREAD_COPY_CANCEL_JMP_BUF_INFO(descr)
+
+/* Get pointer to the priv field from THREAD_SELF, "self", and pointer
+   to the cleanup buffer, "p".  By default, the compatible version is
+   used.  */
+#define UNWIND_BUF_PRIV(self,p) (&((p)->compat.priv))
