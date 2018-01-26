@@ -28,6 +28,7 @@
 #include <list_t.h>
 #include <lowlevellock.h>
 #include <pthreaddef.h>
+#include <cancel_jmp_buf.h>
 #include <dl-sysdep.h>
 #include "../nptl_db/thread_db.h"
 #include <tls.h>
@@ -65,6 +66,9 @@ struct pthread_unwind_buf
   {
     __jmp_buf jmp_buf;
     int mask_was_saved;
+#if NEED_SETJMP_JMP_BUF_LAYOUT
+    __sigset_t saved_mask;
+#endif
   } cancel_jmp_buf[1];
 
   union
