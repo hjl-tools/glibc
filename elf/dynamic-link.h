@@ -127,7 +127,8 @@ elf_machine_lazy_rel (struct link_map *map,
 	  ranges[0].nrelative						      \
 	    = map->l_info[VERSYMIDX (DT_##RELOC##COUNT)]->d_un.d_val;	      \
       }									      \
-    if ((map)->l_info[DT_PLTREL]					      \
+    if (__glibc_likely (((map)->l_flags_1 & DF_1_JMPRELIGN) == 0)	      \
+	&& (map)->l_info[DT_PLTREL]					      \
 	&& (!test_rel || (map)->l_info[DT_PLTREL]->d_un.d_val == DT_##RELOC)) \
       {									      \
 	ElfW(Addr) start = D_PTR ((map), l_info[DT_JMPREL]);		      \

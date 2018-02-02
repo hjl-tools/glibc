@@ -882,6 +882,10 @@ typedef struct
    Dyn.d_un.d_val field of the Elf*_Dyn structure.  This follows Sun's
    approach.  */
 #define DT_VALRNGLO	0x6ffffd00
+#define DT_GNU_PLTSZ	0x6ffffdf1	/* Size of PLT section  */
+#define DT_GNU_PLTENT	0x6ffffdf2	/* Size of one PLT entry  */
+#define DT_GNU_PLT0SZ	0x6ffffdf3	/* Size of the first PLT entry  */
+#define DT_GNU_PLTGOTSZ	0x6ffffdf4	/* Size of PLTGOT section  */
 #define DT_GNU_PRELINKED 0x6ffffdf5	/* Prelinking timestamp */
 #define DT_GNU_CONFLICTSZ 0x6ffffdf6	/* Size of conflict section */
 #define DT_GNU_LIBLISTSZ 0x6ffffdf7	/* Size of library list */
@@ -896,7 +900,7 @@ typedef struct
 #define DT_SYMINENT	0x6ffffdff	/* Entry size of syminfo */
 #define DT_VALRNGHI	0x6ffffdff
 #define DT_VALTAGIDX(tag)	(DT_VALRNGHI - (tag))	/* Reverse order! */
-#define DT_VALNUM 12
+#define DT_VALNUM 16
 
 /* DT_* entries which fall between DT_ADDRRNGHI & DT_ADDRRNGLO use the
    Dyn.d_un.d_ptr field of the Elf*_Dyn structure.
@@ -904,6 +908,7 @@ typedef struct
    If any adjustment is made to the ELF object after it has been
    built these entries will need to be adjusted.  */
 #define DT_ADDRRNGLO	0x6ffffe00
+#define DT_GNU_PLT	0x6ffffef4	/* Address of PLT section  */
 #define DT_GNU_HASH	0x6ffffef5	/* GNU-style hash table.  */
 #define DT_TLSDESC_PLT	0x6ffffef6
 #define DT_TLSDESC_GOT	0x6ffffef7
@@ -917,7 +922,7 @@ typedef struct
 #define DT_SYMINFO	0x6ffffeff	/* Syminfo table.  */
 #define DT_ADDRRNGHI	0x6ffffeff
 #define DT_ADDRTAGIDX(tag)	(DT_ADDRRNGHI - (tag))	/* Reverse order! */
-#define DT_ADDRNUM 11
+#define DT_ADDRNUM 12
 
 /* The versioning entry types.  The next are defined as part of the
    GNU extension.  */
@@ -981,6 +986,7 @@ typedef struct
 #define	DF_1_SINGLETON	0x02000000	/* Singleton symbols are used.  */
 #define	DF_1_STUB	0x04000000
 #define	DF_1_PIE	0x08000000
+#define	DF_1_JMPRELIGN	0x10000000
 
 /* Flags for the feature selection in DT_FEATURE_1.  */
 #define DTF_1_PARINIT	0x00000001

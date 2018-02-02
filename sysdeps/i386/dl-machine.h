@@ -280,6 +280,12 @@ elf_machine_plt_value (struct link_map *map, const Elf32_Rel *reloc,
 
 #ifdef RESOLVE_MAP
 
+# if IS_IN (rtld) && !defined RTLD_BOOTSTRAP
+typedef const ElfW(Rel) Elf_PLT_Reloc;
+#  define SIZEOF_GOT_ENTRY 4
+#  include <sysdeps/x86/dl-plt-address.h>
+# endif
+
 /* Perform the relocation specified by RELOC and SYM (which is fully resolved).
    MAP is the object containing the reloc.  */
 
@@ -352,7 +358,12 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	  *reloc_addr += sym->st_size;
 	  break;
 # endif
+
 	case R_386_GLOB_DAT:
+# if IS_IN (rtld) && !defined RTLD_BOOTSTRAP
+	  value = elf_machine_plt_address (map, value, reloc, refsym);
+# endif
+
 	case R_386_JMP_SLOT:
 	  *reloc_addr = value;
 	  break;
