@@ -20,13 +20,17 @@
 #define	_SETJMPP_H	1
 
 #include <bits/types/__sigset_t.h>
+#include <libc-pointer-arith.h>
 
-/* The biggest signal number + 1.  As of kernel 4.14, x86 _NSIG is 64.
-   Define it to 513 to leave some rooms for future use.  */
-#define _JUMP_BUF_SIGSET_NSIG	513
+/* Number of bits per long.  */
+#define _JUMP_BUF_SIGSET_BITS_PER_WORD (8 * sizeof (unsigned long int))
+/* The biggest signal number.  As of kernel 4.14, x86 _NSIG is 64.
+   Define it to 96 to leave some rooms for future use.  */
+#define _JUMP_BUF_SIGSET_NSIG	96
 /* Number of longs to hold all signals.  */
 #define _JUMP_BUF_SIGSET_NWORDS \
-  ((_JUMP_BUF_SIGSET_NSIG - 1 + 7) / (8 * sizeof (unsigned long int)))
+  (ALIGN_UP (_JUMP_BUF_SIGSET_NSIG, _JUMP_BUF_SIGSET_BITS_PER_WORD) \
+   / _JUMP_BUF_SIGSET_BITS_PER_WORD)
 
 typedef struct
   {
