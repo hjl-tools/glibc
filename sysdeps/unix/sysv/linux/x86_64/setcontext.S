@@ -18,6 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include <sysdep.h>
+#include <bits/prctl.h>
 
 #include "ucontext_i.h"
 
@@ -79,6 +80,125 @@ ENTRY(__setcontext)
 	movq	oR14(%rdx), %r14
 	movq	oR15(%rdx), %r15
 
+#if SHSTK_ENABLED
+	/* Check if shadow stack is enabled.  */
+	testl	$X86_FEATURE_1_SHSTK, %fs:FEATURE_1_OFFSET
+	jz	L(no_shstk)
+
+	/* Get the base address and size of the default shadow stack.
+	   NB: We can't cache them since CLONE syscall switches the
+	   default shadow stack.  */
+	sub	$24, %RSP_LP
+	mov	%RSP_LP, %RSI_LP
+	movl	$ARCH_CET_STATUS, %edi
+	movl	$__NR_arch_prctl, %eax
+	syscall
+	testq	%rax, %rax
+	jne	L(hlt)      /* This should never happen.  */
+
+	/* NB: If both the target shadow stack pointer and the current
+	   shadow stack pointer are on the original shadow stack, we
+	   can unwind the stack.  Otherwise, find the restore token
+	   pushed by rstorssp and saveprevssp to restore the target
+	   shadow stack.  */
+	movq	oSSP(%rdx), %rdi
+	movq	%rdi, %rsi
+	subq	8(%rsp), %rsi
+	jb	L(find_restore_token)
+	cmpq	16(%rsp), %rsi
+	jae	L(find_restore_token)
+
+	/* Check if both shadow stack pointers are on the original
+	   shadow stack.  */
+	rdsspq	%rcx
+	movq	%rcx, %rsi
+	subq	8(%rsp), %rsi
+	jb	L(find_restore_token)
+	cmpq	16(%rsp), %rsi
+	jae	L(find_restore_token)
+
+	jmp	L(unwind_shadow_stack)
+
+L(find_restore_token):
+	/* Save the target shadow stack pointer.  */
+	movq	%rdi, %rsi
+L(find_restore_token_loop):
+	/* Check if there is a restore token.  */
+	movq	-8(%rsi), %rax
+	andq	$-8, %rax
+	cmpq	%rsi, %rax
+	je	L(restore_shadow_stack)
+
+	/* Try the next slot.  */
+	subq	$8, %rsi
+	jne	L(find_restore_token_loop)
+
+L(restore_shadow_stack):
+	/* Pop return address from the shadow stack since setcontext
+	   will not return.   */
+	movq	$1, %rax
+	incsspq	%rax
+
+	/* Use the restore stoken to restore the target shadow stack.  */
+	rstorssp -8(%rsi)
+
+	/* Save the restore token on the old shadow stack.  NB: This
+	   restore token may be checked by setcontext or swapcontext
+	   later.  */
+	saveprevssp
+
+	/* Get the current shadow stack.  */
+	rdsspq	%rcx
+
+L(unwind_shadow_stack):
+	add	$24, %RSP_LP
+	/* Unwind the shadow stack.  */
+	subq	%rdi, %rcx
+	je	L(skip_unwind_shadow_stack)
+	negq	%rcx
+	shrq	$3, %rcx
+	movl	$255, %esi
+L(loop):
+	cmpq	%rsi, %rcx
+	cmovb	%rcx, %rsi
+	incsspq	%rsi
+	subq	%rsi, %rcx
+	ja	L(loop)
+
+L(skip_unwind_shadow_stack):
+	movq	oRSI(%rdx), %rsi
+	movq	oRDI(%rdx), %rdi
+	movq	oRCX(%rdx), %rcx
+	movq	oR8(%rdx), %r8
+	movq	oR9(%rdx), %r9
+
+	/* Get the return address set with getcontext.  */
+	movq	oRIP(%rdx), %r10
+
+	/* Setup finally %rdx.  */
+	movq	oRDX(%rdx), %rdx
+
+	/* Check if return address is valid for the case when setcontext
+	   is invoked from __start_context with linked context.  */
+	rdsspq	%rax
+	cmpq	(%rax), %r10
+	/* Clear RAX to indicate success.  NB: Don't use xorl to keep
+	   EFLAGS for jne.  */
+	movl    $0, %eax
+	jne	L(jmp)
+	/* Return to the new context if return address valid.  */
+	pushq	%r10
+	ret
+
+L(jmp):
+	/* Jump to the new context directly.  */
+	jmp	*%r10
+
+L(hlt):
+	hlt
+
+L(no_shstk):
+#endif
 	/* The following ret should return to the address set with
 	getcontext.  Therefore push the address on the stack.  */
 	movq	oRIP(%rdx), %rcx

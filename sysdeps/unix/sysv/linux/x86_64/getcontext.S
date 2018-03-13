@@ -53,6 +53,23 @@ ENTRY(__getcontext)
 	leaq	8(%rsp), %rcx		/* Exclude the return address.  */
 	movq	%rcx, oRSP(%rdi)
 
+#if SHSTK_ENABLED
+	/* Check if shadow stack is enabled.  */
+	testl	$X86_FEATURE_1_SHSTK, %fs:FEATURE_1_OFFSET
+	jz	L(no_shstk)
+
+	/* Get the current shadow stack pointer.  */
+	rdsspq	%rax
+	/* NB: Save the caller's shadow stack so that we can jump back
+	   to the caller directly.  */
+	addq	$8, %rax
+	movq	%rax, oSSP(%rdi)
+	xorl	%edx, %edx
+	movq	%rdx, (oSSP + 8)(%rdi)
+	movq	%rdx, (oSSP + 16)(%rdi)
+
+L(no_shstk):
+#endif
 	/* We have separate floating-point register content memory on the
 	   stack.  We use the __fpregs_mem block in the context.  Set the
 	   links up correctly.  */
