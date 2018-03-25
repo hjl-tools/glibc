@@ -328,4 +328,5 @@ do_test (void)
 }
 
 #define PREPARE prepare
+#define TIMEOUT (20 * 100)
 #include <support/test-driver.c>
