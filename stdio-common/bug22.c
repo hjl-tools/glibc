@@ -51,6 +51,6 @@ do_test (void)
   return ret != -1 || errno != EOVERFLOW;
 }
 
-#define TIMEOUT 60
+#define TIMEOUT (60 * 100)
 #define TEST_FUNCTION do_test ()
 #include "../test-skeleton.c"
