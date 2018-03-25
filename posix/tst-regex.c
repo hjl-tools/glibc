@@ -498,7 +498,7 @@ run_test_backwards (const char *expr, const char *mem, size_t memlen,
 }
 
 /* If --timing is used we will need a larger timout.  */
-#define TIMEOUT 50
+#define TIMEOUT (50 * 100)
 #define CMDLINE_OPTIONS \
    {"timing", no_argument, &timing, 1 },
 #define TEST_FUNCTION do_test ()
