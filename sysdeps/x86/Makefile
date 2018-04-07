@@ -17,6 +17,38 @@ endif
 ifeq ($(enable-cet),yes)
 ifeq ($(subdir),elf)
 sysdep-dl-routines += dl-cet
+
+tests += tst-legacy-1 tst-legacy-2 tst-legacy-2a tst-legacy-3 \
+	 tst-legacy-4 tst-legacy-4a tst-legacy-4b tst-legacy-4c
+modules-names += tst-legacy-mod-1 tst-legacy-mod-2 tst-legacy-mod-4
+
+CFLAGS-tst-legacy-2.c += -fcf-protection=branch
+CFLAGS-tst-legacy-2a.c += -fcf-protection
+CFLAGS-tst-legacy-mod-1.c += -fcf-protection=none
+CFLAGS-tst-legacy-mod-2.c += -fcf-protection=none
+CFLAGS-tst-legacy-3.c += -fcf-protection=none
+CFLAGS-tst-legacy-4.c += -fcf-protection=branch
+CFLAGS-tst-legacy-4a.c += -fcf-protection
+CFLAGS-tst-legacy-4b.c += -fcf-protection
+CFLAGS-tst-legacy-mod-4.c += -fcf-protection=none
+
+$(objpfx)tst-legacy-1: $(objpfx)tst-legacy-mod-1.so \
+		       $(objpfx)tst-legacy-mod-2.so
+$(objpfx)tst-legacy-2: $(objpfx)tst-legacy-mod-2.so $(libdl)
+$(objpfx)tst-legacy-2.out: $(objpfx)tst-legacy-mod-1.so
+$(objpfx)tst-legacy-2a: $(objpfx)tst-legacy-mod-2.so $(libdl)
+$(objpfx)tst-legacy-2a.out: $(objpfx)tst-legacy-mod-1.so
+$(objpfx)tst-legacy-4: $(libdl)
+$(objpfx)tst-legacy-4.out: $(objpfx)tst-legacy-mod-4.so
+$(objpfx)tst-legacy-4a: $(libdl)
+$(objpfx)tst-legacy-4a.out: $(objpfx)tst-legacy-mod-4.so
+tst-legacy-4a-ENV = GLIBC_TUNABLES=glibc.tune.x86_shstk=permissive
+$(objpfx)tst-legacy-4b: $(libdl)
+$(objpfx)tst-legacy-4b.out: $(objpfx)tst-legacy-mod-4.so
+tst-legacy-4b-ENV = GLIBC_TUNABLES=glibc.tune.x86_shstk=on
+$(objpfx)tst-legacy-4c: $(libdl)
+$(objpfx)tst-legacy-4c.out: $(objpfx)tst-legacy-mod-4.so
+tst-legacy-4c-ENV = GLIBC_TUNABLES=glibc.tune.x86_shstk=off
 endif
 
 # Add -fcf-protection to CFLAGS when CET is enabled.
