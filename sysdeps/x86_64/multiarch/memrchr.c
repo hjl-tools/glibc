@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memrchr __redirect_memrchr
 # include <string.h>
 # undef memrchr
@@ -26,6 +26,12 @@
 # define SYMBOL_NAME memrchr
 # include "ifunc-avx2.h"
 
+# if IS_IN (libcpu_rt_c)
+#  define __memrchr memrchr
+# endif
+
 libc_ifunc_redirected (__redirect_memrchr, __memrchr, IFUNC_SELECTOR ());
+# if !IS_IN (libcpu_rt_c)
 weak_alias (__memrchr, memrchr)
+# endif
 #endif
