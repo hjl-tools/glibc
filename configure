@@ -791,6 +791,7 @@ enable_pt_chown
 enable_tunables
 enable_mathvec
 enable_cet
+enable_cpu_rt
 with_cpu
 '
       ac_precious_vars='build_alias
@@ -1468,6 +1469,8 @@ Optional Features:
                           depends on architecture]
   --enable-cet            enable Intel Control-flow Enforcement Technology
                           (CET), x86 only
+  --enable-cpu-rt         Enable building and installing CPU run-time library
+                          [default depends on architecture]
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3767,6 +3770,14 @@ if test "${enable_cet+set}" = set; then :
   enableval=$enable_cet; enable_cet=$enableval
 else
   enable_cet=no
+fi
+
+
+# Check whether --enable-cpu-rt was given.
+if test "${enable_cpu_rt+set}" = set; then :
+  enableval=$enable_cpu_rt; build_cpu_rt=$enableval
+else
+  build_cpu_rt=notset
 fi
 
 
@@ -6706,6 +6717,12 @@ if test x"$build_mathvec" = xnotset; then
 fi
 config_vars="$config_vars
 build-mathvec = $build_mathvec"
+
+if test x"$build_cpu_rt" = xnotset; then
+  build_cpu_rt=no
+fi
+config_vars="$config_vars
+build-cpu-rt = $build_cpu_rt"
 
 
 
