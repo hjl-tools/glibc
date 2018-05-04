@@ -1,3 +1,7 @@
+ifeq ($(subdir),cpu-rt-c)
+libcpu-rt-c-sysdep_routines += cacheinfo
+endif
+
 ifeq ($(subdir),csu)
 gen-as-const-headers += cpu-features-offsets.sym
 endif

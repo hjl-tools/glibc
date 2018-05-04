@@ -16,9 +16,22 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 
-#include <assert.h>
+#if IS_IN (libcpu_rt_c)
+# include <abort-instr.h>
+
+__attribute__ ((__noreturn__))
+static inline void
+assert (int expr __attribute__ ((unused)))
+{
+  /* This shouldn't happen in the CPU run-time library.  */
+  ABORT_INSTRUCTION;
+  __builtin_unreachable ();
+}
+#else
+# include <assert.h>
+#endif
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -436,6 +449,7 @@ handle_amd (int name)
 }
 
 
+# if IS_IN (libc)
 /* Get the value of the system variable NAME.  */
 long int
 attribute_hidden
@@ -454,6 +468,7 @@ __cache_sysconf (int name)
   /* CPU not known, we have no information.  */
   return 0;
 }
+# endif
 
 
 /* Data cache size for use in memory and string routines, typically
