@@ -21,7 +21,7 @@
 #include <shlib-compat.h>
 #include <init-arch.h>
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define MEMSET_SYMBOL(p,s)	p##_sse2_##s
 # define WMEMSET_SYMBOL(p,s)	p##_sse2_##s
 
@@ -30,9 +30,11 @@
 #  define libc_hidden_builtin_def(name)
 # endif
 
-# undef weak_alias
-# define weak_alias(original, alias) \
+# if !IS_IN (libcpu_rt_c)
+#  undef weak_alias
+#  define weak_alias(original, alias) \
 	.weak bzero; bzero = __bzero
+# endif
 
 # undef strong_alias
 # define strong_alias(ignored1, ignored2)

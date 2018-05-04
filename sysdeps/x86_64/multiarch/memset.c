@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memset __redirect_memset
 # include <string.h>
 # undef memset
@@ -28,7 +28,7 @@
 
 libc_ifunc_redirected (__redirect_memset, memset, IFUNC_SELECTOR ());
 
-# ifdef SHARED
+# if defined SHARED && !IS_IN (libcpu_rt_c)
 __hidden_ver1 (memset, __GI_memset, __redirect_memset)
   __attribute__ ((visibility ("hidden")));
 # endif

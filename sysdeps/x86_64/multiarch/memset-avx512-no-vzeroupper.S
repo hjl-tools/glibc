@@ -18,7 +18,7 @@
 
 #include <sysdep.h>
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 
 #include "asm-syntax.h"
 #ifndef MEMSET
@@ -27,7 +27,7 @@
 #endif
 
 	.section .text.avx512,"ax",@progbits
-#if defined PIC
+#if defined PIC && IS_IN (libc)
 ENTRY (MEMSET_CHK)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)

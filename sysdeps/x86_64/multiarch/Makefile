@@ -76,5 +76,9 @@ libcpu-rt-c-sysdep_routines += memchr-sse2 memchr-avx2 \
 			       memmove-avx-unaligned-erms \
 			       memmove-avx512-unaligned-erms \
 			       memmove-avx512-no-vzeroupper \
-			       memrchr-sse2 memrchr-avx2
+			       memrchr-sse2 memrchr-avx2 \
+			       memset-sse2-unaligned-erms \
+			       memset-avx2-unaligned-erms \
+			       memset-avx512-unaligned-erms \
+			       memset-avx512-no-vzeroupper
 endif

@@ -47,7 +47,11 @@
 
 #ifndef WMEMSET_SYMBOL
 # define WMEMSET_CHK_SYMBOL(p,s) p
-# define WMEMSET_SYMBOL(p,s)	__wmemset
+# if IS_IN (libcpu_rt_c)
+#  define WMEMSET_SYMBOL(p,s)	wmemset
+# else
+#  define WMEMSET_SYMBOL(p,s)	__wmemset
+# endif
 #endif
 
 #include "multiarch/memset-vec-unaligned-erms.S"
