@@ -16,7 +16,7 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 
 /* memcmp/wmemcmp is implemented as:
    1. For size from 2 to 7 bytes, load as big endian with movbe and bswap
