@@ -147,7 +147,7 @@ endif
 endif
 
 ifeq ($(subdir),cpu-rt-c)
-cpu-rt-c-routines += memchr memcmp
+cpu-rt-c-routines += memchr memcmp memcpy memmove mempcpy
 
 # For the CPU run-time tests.
 vpath %.c $(..)string

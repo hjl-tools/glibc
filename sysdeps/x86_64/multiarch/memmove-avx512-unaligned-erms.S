@@ -1,4 +1,4 @@
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define VEC_SIZE	64
 # define VEC(i)		zmm##i
 # define VMOVNT		vmovntdq

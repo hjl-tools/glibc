@@ -19,7 +19,7 @@
 
 #include <sysdep.h>
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 
 #include "asm-syntax.h"
 
@@ -44,10 +44,12 @@
 
 	.section .text.ssse3,"ax",@progbits
 #if !defined USE_AS_MEMPCPY && !defined USE_AS_MEMMOVE
+# if IS_IN (libc)
 ENTRY (MEMPCPY_CHK)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (MEMPCPY_CHK)
+# endif
 
 ENTRY (MEMPCPY)
 	movq	%rdi, %rax
@@ -56,7 +58,7 @@ ENTRY (MEMPCPY)
 END (MEMPCPY)
 #endif
 
-#if !defined USE_AS_BCOPY
+#if !defined USE_AS_BCOPY && IS_IN (libc)
 ENTRY (MEMCPY_CHK)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)

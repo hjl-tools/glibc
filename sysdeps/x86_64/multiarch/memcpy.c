@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memcpy __redirect_memcpy
 # include <string.h>
 # undef memcpy
@@ -26,14 +26,20 @@
 # define SYMBOL_NAME memcpy
 # include "ifunc-memmove.h"
 
+# if IS_IN (libcpu_rt_c)
+#  define __new_memcpy memcpy
+# endif
+
 libc_ifunc_redirected (__redirect_memcpy, __new_memcpy,
 		       IFUNC_SELECTOR ());
 
-# ifdef SHARED
+# if !IS_IN (libcpu_rt_c)
+#  ifdef SHARED
 __hidden_ver1 (__new_memcpy, __GI_memcpy, __redirect_memcpy)
   __attribute__ ((visibility ("hidden")));
-# endif
+#  endif
 
-# include <shlib-compat.h>
+#  include <shlib-compat.h>
 versioned_symbol (libc, __new_memcpy, memcpy, GLIBC_2_14);
+# endif
 #endif

@@ -69,5 +69,11 @@ endif
 ifeq ($(subdir),cpu-rt-c)
 libcpu-rt-c-sysdep_routines += memchr-sse2 memchr-avx2 \
 			       memcmp-sse2 memcmp-ssse3 memcmp-sse4 \
-			       memcmp-avx2-movbe
+			       memcmp-avx2-movbe memcpy-ssse3 \
+			       memcpy-ssse3-back \
+			       memmove-sse2-unaligned-erms \
+			       memmove-ssse3 memmove-ssse3-back \
+			       memmove-avx-unaligned-erms \
+			       memmove-avx512-unaligned-erms \
+			       memmove-avx512-no-vzeroupper
 endif
