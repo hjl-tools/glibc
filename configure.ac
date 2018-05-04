@@ -478,6 +478,12 @@ AC_ARG_ENABLE([cet],
 	      [enable_cet=$enableval],
 	      [enable_cet=no])
 
+AC_ARG_ENABLE([cpu-rt],
+	      [AS_HELP_STRING([--enable-cpu-rt],
+	      [Enable building and installing CPU run-time library @<:@default depends on architecture@:>@])],
+	      [build_cpu_rt=$enableval],
+	      [build_cpu_rt=notset])
+
 # We keep the original values in `$config_*' and never modify them, so we
 # can write them unchanged into config.make.  Everything else uses
 # $machine, $vendor, and $os, and changes them whenever convenient.
@@ -1790,6 +1796,11 @@ if test x"$build_mathvec" = xnotset; then
   build_mathvec=no
 fi
 LIBC_CONFIG_VAR([build-mathvec], [$build_mathvec])
+
+if test x"$build_cpu_rt" = xnotset; then
+  build_cpu_rt=no
+fi
+LIBC_CONFIG_VAR([build-cpu-rt], [$build_cpu_rt])
 
 AC_SUBST(libc_extra_cflags)
 AC_SUBST(libc_extra_cppflags)
