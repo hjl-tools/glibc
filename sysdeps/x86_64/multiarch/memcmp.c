@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memcmp __redirect_memcmp
 # include <string.h>
 # undef memcmp
@@ -30,7 +30,7 @@ libc_ifunc_redirected (__redirect_memcmp, memcmp, IFUNC_SELECTOR ());
 # undef bcmp
 weak_alias (memcmp, bcmp)
 
-# ifdef SHARED
+# if defined SHARED && !IS_IN (libcpu_rt_c)
 __hidden_ver1 (memcmp, __GI_memcmp, __redirect_memcmp)
   __attribute__ ((visibility ("hidden")));
 # endif
