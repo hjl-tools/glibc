@@ -20,6 +20,10 @@
 
 #include <sysdep.h>
 
+#if !defined __memrchr && IS_IN (libcpu_rt_c)
+# define __memrchr	memrchr
+#endif
+
 	.text
 ENTRY (__memrchr)
 	movd	%esi, %xmm1
@@ -377,4 +381,6 @@ L(length_less16_part2_return):
 	ret
 
 END (__memrchr)
+#if !IS_IN (libcpu_rt_c)
 weak_alias (__memrchr, memrchr)
+#endif
