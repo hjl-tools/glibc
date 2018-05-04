@@ -29,7 +29,7 @@
 #define SECTION(p)		p
 
 #ifdef USE_MULTIARCH
-# if !IS_IN (libc)
+# if !(IS_IN (libc) || IS_IN (libcpu_rt_c))
 #  define MEMCPY_SYMBOL(p,s)		memcpy
 # endif
 #else
@@ -39,8 +39,12 @@
 #  define MEMCPY_SYMBOL(p,s)		memcpy
 # endif
 #endif
-#if !defined USE_MULTIARCH || !IS_IN (libc)
-# define MEMPCPY_SYMBOL(p,s)		__mempcpy
+#if !defined USE_MULTIARCH || !(IS_IN (libc) || IS_IN (libcpu_rt_c))
+# if IS_IN (libcpu_rt_c)
+#  define MEMPCPY_SYMBOL(p,s)		mempcpy
+# else
+#  define MEMPCPY_SYMBOL(p,s)		__mempcpy
+# endif
 #endif
 #ifndef MEMMOVE_SYMBOL
 # define MEMMOVE_CHK_SYMBOL(p,s)	p
@@ -55,9 +59,11 @@ libc_hidden_builtin_def (memmove)
 strong_alias (memmove, __memcpy)
 libc_hidden_ver (memmove, memcpy)
 # endif
+# if !IS_IN (libcpu_rt_c)
 libc_hidden_def (__mempcpy)
 weak_alias (__mempcpy, mempcpy)
 libc_hidden_builtin_def (mempcpy)
+# endif
 
 # if defined SHARED && IS_IN (libc)
 #  undef memcpy

@@ -131,7 +131,7 @@ L(start):
 	jb	L(less_vec)
 	cmpq	$(VEC_SIZE * 2), %rdx
 	ja	L(more_2x_vec)
-#if !defined USE_MULTIARCH || !IS_IN (libc)
+#if !defined USE_MULTIARCH || !(IS_IN (libc) || IS_IN (libcpu_rt_c))
 L(last_2x_vec):
 #endif
 	/* From VEC and to 2 * VEC.  No branch when size == VEC_SIZE.  */
@@ -140,18 +140,20 @@ L(last_2x_vec):
 	VMOVU	%VEC(0), (%rdi)
 	VMOVU	%VEC(1), -VEC_SIZE(%rdi,%rdx)
 	VZEROUPPER
-#if !defined USE_MULTIARCH || !IS_IN (libc)
+#if !defined USE_MULTIARCH || !(IS_IN (libc) || IS_IN (libcpu_rt_c))
 L(nop):
 #endif
 	ret
-#if defined USE_MULTIARCH && IS_IN (libc)
+#if defined USE_MULTIARCH && (IS_IN (libc) || IS_IN (libcpu_rt_c))
 END (MEMMOVE_SYMBOL (__memmove, unaligned))
 
 # if VEC_SIZE == 16
+#  if IS_IN (libc)
 ENTRY (__mempcpy_chk_erms)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (__mempcpy_chk_erms)
+#  endif
 
 /* Only used to measure performance of REP MOVSB.  */
 ENTRY (__mempcpy_erms)
@@ -163,10 +165,12 @@ ENTRY (__mempcpy_erms)
 	jmp	L(start_movsb)
 END (__mempcpy_erms)
 
+#  if IS_IN (libc)
 ENTRY (__memmove_chk_erms)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (__memmove_chk_erms)
+#  endif
 
 ENTRY (__memmove_erms)
 	movq	%rdi, %rax
@@ -195,10 +199,12 @@ L(movsb_backward):
 	ret
 END (__memmove_erms)
 strong_alias (__memmove_erms, __memcpy_erms)
+#  if IS_IN (libc)
 strong_alias (__memmove_chk_erms, __memcpy_chk_erms)
+#  endif
 # endif
 
-# ifdef SHARED
+# if defined SHARED && IS_IN (libc)
 ENTRY (MEMMOVE_CHK_SYMBOL (__mempcpy_chk, unaligned_erms))
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
@@ -212,10 +218,12 @@ ENTRY (MEMMOVE_SYMBOL (__mempcpy, unaligned_erms))
 END (MEMMOVE_SYMBOL (__mempcpy, unaligned_erms))
 
 # ifdef SHARED
+#  if IS_IN (libc)
 ENTRY (MEMMOVE_CHK_SYMBOL (__memmove_chk, unaligned_erms))
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (MEMMOVE_CHK_SYMBOL (__memmove_chk, unaligned_erms))
+#  endif
 # endif
 
 ENTRY (MEMMOVE_SYMBOL (__memmove, unaligned_erms))
@@ -321,7 +329,7 @@ L(between_2_3):
 	movw	%si, (%rdi)
 	ret
 
-#if defined USE_MULTIARCH && IS_IN (libc)
+#if defined USE_MULTIARCH && (IS_IN (libc) || IS_IN (libcpu_rt_c))
 L(movsb_more_2x_vec):
 	cmpq	$REP_MOVSB_THRESHOLD, %rdx
 	ja	L(movsb)
@@ -392,7 +400,8 @@ L(more_8x_vec):
 	subq	%r8, %rdi
 	/* Adjust length.  */
 	addq	%r8, %rdx
-#if (defined USE_MULTIARCH || VEC_SIZE == 16) && IS_IN (libc)
+#if ((defined USE_MULTIARCH || VEC_SIZE == 16) \
+     && (IS_IN (libc) || IS_IN (libcpu_rt_c)))
 	/* Check non-temporal store threshold.  */
 	cmpq	__x86_shared_non_temporal_threshold(%rip), %rdx
 	ja	L(large_forward)
@@ -444,7 +453,8 @@ L(more_8x_vec_backward):
 	subq	%r8, %r9
 	/* Adjust length.  */
 	subq	%r8, %rdx
-#if (defined USE_MULTIARCH || VEC_SIZE == 16) && IS_IN (libc)
+#if ((defined USE_MULTIARCH || VEC_SIZE == 16) \
+     && (IS_IN (libc) || IS_IN (libcpu_rt_c)))
 	/* Check non-temporal store threshold.  */
 	cmpq	__x86_shared_non_temporal_threshold(%rip), %rdx
 	ja	L(large_backward)
@@ -474,7 +484,8 @@ L(loop_4x_vec_backward):
 	VZEROUPPER
 	ret
 
-#if (defined USE_MULTIARCH || VEC_SIZE == 16) && IS_IN (libc)
+#if ((defined USE_MULTIARCH || VEC_SIZE == 16) \
+     && (IS_IN (libc) || IS_IN (libcpu_rt_c)))
 L(large_forward):
 	/* Don't use non-temporal store if there is overlap between
 	   destination and source since destination may be in cache
@@ -547,16 +558,16 @@ L(loop_large_backward):
 #endif
 END (MEMMOVE_SYMBOL (__memmove, unaligned_erms))
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # ifdef USE_MULTIARCH
 strong_alias (MEMMOVE_SYMBOL (__memmove, unaligned_erms),
 	      MEMMOVE_SYMBOL (__memcpy, unaligned_erms))
-#  ifdef SHARED
+#  if defined SHARED && IS_IN (libc)
 strong_alias (MEMMOVE_SYMBOL (__memmove_chk, unaligned_erms),
 	      MEMMOVE_SYMBOL (__memcpy_chk, unaligned_erms))
 #  endif
 # endif
-# ifdef SHARED
+# if defined SHARED && IS_IN (libc)
 strong_alias (MEMMOVE_CHK_SYMBOL (__memmove_chk, unaligned),
 	      MEMMOVE_CHK_SYMBOL (__memcpy_chk, unaligned))
 # endif

@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memmove __redirect_memmove
 # include <string.h>
 # undef memmove
@@ -26,12 +26,18 @@
 # define SYMBOL_NAME memmove
 # include "ifunc-memmove.h"
 
+# if IS_IN (libcpu_rt_c)
+#  define __libc_memmove memmove
+# endif
+
 libc_ifunc_redirected (__redirect_memmove, __libc_memmove,
 		       IFUNC_SELECTOR ());
 
+# if !IS_IN (libcpu_rt_c)
 strong_alias (__libc_memmove, memmove);
-# ifdef SHARED
+#  ifdef SHARED
 __hidden_ver1 (__libc_memmove, __GI_memmove, __redirect_memmove)
   __attribute__ ((visibility ("hidden")));
+#  endif
 # endif
 #endif

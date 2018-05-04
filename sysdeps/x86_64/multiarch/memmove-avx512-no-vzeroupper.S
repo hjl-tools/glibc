@@ -18,15 +18,18 @@
 
 #include <sysdep.h>
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 
 # include "asm-syntax.h"
 
 	.section .text.avx512,"ax",@progbits
+# if IS_IN (libc)
 ENTRY (__mempcpy_chk_avx512_no_vzeroupper)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (__mempcpy_chk_avx512_no_vzeroupper)
+strong_alias (__memmove_chk_avx512_no_vzeroupper, __memcpy_chk_avx512_no_vzeroupper)
+# endif
 
 ENTRY (__mempcpy_avx512_no_vzeroupper)
 	movq	%rdi, %rax
@@ -34,10 +37,12 @@ ENTRY (__mempcpy_avx512_no_vzeroupper)
 	jmp	L(start)
 END (__mempcpy_avx512_no_vzeroupper)
 
+# if IS_IN (libc)
 ENTRY (__memmove_chk_avx512_no_vzeroupper)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (__memmove_chk_avx512_no_vzeroupper)
+# endif
 
 ENTRY (__memmove_avx512_no_vzeroupper)
 	mov	%rdi, %rax
@@ -411,5 +416,4 @@ L(gobble_256bytes_nt_loop_bkw):
 END (__memmove_avx512_no_vzeroupper)
 
 strong_alias (__memmove_avx512_no_vzeroupper, __memcpy_avx512_no_vzeroupper)
-strong_alias (__memmove_chk_avx512_no_vzeroupper, __memcpy_chk_avx512_no_vzeroupper)
 #endif

@@ -16,7 +16,7 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define MEMMOVE_SYMBOL(p,s)	p##_sse2_##s
 #else
 weak_alias (__mempcpy, mempcpy)

@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define mempcpy __redirect_mempcpy
 # define __mempcpy __redirect___mempcpy
 # define NO_MEMPCPY_STPCPY_REDIRECT
@@ -30,13 +30,19 @@
 # define SYMBOL_NAME mempcpy
 # include "ifunc-memmove.h"
 
+# if IS_IN (libcpu_rt_c)
+#  define __mempcpy mempcpy
+# endif
+
 libc_ifunc_redirected (__redirect_mempcpy, __mempcpy, IFUNC_SELECTOR ());
 
+# if !IS_IN (libcpu_rt_c)
 weak_alias (__mempcpy, mempcpy)
-# ifdef SHARED
+#  ifdef SHARED
 __hidden_ver1 (__mempcpy, __GI___mempcpy, __redirect___mempcpy)
   __attribute__ ((visibility ("hidden")));
 __hidden_ver1 (mempcpy, __GI_mempcpy, __redirect_mempcpy)
   __attribute__ ((visibility ("hidden")));
+#  endif
 # endif
 #endif
