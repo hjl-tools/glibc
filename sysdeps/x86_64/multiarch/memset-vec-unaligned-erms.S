@@ -73,18 +73,23 @@
 #endif
 
 	.section SECTION(.text),"ax",@progbits
-#if VEC_SIZE == 16 && IS_IN (libc)
+#if VEC_SIZE == 16 && (IS_IN (libc) || IS_IN (libcpu_rt_c))
+# if IS_IN (libcpu_rt_c)
+#  define __bzero	bzero
+# endif
 ENTRY (__bzero)
 	movq	%rdi, %rax /* Set return value.  */
 	movq	%rsi, %rdx /* Set n.  */
 	pxor	%xmm0, %xmm0
 	jmp	L(entry_from_bzero)
 END (__bzero)
+# if !IS_IN (libcpu_rt_c)
 weak_alias (__bzero, bzero)
+# endif
 #endif
 
-#if IS_IN (libc)
-# if defined SHARED
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
+# if defined SHARED && IS_IN (libc)
 ENTRY_CHK (WMEMSET_CHK_SYMBOL (__wmemset_chk, unaligned))
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
@@ -117,14 +122,16 @@ L(entry_from_bzero):
 	VMOVU	%VEC(0), (%rdi)
 	VZEROUPPER
 	ret
-#if defined USE_MULTIARCH && IS_IN (libc)
+#if defined USE_MULTIARCH && (IS_IN (libc) || IS_IN (libcpu_rt_c))
 END (MEMSET_SYMBOL (__memset, unaligned))
 
-# if VEC_SIZE == 16
+# if VEC_SIZE == 16 && (IS_IN (libc) || IS_IN (libcpu_rt_c))
+#  if IS_IN (libc)
 ENTRY (__memset_chk_erms)
 	cmpq	%rdx, %rcx
 	jb	HIDDEN_JUMPTARGET (__chk_fail)
 END (__memset_chk_erms)
+#  endif
 
 /* Only used to measure performance of REP STOSB.  */
 ENTRY (__memset_erms)

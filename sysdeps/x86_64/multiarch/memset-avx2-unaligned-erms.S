@@ -1,4 +1,4 @@
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define VEC_SIZE	32
 # define VEC(i)		ymm##i
 # define VMOVU		vmovdqu

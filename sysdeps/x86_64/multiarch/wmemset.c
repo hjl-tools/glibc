@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define wmemset __redirect_wmemset
 # define __wmemset __redirect___wmemset
 # include <wchar.h>
@@ -28,13 +28,19 @@
 # define SYMBOL_NAME wmemset
 # include "ifunc-wmemset.h"
 
+# if IS_IN (libcpu_rt_c)
+#  define __wmemset wmemset
+# endif
+
 libc_ifunc_redirected (__redirect_wmemset, __wmemset, IFUNC_SELECTOR ());
+# if !IS_IN (libcpu_rt_c)
 weak_alias (__wmemset, wmemset)
 
-# ifdef SHARED
+#  ifdef SHARED
 __hidden_ver1 (__wmemset, __GI___wmemset, __redirect___wmemset)
   __attribute__ ((visibility ("hidden")));
 __hidden_ver1 (wmemset, __GI_wmemset, __redirect_wmemset)
   __attribute__ ((visibility ("hidden")));
+#  endif
 # endif
 #endif

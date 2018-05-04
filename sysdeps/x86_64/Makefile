@@ -147,10 +147,12 @@ endif
 endif
 
 ifeq ($(subdir),cpu-rt-c)
-cpu-rt-c-routines += memchr memcmp memcpy memmove mempcpy memrchr
+cpu-rt-c-routines += memchr memcmp memcpy memmove mempcpy memrchr \
+		     memset \
+		     wmemset
 
 # For the CPU run-time tests.
-vpath %.c $(..)string
+vpath %.c $(..)string $(..)wcsmbs
 endif
 
 ifeq ($(subdir),csu)
