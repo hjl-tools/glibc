@@ -65,3 +65,7 @@ sysdep_routines += memcpy_chk-nonshared mempcpy_chk-nonshared \
 		   memmove_chk-nonshared memset_chk-nonshared \
 		   wmemset_chk-nonshared
 endif
+
+ifeq ($(subdir),cpu-rt-c)
+libcpu-rt-c-sysdep_routines += memchr-sse2 memchr-avx2
+endif

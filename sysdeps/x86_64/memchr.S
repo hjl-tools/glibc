@@ -324,7 +324,7 @@ L(return_null):
 	ret
 END(MEMCHR)
 
-#ifndef USE_AS_WMEMCHR
+#if !defined USE_AS_WMEMCHR && !IS_IN (libcpu_rt_c)
 strong_alias (memchr, __memchr)
 libc_hidden_builtin_def(memchr)
 #endif

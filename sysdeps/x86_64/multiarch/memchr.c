@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc. */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memchr __redirect_memchr
 # include <string.h>
 # undef memchr
@@ -27,9 +27,11 @@
 # include "ifunc-avx2.h"
 
 libc_ifunc_redirected (__redirect_memchr, memchr, IFUNC_SELECTOR ());
+# if !IS_IN (libcpu_rt_c)
 strong_alias (memchr, __memchr)
-# ifdef SHARED
+#  ifdef SHARED
 __hidden_ver1 (memchr, __GI_memchr, __redirect_memchr)
   __attribute__((visibility ("hidden")));
+#  endif
 # endif
 #endif

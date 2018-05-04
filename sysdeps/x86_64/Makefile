@@ -146,6 +146,13 @@ CFLAGS-tst-avx512mod.c += $(AVX512-CFLAGS)
 endif
 endif
 
+ifeq ($(subdir),cpu-rt-c)
+cpu-rt-c-routines += memchr
+
+# For the CPU run-time tests.
+vpath %.c $(..)string
+endif
+
 ifeq ($(subdir),csu)
 gen-as-const-headers += tlsdesc.sym rtld-offsets.sym
 endif
