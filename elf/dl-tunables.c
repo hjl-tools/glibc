@@ -28,7 +28,7 @@
 #include <ldsodefs.h>
 
 #define TUNABLES_INTERNAL 1
-#include "dl-tunables.h"
+#include <dl-tunables.h>
 
 #include <not-errno.h>
 

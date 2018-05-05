@@ -40,49 +40,56 @@
   */
 
 #if !IS_IN (ldconfig)
-# if !defined PROCINFO_DECL && defined SHARED
+# if !defined PROCINFO_DECL && defined SHARED && !IS_IN (libcpu_rt_c)
   ._dl_x86_cpu_features
 # else
+#  if IS_IN (libcpu_rt_c)
+PROCINFO_CLASS struct cpu_features __cpu_rt_dl_x86_cpu_features
+  attribute_hidden
+#  else
 PROCINFO_CLASS struct cpu_features _dl_x86_cpu_features
+#  endif
 # endif
 # ifndef PROCINFO_DECL
 = { }
+# endif
+# if !defined SHARED || defined PROCINFO_DECL || IS_IN (libcpu_rt_c)
+;
+# else
+,
+# endif
+#endif
+
+#if !IS_IN (libcpu_rt_c)
+# if !defined PROCINFO_DECL && defined SHARED
+  ._dl_x86_hwcap_flags
+# else
+PROCINFO_CLASS const char _dl_x86_hwcap_flags[3][9]
+# endif
+# ifndef PROCINFO_DECL
+= {
+    "sse2", "x86_64", "avx512_1"
+  }
 # endif
 # if !defined SHARED || defined PROCINFO_DECL
 ;
 # else
 ,
 # endif
-#endif
 
-#if !defined PROCINFO_DECL && defined SHARED
-  ._dl_x86_hwcap_flags
-#else
-PROCINFO_CLASS const char _dl_x86_hwcap_flags[3][9]
-#endif
-#ifndef PROCINFO_DECL
-= {
-    "sse2", "x86_64", "avx512_1"
-  }
-#endif
-#if !defined SHARED || defined PROCINFO_DECL
-;
-#else
-,
-#endif
-
-#if !defined PROCINFO_DECL && defined SHARED
+# if !defined PROCINFO_DECL && defined SHARED
   ._dl_x86_platforms
-#else
+# else
 PROCINFO_CLASS const char _dl_x86_platforms[4][9]
-#endif
-#ifndef PROCINFO_DECL
+# endif
+# ifndef PROCINFO_DECL
 = {
     "i586", "i686", "haswell", "xeon_phi"
   }
-#endif
-#if !defined SHARED || defined PROCINFO_DECL
+# endif
+# if !defined SHARED || defined PROCINFO_DECL
 ;
-#else
+# else
 ,
+# endif
 #endif

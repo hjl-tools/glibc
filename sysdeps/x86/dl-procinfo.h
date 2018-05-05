@@ -18,16 +18,18 @@
 
 #ifndef _DL_PROCINFO_H
 #define _DL_PROCINFO_H	1
-#include <ldsodefs.h>
-#include <dl-hwcap.h>
 
-#define _DL_HWCAP_COUNT		HWCAP_COUNT
-#define _DL_PLATFORMS_COUNT	HWCAP_PLATFORMS_COUNT
+#if !IS_IN (libcpu_rt_c)
+# include <ldsodefs.h>
+# include <dl-hwcap.h>
+
+# define _DL_HWCAP_COUNT	HWCAP_COUNT
+# define _DL_PLATFORMS_COUNT	HWCAP_PLATFORMS_COUNT
 
 /* Start at 48 to reserve spaces for hardware capabilities.  */
-#define _DL_FIRST_PLATFORM	48
+# define _DL_FIRST_PLATFORM	48
 /* Mask to filter out platforms.  */
-#define _DL_HWCAP_PLATFORM	(((1ULL << _DL_PLATFORMS_COUNT) - 1) \
+# define _DL_HWCAP_PLATFORM	(((1ULL << _DL_PLATFORMS_COUNT) - 1) \
 				 << _DL_FIRST_PLATFORM)
 
 static inline int
@@ -44,5 +46,6 @@ _dl_string_platform (const char *str)
       }
   return -1;
 };
+#endif /* !IS_IN (libcpu_rt) */
 
 #endif /* dl-procinfo.h */
