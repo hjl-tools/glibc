@@ -18,13 +18,19 @@
 
 #include <cpuid.h>
 #include <cpu-features.h>
-#include <dl-hwcap.h>
+#if !IS_IN (libcpu_rt_c)
+# include <dl-hwcap.h>
+#endif
 #include <libc-pointer-arith.h>
 
 #if HAVE_TUNABLES
 # define TUNABLE_NAMESPACE tune
 # include <unistd.h>		/* Get STDOUT_FILENO for _dl_printf.  */
-# include <elf/dl-tunables.h>
+# if IS_IN (libcpu_rt_c)
+#  include <cpu-rt-c/dl-tunables.h>
+# else
+#  include <elf/dl-tunables.h>
+# endif
 
 extern void TUNABLE_CALLBACK (set_hwcaps) (tunable_val_t *)
   attribute_hidden;
@@ -195,6 +201,20 @@ get_common_indeces (struct cpu_features *cpu_features,
 	}
     }
 }
+
+#if HAVE_TUNABLES
+static inline void
+init_cpu_features_tunables (struct cpu_features *cpu_features)
+{
+  TUNABLE_GET (hwcaps, tunable_val_t *, TUNABLE_CALLBACK (set_hwcaps));
+  cpu_features->non_temporal_threshold
+    = TUNABLE_GET (x86_non_temporal_threshold, long int, NULL);
+  cpu_features->data_cache_size
+    = TUNABLE_GET (x86_data_cache_size, long int, NULL);
+  cpu_features->shared_cache_size
+    = TUNABLE_GET (x86_shared_cache_size, long int, NULL);
+}
+#endif
 
 static inline void
 init_cpu_features (struct cpu_features *cpu_features)
@@ -398,24 +418,19 @@ no_cpuid:
   cpu_features->model = model;
   cpu_features->kind = kind;
 
-#if HAVE_TUNABLES
-  TUNABLE_GET (hwcaps, tunable_val_t *, TUNABLE_CALLBACK (set_hwcaps));
-  cpu_features->non_temporal_threshold
-    = TUNABLE_GET (x86_non_temporal_threshold, long int, NULL);
-  cpu_features->data_cache_size
-    = TUNABLE_GET (x86_data_cache_size, long int, NULL);
-  cpu_features->shared_cache_size
-    = TUNABLE_GET (x86_shared_cache_size, long int, NULL);
-#endif
+#if !IS_IN (libcpu_rt_c)
+# if HAVE_TUNABLES
+  init_cpu_features_tunables (cpu_features);
+# endif
 
   /* Reuse dl_platform, dl_hwcap and dl_hwcap_mask for x86.  */
-#if !HAVE_TUNABLES && defined SHARED
+# if !HAVE_TUNABLES && defined SHARED
   /* The glibc.tune.hwcap_mask tunable is initialized already, so no need to do
      this.  */
   GLRO(dl_hwcap_mask) = HWCAP_IMPORTANT;
-#endif
+# endif
 
-#ifdef __x86_64__
+# ifdef __x86_64__
   GLRO(dl_hwcap) = HWCAP_X86_64;
   if (cpu_features->kind == arch_kind_intel)
     {
@@ -451,7 +466,7 @@ no_cpuid:
       if (platform != NULL)
 	GLRO(dl_platform) = platform;
     }
-#else
+# else
   GLRO(dl_hwcap) = 0;
   if (CPU_FEATURES_CPU_P (cpu_features, SSE2))
     GLRO(dl_hwcap) |= HWCAP_X86_SSE2;
@@ -460,6 +475,7 @@ no_cpuid:
     GLRO(dl_platform) = "i686";
   else if (CPU_FEATURES_ARCH_P (cpu_features, I586))
     GLRO(dl_platform) = "i586";
+# endif
 #endif
 
 #if CET_ENABLED

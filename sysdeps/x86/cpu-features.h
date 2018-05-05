@@ -161,8 +161,16 @@ extern const struct cpu_features *__get_cpu_features (void)
      __attribute__ ((const));
 
 # if defined (_LIBC) && !IS_IN (nonlib)
-/* Unused for x86.  */
-#  define INIT_ARCH()
+/* Call _cpu_rt_x86_init_cpu_features to support LD_PRELOAD of the CPU
+   run-time library on non-lazy binding shared objects.  */
+#  if IS_IN (libcpu_rt_c)
+extern void __cpu_rt_x86_init_cpu_features (void)
+  __attribute__ ((visibility ("hidden")));
+#   define INIT_ARCH()		__cpu_rt_x86_init_cpu_features ()
+#  else
+/* Unused for x86 when not in the CPU run-time library.  */
+#   define INIT_ARCH()
+#  endif
 #  define __get_cpu_features()	(&GLRO(dl_x86_cpu_features))
 # endif
 

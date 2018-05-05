@@ -35,6 +35,7 @@
 #include <dl-writev.h>
 #include <not-cancel.h>
 
+#if !IS_IN (libcpu_rt_c)
 /* Read the whole contents of FILE into new mmap'd space with given
    protections.  *SIZEP gets the size of the file.  On error MAP_FAILED
    is returned.  */
@@ -357,6 +358,7 @@ _dl_higher_prime_number (unsigned long int n)
 
   return *low;
 }
+#endif
 
 /* A stripped down strtoul-like implementation for very early use.  It
    does not set errno if the result is outside bounds because it may get

@@ -23,6 +23,16 @@
 #include <elf.h>
 #include <cpu-features.h>
 
+#if IS_IN (libcpu_rt_c)
+# define EXTERN extern
+# define GLRO(name) __cpu_rt_##name
+# define PROCINFO_DECL
+# ifndef PROCINFO_CLASS
+#  define PROCINFO_CLASS EXTERN
+# endif
+# include <dl-procinfo.c>
+# include <cpu-rt-support.h>
+#else
 struct La_i86_regs;
 struct La_i86_retval;
 struct La_x86_64_regs;
@@ -30,7 +40,7 @@ struct La_x86_64_retval;
 struct La_x32_regs;
 struct La_x32_retval;
 
-#define ARCH_PLTENTER_MEMBERS						\
+# define ARCH_PLTENTER_MEMBERS						\
     Elf32_Addr (*i86_gnu_pltenter) (Elf32_Sym *, unsigned int, uintptr_t *, \
 				    uintptr_t *, struct La_i86_regs *,	\
 				    unsigned int *, const char *name,	\
@@ -45,7 +55,7 @@ struct La_x32_retval;
 				    unsigned int *, const char *name,	\
 				    long int *framesizep)
 
-#define ARCH_PLTEXIT_MEMBERS						\
+# define ARCH_PLTEXIT_MEMBERS						\
     unsigned int (*i86_gnu_pltexit) (Elf32_Sym *, unsigned int, uintptr_t *, \
 				     uintptr_t *, const struct La_i86_regs *, \
 				     struct La_i86_retval *, const char *); \
@@ -61,6 +71,7 @@ struct La_x32_retval;
 				     struct La_x86_64_retval *,		\
 				     const char *)
 
-#include_next <ldsodefs.h>
+# include_next <ldsodefs.h>
+#endif /* !IS_IN (libcpu_rt_c) */
 
 #endif

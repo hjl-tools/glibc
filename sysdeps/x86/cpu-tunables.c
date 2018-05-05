@@ -21,7 +21,11 @@
 # include <stdbool.h>
 # include <stdint.h>
 # include <unistd.h>		/* Get STDOUT_FILENO for _dl_printf.  */
-# include <elf/dl-tunables.h>
+# if IS_IN (libcpu_rt_c)
+#  include <cpu-rt-c/dl-tunables.h>
+# else
+#  include <elf/dl-tunables.h>
+# endif
 # include <string.h>
 # include <cpu-features.h>
 # include <ldsodefs.h>

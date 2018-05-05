@@ -21,7 +21,8 @@
 #define _DL_I386_PROCINFO_H	1
 #include <sysdeps/x86/dl-procinfo.h>
 
-#undef _dl_procinfo
+#if !IS_IN (libcpu_rt_c)
+# undef _dl_procinfo
 static inline int
 __attribute__ ((unused))
 _dl_procinfo (unsigned int type, unsigned long int word)
@@ -44,4 +45,5 @@ _dl_procinfo (unsigned int type, unsigned long int word)
 
   return 0;
 }
+# endif
 #endif
