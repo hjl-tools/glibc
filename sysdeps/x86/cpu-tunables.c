@@ -32,13 +32,17 @@
 
 /* We can't use IFUNC memcmp nor strlen in init_cpu_features from libc.a
    since IFUNC must be set up by init_cpu_features.  */
-# if defined USE_MULTIARCH && !defined SHARED
+# if defined USE_MULTIARCH && (!defined SHARED || IS_IN (libcpu_rt_c))
 #  ifdef __x86_64__
 #   define DEFAULT_MEMCMP	__memcmp_sse2
 #  else
 #   define DEFAULT_MEMCMP	__memcmp_ia32
 #  endif
-extern __typeof (memcmp) DEFAULT_MEMCMP;
+extern __typeof (memcmp) DEFAULT_MEMCMP
+# if IS_IN (libcpu_rt_c)
+  __attribute__ ((visibility ("hidden")));
+# endif
+;
 # else
 #  define DEFAULT_MEMCMP	memcmp
 # endif
