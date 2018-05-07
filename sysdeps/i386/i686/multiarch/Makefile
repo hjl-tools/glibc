@@ -53,3 +53,7 @@ ifeq ($(subdir),debug)
 sysdep_routines += memcpy_chk-nonshared mempcpy_chk-nonshared \
 		   memmove_chk-nonshared memset_chk-nonshared
 endif
+
+ifeq ($(subdir),cpu-rt-c)
+libcpu-rt-c-sysdep_routines += memcmp-ia32 memcmp-ssse3 memcmp-sse4
+endif
