@@ -48,6 +48,13 @@ $(objpfx)tst-audit3.out: $(objpfx)tst-auditmod3b.so
 tst-audit3-ENV = LD_AUDIT=$(objpfx)tst-auditmod3b.so
 endif
 
+ifeq ($(subdir),cpu-rt-c)
+cpu-rt-c-routines += memcmp
+
+# For the CPU run-time tests.
+vpath %.c $(..)string
+endif
+
 ifeq ($(subdir),csu)
 gen-as-const-headers += tlsdesc.sym
 endif

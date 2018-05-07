@@ -16,7 +16,7 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define memcmp __memcmp_ia32
 
 # ifdef SHARED
@@ -24,8 +24,12 @@
 /* IFUNC doesn't work with the hidden functions in shared library since
    they will be called without setting up EBX needed for PLT which is
    used by IFUNC.  */
-#  define libc_hidden_builtin_def(name) \
+#  if IS_IN (libcpu_rt_c)
+#   define libc_hidden_builtin_def(name)
+#  else
+#   define libc_hidden_builtin_def(name) \
 	.globl __GI_memcmp; __GI_memcmp = memcmp
+#  endif
 # endif
 
 # undef weak_alias
