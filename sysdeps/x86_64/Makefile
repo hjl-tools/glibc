@@ -148,7 +148,7 @@ endif
 
 ifeq ($(subdir),cpu-rt-c)
 cpu-rt-c-routines += memchr memcmp memcpy memmove mempcpy memrchr \
-		     memset strchr strcmp \
+		     memset strchr strcmp strcpy \
 		     wmemset
 
 # For the CPU run-time tests.
