@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define strcmp __redirect_strcmp
 # include <string.h>
 # undef strcmp
@@ -52,7 +52,7 @@ IFUNC_SELECTOR (void)
 
 libc_ifunc_redirected (__redirect_strcmp, strcmp, IFUNC_SELECTOR ());
 
-# ifdef SHARED
+# if defined SHARED && !IS_IN (libcpu_rt_c)
 __hidden_ver1 (strcmp, __GI_strcmp, __redirect_strcmp)
   __attribute__ ((visibility ("hidden")));
 # endif
