@@ -82,5 +82,7 @@ libcpu-rt-c-sysdep_routines += memchr-sse2 memchr-avx2 \
 			       memset-avx512-unaligned-erms \
 			       memset-avx512-no-vzeroupper \
 			       strchr-sse2-no-bsf strchr-sse2 \
-			       strchr-avx2
+			       strchr-avx2 strcmp-sse2 \
+			       strcmp-sse2-unaligned strcmp-ssse3 \
+			       strcmp-sse4_2 strcmp-avx2
 endif
