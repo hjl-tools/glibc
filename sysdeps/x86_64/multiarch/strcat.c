@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define strcat __redirect_strcat
 # include <string.h>
 # undef strcat
@@ -28,7 +28,7 @@
 
 libc_ifunc_redirected (__redirect_strcat, strcat, IFUNC_SELECTOR ());
 
-# ifdef SHARED
+# if defined SHARED && !IS_IN (libcpu_rt_c)
 __hidden_ver1 (strcat, __GI_strcat, __redirect_strcat)
   __attribute__ ((visibility ("hidden")));
 # endif
