@@ -255,4 +255,6 @@ ENTRY (strcat)
 	movq	%rdi, %rax	/* Source is return value.  */
 	retq
 END (strcat)
+#if !IS_IN (libcpu_rt_c)
 libc_hidden_builtin_def (strcat)
+#endif
