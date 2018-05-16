@@ -17,7 +17,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define strrchr __redirect_strrchr
 # include <string.h>
 # undef strrchr
@@ -27,7 +27,7 @@
 
 libc_ifunc_redirected (__redirect_strrchr, strrchr, IFUNC_SELECTOR ());
 weak_alias (strrchr, rindex);
-# ifdef SHARED
+# if defined SHARED && !IS_IN (libcpu_rt_c)
 __hidden_ver1 (strrchr, __GI_strrchr, __redirect_strrchr)
   __attribute__((visibility ("hidden")));
 # endif
