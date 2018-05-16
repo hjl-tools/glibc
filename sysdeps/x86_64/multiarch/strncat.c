@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define strncat __redirect_strncat
 # include <string.h>
 # undef strncat
@@ -27,9 +27,11 @@
 # include "ifunc-unaligned-ssse3.h"
 
 libc_ifunc_redirected (__redirect_strncat, strncat, IFUNC_SELECTOR ());
+# if !IS_IN (libcpu_rt_c)
 strong_alias (strncat, __strncat);
-# ifdef SHARED
+#  ifdef SHARED
 __hidden_ver1 (strncat, __GI___strncat, __redirect_strncat)
   __attribute__((visibility ("hidden")));
+#  endif
 # endif
 #endif

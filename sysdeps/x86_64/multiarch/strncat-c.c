@@ -1,2 +1,2 @@
 #define STRNCAT __strncat_sse2
-#include <string/strncat.c>
+#include <sysdeps/x86_64/strncat.c>
