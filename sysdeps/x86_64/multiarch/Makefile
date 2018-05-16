@@ -88,5 +88,6 @@ libcpu-rt-c-sysdep_routines += memchr-sse2 memchr-avx2 \
 			       strcmp-sse2-unaligned strcmp-ssse3 \
 			       strcmp-sse4_2 strcmp-avx2 strcpy-sse2 \
 			       strcpy-sse2-unaligned strcpy-ssse3 \
-			       strlen-sse2 strlen-avx2
+			       strlen-sse2 strlen-avx2 \
+			       strnlen-sse2 strnlen-avx2
 endif

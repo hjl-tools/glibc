@@ -18,7 +18,7 @@
    <http://www.gnu.org/licenses/>.  */
 
 /* Define multiple versions only for the definition in libc.  */
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define strnlen __redirect_strnlen
 # define __strnlen __redirect___strnlen
 # include <string.h>
@@ -28,12 +28,28 @@
 # define SYMBOL_NAME strnlen
 # include "ifunc-avx2.h"
 
+#if IS_IN (libcpu_rt_c)
+# define __strnlen strnlen
+#endif
+
 libc_ifunc_redirected (__redirect_strnlen, __strnlen, IFUNC_SELECTOR ());
+
+# if IS_IN (libcpu_rt_c)
+#  ifdef SHARED
+__hidden_ver1 (strnlen, __strnlen, __redirect___strnlen)
+  __attribute__((visibility ("hidden")));
+#  else
+#   undef __strnlen
+/* Needed by strncpy-c.o.  */
+strong_alias (strnlen, __strnlen);
+#  endif
+# else
+#  ifdef SHARED
 weak_alias (__strnlen, strnlen);
-# ifdef SHARED
 __hidden_ver1 (__strnlen, __GI___strnlen, __redirect___strnlen)
   __attribute__((visibility ("hidden")));
 __hidden_ver1 (strnlen, __GI_strnlen, __redirect_strnlen)
   __attribute__((weak, visibility ("hidden")));
+#  endif
 # endif
 #endif
