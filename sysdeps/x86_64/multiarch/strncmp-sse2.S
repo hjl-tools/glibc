@@ -18,7 +18,7 @@
 
 #include <sysdep.h>
 
-#if IS_IN (libc)
+#if IS_IN (libc) || IS_IN (libcpu_rt_c)
 # define STRCMP __strncmp_sse2
 # undef libc_hidden_builtin_def
 # define libc_hidden_builtin_def(strcmp)
