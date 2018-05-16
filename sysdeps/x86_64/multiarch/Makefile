@@ -91,5 +91,7 @@ libcpu-rt-c-sysdep_routines += memchr-sse2 memchr-avx2 \
 			       strlen-sse2 strlen-avx2 strncat-c \
 			       strncat-sse2-unaligned strncat-ssse3 \
 			       strnlen-sse2 strnlen-avx2 strncmp-sse2 \
-			       strncmp-ssse3 strncmp-sse4_2 strncmp-avx2
+			       strncmp-ssse3 strncmp-sse4_2 strncmp-avx2 \
+			       strncpy-c strncpy-sse2-unaligned \
+			       strncpy-ssse3
 endif
