@@ -174,6 +174,8 @@ ENTRY (__memmove_erms)
 	testq	%rdx, %rdx
 	jz	2f
 L(start_movsb):
+	testq	%rdx, %rdx
+	jz	2f
 	movq	%rdx, %rcx
 	cmpq	%rsi, %rdi
 	jb	1f
