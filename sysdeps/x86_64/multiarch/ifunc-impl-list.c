@@ -509,6 +509,8 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 	      IFUNC_IMPL_ADD (array, i, memcpy, 1, __memcpy_sse2_unaligned)
 	      IFUNC_IMPL_ADD (array, i, memcpy, 1,
 			      __memcpy_sse2_unaligned_erms)
+	      IFUNC_IMPL_ADD (array, i, memcpy, 1,
+			      __memcpy_no_overlap_erms)
 	      IFUNC_IMPL_ADD (array, i, memcpy, 1, __memcpy_erms))
 
 #ifdef SHARED
@@ -580,6 +582,8 @@ __libc_ifunc_impl_list (const char *name, struct libc_ifunc_impl *array,
 			      __mempcpy_sse2_unaligned)
 	      IFUNC_IMPL_ADD (array, i, mempcpy, 1,
 			      __mempcpy_sse2_unaligned_erms)
+	      IFUNC_IMPL_ADD (array, i, mempcpy, 1,
+			      __mempcpy_no_overlap_erms)
 	      IFUNC_IMPL_ADD (array, i, mempcpy, 1, __mempcpy_erms))
 
   /* Support sysdeps/x86_64/multiarch/strncmp.c.  */

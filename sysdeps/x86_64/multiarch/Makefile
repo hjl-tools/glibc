@@ -17,6 +17,7 @@ sysdep_routines += strncat-c stpncpy-c strncpy-c \
 		   memcpy-ssse3-back \
 		   memmove-ssse3-back \
 		   memmove-avx512-no-vzeroupper \
+		   memcpy-no-overlap-erms mempcpy-no-overlap-erms \
 		   strcasecmp_l-sse2 strcasecmp_l-ssse3 \
 		   strcasecmp_l-sse4_2 strcasecmp_l-avx \
 		   strncase_l-sse2 strncase_l-ssse3 \
