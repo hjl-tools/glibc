@@ -27,6 +27,7 @@
 # undef mempcpy
 # undef __mempcpy
 
+# define HAS_NO_OVERLAP_ERMS 1
 # define SYMBOL_NAME mempcpy
 # include "ifunc-memmove.h"
 

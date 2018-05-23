@@ -308,6 +308,13 @@ TUNABLE_CALLBACK (set_hwcaps) (tunable_val_t *valp)
 					   21);
 	    }
 	  break;
+	case 22:
+	    {
+	      CHECK_GLIBC_IFUNC_ARCH_BOTH (n, cpu_features,
+					   Prefer_No_Overlap_ERMS,
+					   disable, 22);
+	    }
+	  break;
 	case 23:
 	    {
 	      CHECK_GLIBC_IFUNC_ARCH_NEED_ARCH_BOTH

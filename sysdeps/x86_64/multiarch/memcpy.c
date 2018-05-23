@@ -23,6 +23,7 @@
 # include <string.h>
 # undef memcpy
 
+# define HAS_NO_OVERLAP_ERMS 1
 # define SYMBOL_NAME memcpy
 # include "ifunc-memmove.h"
 

@@ -20,6 +20,8 @@
 #include <init-arch.h>
 
 extern __typeof (REDIRECT_NAME) OPTIMIZE (erms) attribute_hidden;
+extern __typeof (REDIRECT_NAME) OPTIMIZE (no_overlap_erms)
+  attribute_hidden;
 extern __typeof (REDIRECT_NAME) OPTIMIZE (sse2_unaligned)
   attribute_hidden;
 extern __typeof (REDIRECT_NAME) OPTIMIZE (sse2_unaligned_erms)
@@ -40,6 +42,11 @@ static inline void *
 IFUNC_SELECTOR (void)
 {
   const struct cpu_features* cpu_features = __get_cpu_features ();
+
+#ifdef HAS_NO_OVERLAP_ERMS
+  if (CPU_FEATURES_ARCH_P (cpu_features, Prefer_No_Overlap_ERMS))
+    return OPTIMIZE (no_overlap_erms);
+#endif
 
   if (CPU_FEATURES_ARCH_P (cpu_features, Prefer_ERMS)
       || CPU_FEATURES_ARCH_P (cpu_features, Prefer_FSRM))
