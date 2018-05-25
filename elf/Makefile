@@ -186,8 +186,9 @@ tests += restest1 preloadtest loadfail multiload origtest resolvfail \
 	 tst-tlsalign tst-tlsalign-extern tst-nodelete-opened \
 	 tst-nodelete2 tst-audit11 tst-audit12 tst-dlsym-error tst-noload \
 	 tst-latepthread tst-tls-manydynamic tst-nodelete-dlclose \
-	 tst-debug1 tst-main1 tst-absolute-sym tst-big-note
+	 tst-debug1 tst-main1 tst-absolute-sym tst-big-note tst-reloc1
 #	 reldep9
+test-xfail-tst-reloc1 = yes
 tests-internal += loadtest unload unload2 circleload1 \
 	 neededtest neededtest2 neededtest3 neededtest4 \
 	 tst-tls3 tst-tls6 tst-tls7 tst-tls8 tst-dlmopen2 \
@@ -273,7 +274,7 @@ modules-names = testobj1 testobj2 testobj3 testobj4 testobj5 testobj6 \
 		tst-latepthreadmod $(tst-tls-many-dynamic-modules) \
 		tst-nodelete-dlclose-dso tst-nodelete-dlclose-plugin \
 		tst-main1mod tst-libc_dlvsym-dso tst-absolute-sym-lib \
-		tst-big-note-lib
+		tst-big-note-lib tst-relocmod1a tst-relocmod1b
 
 ifeq (yes,$(have-mtls-dialect-gnu2))
 tests += tst-gnu2-tls1
@@ -1454,3 +1455,12 @@ tst-libc_dlvsym-static-ENV = \
 $(objpfx)tst-libc_dlvsym-static.out: $(objpfx)tst-libc_dlvsym-dso.so
 
 $(objpfx)tst-big-note: $(objpfx)tst-big-note-lib.so
+
+$(objpfx)tst-reloc1: $(objpfx)tst-relocmod1b.so
+$(objpfx)tst-relocmod1b.so: $(objpfx)tst-relocmod1b.os \
+			    $(objpfx)tst-relocmod1a.so
+	$(LINK.o) -nostdlib -nostartfiles -shared -o $@ -Wl,-z,now \
+		  $(filter-out $(shlib-lds),$^)
+$(objpfx)tst-relocmod1a.so: $(objpfx)tst-relocmod1a.os
+	$(LINK.o) -nostdlib -nostartfiles -shared -o $@ -Wl,-z,now \
+		  $(filter-out $(shlib-lds),$^)

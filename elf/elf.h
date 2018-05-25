@@ -925,6 +925,8 @@ typedef struct
    GNU extension.  */
 #define DT_VERSYM	0x6ffffff0
 
+#define DT_FLAGS_2	0x6ffffff1	/* State flags, see DF_2_* below.  */
+
 #define DT_RELACOUNT	0x6ffffff9
 #define DT_RELCOUNT	0x6ffffffa
 
@@ -983,6 +985,10 @@ typedef struct
 #define	DF_1_SINGLETON	0x02000000	/* Singleton symbols are used.  */
 #define	DF_1_STUB	0x04000000
 #define	DF_1_PIE	0x08000000
+
+/* State flags selectable in the `d_un.d_val' element of the DT_FLAGS_2
+   entry in the dynamic section.  */
+#define DF_2_GNU_IFUNC	0x00000001	/* Object has GNU_IFUNC symbols */
 
 /* Flags for the feature selection in DT_FEATURE_1.  */
 #define DTF_1_PARINIT	0x00000001

@@ -2183,6 +2183,27 @@ ERROR: ld.so: object '%s' cannot be loaded as audit interface: %s; ignored.\n",
 	  /* Also allocated with the fake malloc().  */
 	  l->l_free_initfini = 0;
 
+	  /* Relocate shared object with IFUNC symbols first.  */
+	  if (!l->l_name[0] || !(l->l_flags_2 & DF_2_GNU_IFUNC))
+	    continue;
+
+	  if (l != &GL(dl_rtld_map))
+	    _dl_relocate_object (l, l->l_scope, GLRO(dl_lazy) ? RTLD_LAZY : 0,
+				 consider_profiling);
+
+	  /* Add object to slot information data if necessasy.  */
+	  if (l->l_tls_blocksize != 0 && tls_init_tp_called)
+	    _dl_add_to_slotinfo (l);
+	}
+
+      i = main_map->l_searchlist.r_nlist;
+      while (i-- > 0)
+	{
+	  struct link_map *l = main_map->l_initfini[i];
+
+	  if (l->l_relocated)
+	    continue;
+
 	  if (l != &GL(dl_rtld_map))
 	    _dl_relocate_object (l, l->l_scope, GLRO(dl_lazy) ? RTLD_LAZY : 0,
 				 consider_profiling);

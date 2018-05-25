@@ -178,6 +178,8 @@ elf_get_dynamic_info (struct link_map *l, ElfW(Dyn) *temp)
       if (l->l_flags_1 & DF_1_NOW)
 	info[DT_BIND_NOW] = info[VERSYMIDX (DT_FLAGS_1)];
     }
+  if (info[VERSYMIDX (DT_FLAGS_2)] != NULL)
+    l->l_flags_2 = info[VERSYMIDX (DT_FLAGS_2)]->d_un.d_val;
   if (info[DT_RUNPATH] != NULL)
     /* If both RUNPATH and RPATH are given, the latter is ignored.  */
     info[DT_RPATH] = NULL;

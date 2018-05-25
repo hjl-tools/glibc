@@ -264,8 +264,8 @@ struct link_map
     unsigned int l_used;
 
     /* Various flag words.  */
-    ElfW(Word) l_feature_1;
     ElfW(Word) l_flags_1;
+    ElfW(Word) l_flags_2;
     ElfW(Word) l_flags;
 
     /* Temporarily used in `dl_close'.  */
