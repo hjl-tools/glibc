@@ -68,7 +68,12 @@ elf_machine_runtime_setup (struct link_map *l, int lazy, int profile)
   extern void _dl_runtime_resolve (Elf32_Word) attribute_hidden;
   extern void _dl_runtime_profile (Elf32_Word) attribute_hidden;
 
-  if (l->l_info[DT_JMPREL] && lazy)
+  /* Set up GOT if lazy binding is allowed since we may have to fall
+     back to lazy binding even with non-lazy binding is requested.   */
+  if (l->l_info[DT_JMPREL]
+      && (lazy
+	  || l->l_relro_size == 0
+	  || l->l_info[DT_BIND_NOW] == NULL))
     {
       /* The GOT entries for functions in the PLT have not yet been filled
 	 in.  Their initial contents will arrange when called to push an
@@ -332,16 +337,31 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	      && sym_map->l_type != lt_executable
 	      && !sym_map->l_relocated)
 	    {
-	      const char *strtab
-		= (const char *) D_PTR (map, l_info[DT_STRTAB]);
-	      _dl_error_printf ("\
+	      /* NB: The symbol reference is resolved to IFUNC symbol
+		 from an unrelocated shared object.  Relocate the GOT
+		 entry to enable lazy binding.  Issue a warning if lazy
+		 binding isn't possible or GOT will be made read-only
+		 after shared objects have been relocated.  */
+	      if (r_type == R_386_JMP_SLOT
+		  && ((Elf32_Addr *) D_PTR (map,
+					    l_info[DT_PLTGOT]))[2] != 0)
+		value = map->l_addr + *reloc_addr;
+	      else if (__glibc_unlikely (GLRO(dl_debug_mask)
+					 & (DL_DEBUG_BINDINGS|DL_DEBUG_PRELINK)))
+		{
+		  const char *strtab
+		    = (const char *) D_PTR (map, l_info[DT_STRTAB]);
+		  _dl_error_printf ("\
 %s: Relink `%s' with `%s' for IFUNC symbol `%s'\n",
-				RTLD_PROGNAME, map->l_name,
-				sym_map->l_name,
-				strtab + refsym->st_name);
+				    RTLD_PROGNAME, map->l_name,
+				    sym_map->l_name,
+				    strtab + refsym->st_name);
+		  value = ((Elf32_Addr (*) (void)) value) ();
+		}
 	    }
+	  else
 # endif
-	  value = ((Elf32_Addr (*) (void)) value) ();
+	    value = ((Elf32_Addr (*) (void)) value) ();
 	}
 
       switch (r_type)
@@ -353,7 +373,23 @@ elf_machine_rel (struct link_map *map, const Elf32_Rel *reloc,
 	  break;
 # endif
 	case R_386_GLOB_DAT:
+# ifdef RTLD_BOOTSTRAP
 	case R_386_JMP_SLOT:
+# endif
+	  *reloc_addr = value;
+	  break;
+# ifndef RTLD_BOOTSTRAP
+	case R_386_JMP_SLOT:
+	  /* NB: If a weak symbol reference in shared object isn't
+	     resolved, relocate the GOT entry to enable lazy binding
+	     if possible.  */
+	  if (sym_map == NULL
+	      && map->l_type != lt_executable
+	      && ELF32_ST_BIND (refsym->st_info) == STB_WEAK
+	      && ((Elf32_Addr *) D_PTR (map,
+					l_info[DT_PLTGOT]))[2] != 0)
+	    value = map->l_addr + *reloc_addr;
+# endif
 	  *reloc_addr = value;
 	  break;
 
