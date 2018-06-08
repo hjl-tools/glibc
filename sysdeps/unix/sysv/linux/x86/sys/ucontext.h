@@ -24,6 +24,13 @@
 #include <bits/types/sigset_t.h>
 #include <bits/types/stack_t.h>
 
+#ifndef __INDIRECT_RETURN
+# if defined __CET__ && (__CET__ & 2) != 0
+/* Note: Functions returned via indirect branch returns once.  Before
+   there is an attribute for it, use returns_twice attribute for now.  */
+#  define __INDIRECT_RETURN __attribute__ ((__returns_twice__))
+# endif
+#endif
 
 #ifdef __USE_MISC
 # define __ctx(fld) fld

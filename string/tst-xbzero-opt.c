@@ -39,6 +39,7 @@
    checks and printing from the normal stack.  */
 
 #define _GNU_SOURCE 1
+#define __INDIRECT_RETURN
 
 #include <errno.h>
 #include <signal.h>
