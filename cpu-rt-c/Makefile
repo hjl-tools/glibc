@@ -28,6 +28,13 @@ extra-libs-others = $(extra-libs)
 libcpu-rt-c-sysdep_routines += $(cpu-rt-c-routines)
 libcpu-rt-c-tests += $(addprefix test-,$(cpu-rt-c-routines))
 tests += $(libcpu-rt-c-tests)
+
+ifeq ($(build-shared),yes)
+check-abi: $(objpfx)check-abi-libcpu-rt-c.out
+tests-special += $(objpfx)check-abi-libcpu-rt-c.out
+update-abi: update-abi-libcpu-rt-c
+update-all-abi: update-all-abi-libcpu-rt-c
+endif
 endif
 
 include ../Rules
