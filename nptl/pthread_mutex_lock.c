@@ -25,6 +25,7 @@
 #include "pthreadP.h"
 #include <atomic.h>
 #include <lowlevellock.h>
+#include <pthread_spinlock.h>
 #include <stap-probe.h>
 
 #ifndef lll_lock_elision
@@ -133,7 +134,7 @@ __pthread_mutex_lock (pthread_mutex_t *mutex)
 		  LLL_MUTEX_LOCK (mutex);
 		  break;
 		}
-	      atomic_spin_nop ();
+	      atomic_spin_lock (&mutex->__data.__lock, &cnt, max_cnt);
 	    }
 	  while (LLL_MUTEX_TRYLOCK (mutex) != 0);
 

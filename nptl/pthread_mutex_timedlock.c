@@ -25,7 +25,7 @@
 #include <atomic.h>
 #include <lowlevellock.h>
 #include <not-cancel.h>
-
+#include <pthread_spinlock.h>
 #include <stap-probe.h>
 
 #ifndef lll_timedlock_elision
@@ -126,7 +126,7 @@ __pthread_mutex_timedlock (pthread_mutex_t *mutex,
 					  PTHREAD_MUTEX_PSHARED (mutex));
 		  break;
 		}
-	      atomic_spin_nop ();
+	      atomic_spin_lock (&mutex->__data.__lock, &cnt, max_cnt);
 	    }
 	  while (lll_trylock (mutex->__data.__lock) != 0);
 
