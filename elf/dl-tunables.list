@@ -121,4 +121,21 @@ glibc {
       default: 3
     }
   }
+
+# The maximum value of spin count is limited to 30000 to avoid the overflow
+# of mutex->__data.__spins variable with the possible type of short in
+# pthread_mutex_lock ().
+#
+# The default value of spin count is set to 100 with the reference to the
+# previous number of times of spinning via trylock. This value would be
+# architecture-specific and can be tuned with kinds of benchmarks to fit
+# most cases in future.
+  mutex {
+    spin_count {
+      type: INT_32
+      minval: 0
+      maxval: 30000
+      default: 100
+    }
+  }
 }

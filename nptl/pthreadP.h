@@ -33,6 +33,7 @@
 #include <kernel-features.h>
 #include <errno.h>
 #include <internal-signals.h>
+#include <pthread_mutex_conf.h>
 
 
 /* Atomic operations on TLS memory.  */
@@ -44,12 +45,6 @@
 #ifndef THREAD_ATOMIC_BIT_SET
 # define THREAD_ATOMIC_BIT_SET(descr, member, bit) \
   atomic_bit_set (&(descr)->member, bit)
-#endif
-
-
-/* Adaptive mutex definitions.  */
-#ifndef MAX_ADAPTIVE_COUNT
-# define MAX_ADAPTIVE_COUNT 100
 #endif
 
 

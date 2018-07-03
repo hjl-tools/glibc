@@ -32,6 +32,7 @@ their own namespace.
 * Tunable names::  The structure of a tunable name
 * Memory Allocation Tunables::  Tunables in the memory allocation subsystem
 * Elision Tunables::  Tunables in elision subsystem
+* Pthread Mutex Tunables:: Tunables in mutex
 * Hardware Capability Tunables::  Tunables that modify the hardware
 				  capabilities seen by @theglibc{}
 @end menu
@@ -279,6 +280,28 @@ reasons other than a different thread's memory accesses.  Expressed in number
 of try lock attempts.
 
 The default value of this tunable is @samp{3}.
+@end deftp
+
+@node Pthread Mutex Tunables
+@section Pthread Mutex Tunables
+@cindex pthread mutex tunables
+
+@deftp {Tunable namespace} glibc.mutex
+The behavior of pthread mutexes can be tuned to gain performance improvements
+according to specific hardware capabilities and workload characteristics by
+setting the following tunables in the @code{mutex} namespace:
+@end deftp
+
+@deftp Tunable glibc.mutex.spin_count
+The @code{glibc.mutex.spin_count} tunable sets the maximum number of times
+a thread should spin on the lock before calling into the kernel to block.
+Adaptive spin is used for mutexes initialized with the PTHREAD_MUTEX_ADAPTIVE_NP
+GNU extension.  It affects both pthread_mutex_lock and pthread_mutex_timedlock.
+
+The spinning is done until either the maximum spin times is reached or
+the lock is acquired.
+
+The default value of this tunable is @samp{100}.
 @end deftp
 
 @node Hardware Capability Tunables
