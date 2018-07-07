@@ -15,20 +15,28 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
+#include <sys/prctl.h>
+
 static inline int __attribute__ ((always_inline))
 dl_cet_allocate_legacy_bitmap (unsigned long *legacy_bitmap)
 {
-  return -1;
+  /* Allocate legacy bitmap.  */
+  INTERNAL_SYSCALL_DECL (err);
+  return (int) INTERNAL_SYSCALL (arch_prctl, err, 2,
+				 ARCH_CET_LEGACY_BITMAP, legacy_bitmap);
 }
 
 static inline int __attribute__ ((always_inline))
 dl_cet_disable_cet (unsigned int cet_feature)
 {
-  return -1;
+  INTERNAL_SYSCALL_DECL (err);
+  return (int) INTERNAL_SYSCALL (arch_prctl, err, 2, ARCH_CET_DISABLE,
+				 cet_feature);
 }
 
 static inline int __attribute__ ((always_inline))
 dl_cet_lock_cet (void)
 {
-  return -1;
+  INTERNAL_SYSCALL_DECL (err);
+  return (int) INTERNAL_SYSCALL (arch_prctl, err, 2, ARCH_CET_LOCK, 0);
 }

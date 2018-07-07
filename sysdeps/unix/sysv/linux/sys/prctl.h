@@ -20,6 +20,7 @@
 
 #include <features.h>
 #include <linux/prctl.h>  /*  The magic values come from here  */
+#include <bits/prctl.h>
 
 __BEGIN_DECLS
 

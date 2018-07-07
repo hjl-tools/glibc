@@ -1,6 +1,5 @@
-/* Initialize CPU feature data for Linux/x86.
+/* Copyright (C) 2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Copyright (C) 2018 Free Software Foundation, Inc.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,30 +15,7 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#if CET_ENABLED
-# include <sys/prctl.h>
+#ifndef _BITS_PRCTL_H
+#define _BITS_PRCTL_H	1
 
-static inline int __attribute__ ((always_inline))
-get_cet_status (void)
-{
-  __syscall_ulong_t cet_status[3];
-  INTERNAL_SYSCALL_DECL (err);
-  if (INTERNAL_SYSCALL (arch_prctl, err, 2, ARCH_CET_STATUS,
-			cet_status) == 0)
-    return cet_status[0];
-  return 0;
-}
-
-# ifndef SHARED
-static inline void
-x86_setup_tls (void)
-{
-  __libc_setup_tls ();
-  THREAD_SETMEM (THREAD_SELF, header.feature_1, GL(dl_x86_feature_1)[0]);
-}
-
-#  define ARCH_SETUP_TLS() x86_setup_tls ()
-# endif
-#endif
-
-#include <sysdeps/x86/cpu-features.c>
+#endif  /* bits/prctl.h */
