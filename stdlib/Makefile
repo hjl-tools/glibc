@@ -86,7 +86,7 @@ tests		:= tst-strtol tst-strtod testmb testrand testsort testdiv   \
 		   test-on_exit-race test-dlclose-exit-race 		    \
 		   tst-makecontext-align test-bz22786 tst-strtod-nan-sign \
 		   tst-swapcontext1 tst-swapcontext2 tst-setcontext4 \
-		   tst-setcontext5
+		   tst-setcontext5 tst-setcontext6 tst-setcontext7
 
 tests-internal	:= tst-strtod1i tst-strtod3 tst-strtod4 tst-strtod5i \
 		   tst-tls-atexit tst-tls-atexit-nodelete
