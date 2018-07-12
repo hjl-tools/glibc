@@ -85,55 +85,19 @@ ENTRY(__setcontext)
 	testl	$X86_FEATURE_1_SHSTK, %fs:FEATURE_1_OFFSET
 	jz	L(no_shstk)
 
-	/* Get the base address and size of the default shadow stack.
-	   NB: We can't cache them since CLONE syscall switches the
-	   default shadow stack.  */
-	sub	$24, %RSP_LP
-	mov	%RSP_LP, %RSI_LP
-	movl	$ARCH_CET_STATUS, %edi
-	movl	$__NR_arch_prctl, %eax
-	syscall
-	testq	%rax, %rax
-	jne	L(hlt)      /* This should never happen.  */
-
-	/* NB: If both the target shadow stack pointer and the current
-	   shadow stack pointer are on the original shadow stack, we
-	   can unwind the stack.  Otherwise, find the restore token
-	   pushed by rstorssp and saveprevssp to restore the target
-	   shadow stack.  */
-	movq	oSSP(%rdx), %rdi
-	movq	%rdi, %rsi
-	subq	8(%rsp), %rsi
-	jb	L(find_restore_token)
-	cmpq	16(%rsp), %rsi
-	jae	L(find_restore_token)
-
-	/* Check if both shadow stack pointers are on the original
-	   shadow stack.  */
-	rdsspq	%rcx
-	movq	%rcx, %rsi
-	subq	8(%rsp), %rsi
-	jb	L(find_restore_token)
-	cmpq	16(%rsp), %rsi
-	jae	L(find_restore_token)
-
-	jmp	L(unwind_shadow_stack)
-
-L(find_restore_token):
-	/* Save the target shadow stack pointer.  */
-	movq	%rdi, %rsi
-L(find_restore_token_loop):
-	/* Check if there is a restore token.  */
+	/* NB: Shadow stack slots contain restore tokens pushed by
+	   rstorssp/saveprevssp or return addresses pushed by call.
+	   Since return address and restore token are disjoint, we
+	   can check restore token at __ssp[0] - 8.  Context from
+	   getcontext doesn't have a restore token on shadow stack
+	   and its __ssp[0] points to the shadow stack of getcontext's
+	   caller.  */
+	movq	oSSP(%rdx), %rsi
 	movq	-8(%rsi), %rax
 	andq	$-8, %rax
 	cmpq	%rsi, %rax
-	je	L(restore_shadow_stack)
+	jne	L(restore_shadow_stack)
 
-	/* Try the next slot.  */
-	subq	$8, %rsi
-	jne	L(find_restore_token_loop)
-
-L(restore_shadow_stack):
 	/* Pop return address from the shadow stack since setcontext
 	   will not return.   */
 	movq	$1, %rax
@@ -146,26 +110,18 @@ L(restore_shadow_stack):
 	   restore token may be checked by setcontext or swapcontext
 	   later.  */
 	saveprevssp
+	jmp	L(skip_restore_shadow_stack)
 
-	/* Get the current shadow stack.  */
-	rdsspq	%rcx
+L(restore_shadow_stack):
+	/* Load the target shadow stack pointer into RSI.  */
+	movq	oSSP(%rdx), %rsi
+	movl	$ARCH_CET_RSTOR_SHSTK, %edi
+	movl	$__NR_arch_prctl, %eax
+	syscall
+	testq	%rax, %rax
+	jne	L(hlt)		/* This should never happen.  */
 
-L(unwind_shadow_stack):
-	add	$24, %RSP_LP
-	/* Unwind the shadow stack.  */
-	subq	%rdi, %rcx
-	je	L(skip_unwind_shadow_stack)
-	negq	%rcx
-	shrq	$3, %rcx
-	movl	$255, %esi
-L(loop):
-	cmpq	%rsi, %rcx
-	cmovb	%rcx, %rsi
-	incsspq	%rsi
-	subq	%rsi, %rcx
-	ja	L(loop)
-
-L(skip_unwind_shadow_stack):
+L(skip_restore_shadow_stack):
 	movq	oRSI(%rdx), %rsi
 	movq	oRDI(%rdx), %rdi
 	movq	oRCX(%rdx), %rcx
