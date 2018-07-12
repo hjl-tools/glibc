@@ -33,16 +33,18 @@
 # define ARCH_CET_DISABLE	0x3002
 /* Lock all CET features.  */
 # define ARCH_CET_LOCK		0x3003
-/* Return legacy region bitmap info in unsigned long *addr:
-     address: addr[0].
-     size: addr[1].
- */
-# define ARCH_CET_LEGACY_BITMAP	0x3004
 /* Allocate a new shadow stack with __syscall_ulong_t *addr:
      IN: requested shadow stack size: *addr.
      OUT: allocated shadow stack address: *addr.
  */
-# define ARCH_CET_ALLOC_SHSTK	0x3005
+# define ARCH_CET_ALLOC_SHSTK	0x3004
+/* Restore shadow stack pointer to __syscall_ulong_t ssp. */
+# define ARCH_CET_RSTOR_SHSTK   0x3005
+/* Return legacy region bitmap info in unsigned long *addr:
+     address: addr[0].
+     size: addr[1].
+ */
+# define ARCH_CET_LEGACY_BITMAP	0x3006
 #endif /* ARCH_CET_STATUS */
 
 #endif  /* bits/prctl.h */
