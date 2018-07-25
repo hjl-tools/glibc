@@ -45,6 +45,9 @@ do_test (void)
 {
   enum cpu_features_kind kind = __get_cpu_features ()->kind;
 
+  if (kind != __get_cpu_kind ())
+    abort ();
+
   switch (kind)
     {
     case arch_kind_intel:

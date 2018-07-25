@@ -19,9 +19,35 @@
 #include <ldsodefs.h>
 
 #undef __get_cpu_features
+#undef __get_cpu_kind
+#undef __get_cpuid_registers
+#undef __get_arch_feature
 
 const struct cpu_features *
 __get_cpu_features (void)
 {
   return &GLRO(dl_x86_cpu_features);
+}
+
+const enum cpu_features_kind
+__get_cpu_kind (void)
+{
+  return GLRO(dl_x86_cpu_features).kind;
+}
+
+const struct cpuid_registers *
+__get_cpuid_registers (unsigned int i)
+{
+  const static struct cpuid_registers zero_cpuid_registers = { 0 };
+  if (i >= COMMON_CPUID_INDEX_MAX)
+    return &zero_cpuid_registers;
+  return &GLRO(dl_x86_cpu_features).cpuid[i];
+}
+
+unsigned int
+__get_arch_feature (unsigned int i)
+{
+  if (i >= COMMON_CPUID_INDEX_MAX)
+    return 0;
+  return GLRO(dl_x86_cpu_features).feature[i];
 }

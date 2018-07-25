@@ -1,5 +1,6 @@
 ld {
   GLIBC_PRIVATE {
     __get_cpu_features;
+    __get_cpu_kind; __get_cpuid_registers; __get_arch_feature;
   }
 }

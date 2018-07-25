@@ -210,6 +210,18 @@ get_common_indeces (struct cpu_features *cpu_features,
     }
 }
 
+_Static_assert (((index_arch_Fast_Unaligned_Load
+		  == index_arch_Fast_Unaligned_Copy)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Prefer_PMINUB_for_stringop)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Slow_SSE4_2)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Fast_Rep_String)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Fast_Copy_Backward)),
+		"Incorrect index_arch_Fast_Unaligned_Load");
+
 static inline void
 init_cpu_features (struct cpu_features *cpu_features)
 {
@@ -270,15 +282,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 	    case 0x5d:
 	      /* Unaligned load versions are faster than SSSE3
 		 on Silvermont.  */
-#if index_arch_Fast_Unaligned_Load != index_arch_Prefer_PMINUB_for_stringop
-# error index_arch_Fast_Unaligned_Load != index_arch_Prefer_PMINUB_for_stringop
-#endif
-#if index_arch_Fast_Unaligned_Load != index_arch_Slow_SSE4_2
-# error index_arch_Fast_Unaligned_Load != index_arch_Slow_SSE4_2
-#endif
-#if index_arch_Fast_Unaligned_Load != index_arch_Fast_Unaligned_Copy
-# error index_arch_Fast_Unaligned_Load != index_arch_Fast_Unaligned_Copy
-#endif
 	      cpu_features->feature[index_arch_Fast_Unaligned_Load]
 		|= (bit_arch_Fast_Unaligned_Load
 		    | bit_arch_Fast_Unaligned_Copy
@@ -301,15 +304,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 	    case 0x2f:
 	      /* Rep string instructions, unaligned load, unaligned copy,
 		 and pminub are fast on Intel Core i3, i5 and i7.  */
-#if index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Load
-# error index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Load
-#endif
-#if index_arch_Fast_Rep_String != index_arch_Prefer_PMINUB_for_stringop
-# error index_arch_Fast_Rep_String != index_arch_Prefer_PMINUB_for_stringop
-#endif
-#if index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Copy
-# error index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Copy
-#endif
 	      cpu_features->feature[index_arch_Fast_Rep_String]
 		|= (bit_arch_Fast_Rep_String
 		    | bit_arch_Fast_Unaligned_Load
@@ -369,9 +363,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 
       if (family == 0x15)
 	{
-#if index_arch_Fast_Unaligned_Load != index_arch_Fast_Copy_Backward
-# error index_arch_Fast_Unaligned_Load != index_arch_Fast_Copy_Backward
-#endif
 	  /* "Excavator"   */
 	  if (model >= 0x60 && model <= 0x7f)
 	  {
