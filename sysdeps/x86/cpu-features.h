@@ -194,6 +194,24 @@ __BEGIN_DECLS
 #define bit_cpu_RDTSCP		(1u << 27)
 #define bit_cpu_LM		(1u << 29)
 
+/* COMMON_CPUID_INDEX_D_ECX_1.  */
+
+/* EAX.  */
+#define bit_cpu_XSAVEOPT	(1u << 0)
+#define bit_cpu_XSAVEC		(1u << 1)
+#define bit_cpu_XGETBV_ECX_1	(1u << 2)
+#define bit_cpu_XSAVES		(1u << 3)
+
+/* COMMON_CPUID_INDEX_80000007.  */
+
+/* EDX.  */
+#define bit_cpu_INVARIANT_TSC	(1u << 8)
+
+/* COMMON_CPUID_INDEX_80000008.  */
+
+/* EBX.  */
+#define bit_cpu_WBNOINVD	(1u << 9)
+
 /* COMMON_CPUID_INDEX_1.  */
 
 /* ECX.  */
@@ -339,6 +357,24 @@ __BEGIN_DECLS
 #define index_cpu_PAGE1GB	COMMON_CPUID_INDEX_80000001
 #define index_cpu_RDTSCP	COMMON_CPUID_INDEX_80000001
 #define index_cpu_LM		COMMON_CPUID_INDEX_80000001
+
+/* COMMON_CPUID_INDEX_D_ECX_1.  */
+
+/* EAX.  */
+#define index_cpu_XSAVEOPT	COMMON_CPUID_INDEX_D_ECX_1
+#define index_cpu_XSAVEC	COMMON_CPUID_INDEX_D_ECX_1
+#define index_cpu_XGETBV_ECX_1	COMMON_CPUID_INDEX_D_ECX_1
+#define index_cpu_XSAVES	COMMON_CPUID_INDEX_D_ECX_1
+
+/* COMMON_CPUID_INDEX_80000007.  */
+
+/* EDX.  */
+#define index_cpu_INVARIANT_TSC	COMMON_CPUID_INDEX_80000007
+
+/* COMMON_CPUID_INDEX_80000008.  */
+
+/* EBX.  */
+#define index_cpu_WBNOINVD	COMMON_CPUID_INDEX_80000008
 
 /* COMMON_CPUID_INDEX_1.  */
 
@@ -486,6 +522,24 @@ __BEGIN_DECLS
 #define reg_RDTSCP		edx
 #define reg_LM			edx
 
+/* COMMON_CPUID_INDEX_D_ECX_1.  */
+
+/* EAX.  */
+#define reg_XSAVEOPT		eax
+#define reg_XSAVEC		eax
+#define reg_XGETBV_ECX_1	eax
+#define reg_XSAVES		eax
+
+/* COMMON_CPUID_INDEX_80000007.  */
+
+/* EDX.  */
+#define reg_INVARIANT_TSC	edx
+
+/* COMMON_CPUID_INDEX_80000008.  */
+
+/* EBX.  */
+#define reg_WBNOINVD		ebx
+
 #define index_arch_Fast_Rep_String	FEATURE_INDEX_1
 #define index_arch_Fast_Copy_Backward	FEATURE_INDEX_1
 #define index_arch_Slow_BSF		FEATURE_INDEX_1
@@ -529,6 +583,9 @@ enum
     COMMON_CPUID_INDEX_1 = 0,
     COMMON_CPUID_INDEX_7,
     COMMON_CPUID_INDEX_80000001,
+    COMMON_CPUID_INDEX_D_ECX_1,
+    COMMON_CPUID_INDEX_80000007,
+    COMMON_CPUID_INDEX_80000008,
     /* Keep the following line at the end.  */
     COMMON_CPUID_INDEX_MAX
   };
