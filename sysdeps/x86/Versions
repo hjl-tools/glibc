@@ -1,4 +1,7 @@
 ld {
+  GLIBC_2.29 {
+    x86_get_cpuid_registers; x86_get_arch_feature;
+  }
   GLIBC_PRIVATE {
     __get_cpu_features;
   }

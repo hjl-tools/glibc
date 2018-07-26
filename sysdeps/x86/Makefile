@@ -5,8 +5,21 @@ endif
 ifeq ($(subdir),elf)
 sysdep-dl-routines += dl-get-cpu-features
 
-tests += tst-get-cpu-features tst-get-cpu-features-static
-tests-static += tst-get-cpu-features-static
+tests += tst-get-cpu-features tst-get-cpu-features-static \
+	 tst-x86-platform-1 tst-x86-platform-1-static \
+	 tst-x86-platform-2 tst-x86-platform-3
+modules-names += tst-x86-platform-mod-2 tst-x86-platform-mod-3
+tests-static += tst-get-cpu-features-static tst-x86-platform-1-static
+
+$(objpfx)tst-x86-platform-mod-2.so: $(libsupport)
+$(objpfx)tst-x86-platform-2: $(objpfx)tst-x86-platform-mod-2.so
+LDFLAGS-tst-x86-platform-mod-3.so = -Wl,-z,now
+$(objpfx)tst-x86-platform-mod-3.so: $(libsupport)
+$(objpfx)tst-x86-platform-3: $(objpfx)tst-x86-platform-mod-3.so
+endif
+
+ifeq ($(subdir),misc)
+sysdep_headers += sys/platform/x86.h
 endif
 
 ifeq ($(subdir),setjmp)
