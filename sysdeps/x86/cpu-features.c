@@ -423,6 +423,47 @@ init_cpu_features (struct cpu_features *cpu_features)
       else
 	cpu_features->feature[index_arch_Prefer_No_AVX512]
 	  |= bit_arch_Prefer_No_AVX512;
+
+      if (cpu_features->max_cpuid >= 0x15
+	  && CPU_FEATURES_CPU_P (cpu_features, INVARIANT_TSC))
+	{
+	  unsigned int frequency = 0;
+	  unsigned int nominator = 0;
+
+	  __cpuid (0x15,
+		   cpu_features->tsc_nccc_data.denominator,
+		   nominator, frequency, edx);
+	  if (nominator != 0 && frequency == 0 && family == 6)
+	    switch (model)
+	      {
+	      case 0x55:
+		/* Skylake server is 25 MHz.  */
+		frequency = 25 * 1000 * 1000;
+		break;
+	      case 0x5c:
+		/* Goldmont is 19.2 MHz.  */
+		frequency = 19.2 * 1000 * 1000;
+		break;
+	      default:
+		if (CPU_FEATURES_CPU_P (cpu_features, AVX2)
+		    && CPU_FEATURES_CPU_P (cpu_features, XSAVEC)
+		    && CPU_FEATURES_CPU_P (cpu_features,
+					   XGETBV_ECX_1))
+		  {
+		    /* Skylake client is 24 MHz.  */
+		    frequency = 24 * 1000 * 1000;
+		    break;
+		  }
+	      }
+	  if (frequency != 0)
+	    {
+	      /* Store frequency as kHz.  */
+	      cpu_features->tsc_nccc_data.frequency = frequency / 1000;
+	      cpu_features->tsc_nccc_data.nominator = nominator;
+	      cpu_features->feature[index_arch_TSC_To_NS_Usable]
+		|= bit_arch_TSC_To_NS_Usable;
+	    }
+	}
     }
   /* This spells out "AuthenticAMD".  */
   else if (ebx == 0x68747541 && ecx == 0x444d4163 && edx == 0x69746e65)

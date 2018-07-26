@@ -1,3 +1,9 @@
+libc {
+  GLIBC_2.29 {
+    x86_tsc_to_ns; x86_ns_to_tsc;
+  }
+}
+
 ld {
   GLIBC_2.29 {
     x86_get_cpuid_registers; x86_get_arch_feature;

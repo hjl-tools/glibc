@@ -20,6 +20,11 @@ endif
 
 ifeq ($(subdir),misc)
 sysdep_headers += sys/platform/x86.h
+
+sysdep_routines += tsc-ns
+
+tests += tst-tsc-ns tst-tsc-ns-static
+tests-static += tst-tsc-ns-static
 endif
 
 ifeq ($(subdir),setjmp)

@@ -151,6 +151,18 @@ Internal function used by @code{CPU_FEATURE_USABLE}.
 Internal function used by @code{CPU_FEATURE_USABLE}.
 @end deftypefun
 
+@deftypefun {unsigned long long} x86_tsc_to_ns (unsigned long long)
+
+Convert time stamp counter (TSC) to nanosecond if
+@code{CPU_FEATURE_USABLE (TSC_To_NS)} evaluates to true.
+@end deftypefun
+
+@deftypefun {unsigned long long} x86_ns_to_tsc (unsigned long long)
+
+Convert nanosecond to time stamp counter (TSC) if
+@code{CPU_FEATURE_USABLE (TSC_To_NS)} evaluates to true.
+@end deftypefun
+
 @defmac CPU_FEATURE_USABLE (name)
 
 Evaluate to true if the architecture feature @code{name} is usable.
@@ -557,6 +569,10 @@ XSETBV/XGETBV instructions, and XCR0.
 
 @item
 @code{XTPRUPDCTRL} -- xTPR Update Control.
+
+@item
+@code{TSC_To_NS} -- @code{x86_ns_to_tsc} and @code{x86_ns_to_tsc}
+functions.
 
 @end itemize
 @end defmac

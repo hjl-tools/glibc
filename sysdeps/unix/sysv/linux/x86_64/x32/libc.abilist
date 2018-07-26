@@ -2146,3 +2146,5 @@ GLIBC_2.28 thrd_current F
 GLIBC_2.28 thrd_equal F
 GLIBC_2.28 thrd_sleep F
 GLIBC_2.28 thrd_yield F
+GLIBC_2.29 x86_ns_to_tsc F
+GLIBC_2.29 x86_tsc_to_ns F

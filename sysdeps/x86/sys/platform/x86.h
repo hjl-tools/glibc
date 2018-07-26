@@ -59,6 +59,9 @@ extern const struct cpuid_registers *x86_get_cpuid_registers
 extern unsigned int x86_get_arch_feature (unsigned int)
      __attribute__ ((const));
 
+extern unsigned long long x86_tsc_to_ns (unsigned long long);
+extern unsigned long long x86_ns_to_tsc (unsigned long long);
+
 /* CPU_FEATURE_USABLE evaluates to true if the feature is usable.  */
 #define CPU_FEATURE_USABLE(name)				  \
   ((need_arch_feature_##name					  \
@@ -94,6 +97,7 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define bit_arch_VPCLMULQDQ_Usable		(1u << 20)
 #define bit_arch_XOP_Usable			(1u << 21)
 #define bit_arch_XSAVEC_Usable			(1u << 22)
+#define bit_arch_TSC_To_NS_Usable		(1u << 23)
 
 #define index_arch_AVX_Usable			FEATURE_INDEX_1
 #define index_arch_AVX2_Usable			FEATURE_INDEX_1
@@ -118,6 +122,7 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define index_arch_VPCLMULQDQ_Usable		FEATURE_INDEX_1
 #define index_arch_XOP_Usable			FEATURE_INDEX_1
 #define index_arch_XSAVEC_Usable		FEATURE_INDEX_1
+#define index_arch_TSC_To_NS_Usable		FEATURE_INDEX_1
 
 /* Unused.  Compiler will optimize them out.  */
 #define bit_arch_SSE3_Usable			(1u << 0)
@@ -231,6 +236,18 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define index_arch_XSAVES_Usable		FEATURE_INDEX_1
 #define index_arch_INVARIANT_TSC_Usable		FEATURE_INDEX_1
 #define index_arch_WBNOINVD_Usable		FEATURE_INDEX_1
+
+/* Unused.  Compiler will optimize them out.  */
+#define bit_cpu_TSC_To_NS			(1u << 0)
+
+/* Unused.  Compiler will optimize them out.  */
+#define index_cpu_TSC_To_NS			COMMON_CPUID_INDEX_1
+
+/* Unused.  Compiler will optimize them out.  */
+#define reg_TSC_To_NS				eax
+
+/* There is no CPUID bit.  */
+#define	need_arch_feature_TSC_To_NS		1
 
 /* COMMON_CPUID_INDEX_1.  */
 

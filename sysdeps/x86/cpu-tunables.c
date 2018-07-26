@@ -271,11 +271,14 @@ TUNABLE_CALLBACK (set_hwcaps) (tunable_val_t *valp)
 				       disable, 15);
 	  break;
 	case 16:
+	  if (disable)
 	    {
-	      CHECK_GLIBC_IFUNC_ARCH_NEED_ARCH_BOTH
-		(n, cpu_features, Prefer_No_AVX512, AVX512F_Usable,
-		 disable, 16);
+	      CHECK_GLIBC_IFUNC_ARCH_OFF (n, cpu_features,
+					  TSC_To_NS_Usable, 16);
 	    }
+	  CHECK_GLIBC_IFUNC_ARCH_NEED_ARCH_BOTH
+	    (n, cpu_features, Prefer_No_AVX512, AVX512F_Usable,
+	     disable, 16);
 	  break;
 	case 18:
 	    {
