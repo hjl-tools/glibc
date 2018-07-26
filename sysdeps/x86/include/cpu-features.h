@@ -27,6 +27,17 @@
 #define bit_ZMM0_15_state	(1u << 6)
 #define bit_ZMM16_31_state	(1u << 7)
 
+/* Time Stamp Counter and Nominal Core Crystal Clock Information.  */
+struct tsc_nccc_info
+{
+  /* The denominator of the TSC/core crystal clock ratio.  */
+  unsigned int denominator;
+  /* The numerator of the TSC/core crystal clock ratio.  */
+  unsigned int nominator;
+  /* The nominal frequency of the core crystal clock in Hz.  */
+  unsigned int frequency;
+};
+
 struct cpu_features
 {
   enum cpu_features_kind kind;
@@ -55,6 +66,8 @@ struct cpu_features
   unsigned long int shared_cache_size;
   /* Threshold to use non temporal store.  */
   unsigned long int non_temporal_threshold;
+  /* Time Stamp Counter and Nominal Core Crystal Clock Information.  */
+  struct tsc_nccc_info tsc_nccc_data;
 };
 
 /* Used from outside of glibc to get access to the CPU features

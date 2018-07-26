@@ -45,6 +45,7 @@ __BEGIN_DECLS
 #define bit_arch_MathVec_Prefer_No_AVX512	(1u << 21)
 #define bit_arch_XSAVEC_Usable			(1u << 22)
 #define bit_arch_Prefer_FSRM			(1u << 23)
+#define bit_arch_TSC_To_NS_Usable		(1u << 24)
 
 /* CPUID Feature flags.  */
 
@@ -563,6 +564,7 @@ __BEGIN_DECLS
 #define index_arch_MathVec_Prefer_No_AVX512 FEATURE_INDEX_1
 #define index_arch_XSAVEC_Usable	FEATURE_INDEX_1
 #define index_arch_Prefer_FSRM		FEATURE_INDEX_1
+#define index_arch_TSC_To_NS_Usable	FEATURE_INDEX_1
 
 /* Provide POPCNT as an alias for POPCOUNT.  */
 #define bit_cpu_POPCNT		bit_cpu_POPCOUNT
@@ -614,6 +616,9 @@ extern const struct cpuid_registers *__get_cpuid_registers
 
 extern unsigned int __get_arch_feature (unsigned int)
      __attribute__ ((const));
+
+extern unsigned long long __tsc_to_ns (unsigned long long);
+extern unsigned long long __ns_to_tsc (unsigned long long);
 
 /* HAS_* evaluates to true if we may use the feature at runtime.  */
 #define HAS_CPU_FEATURE(name) \

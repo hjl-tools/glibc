@@ -1,3 +1,9 @@
+libc {
+  GLIBC_PRIVATE {
+    __tsc_to_ns; __ns_to_tsc;
+  }
+}
+
 ld {
   GLIBC_PRIVATE {
     __get_cpu_features;

@@ -223,6 +223,7 @@ do_test (void)
   CHECK_ARCH_FEATURE (MathVec_Prefer_No_AVX512);
   CHECK_ARCH_FEATURE (XSAVEC_Usable);
   CHECK_ARCH_FEATURE (Prefer_FSRM);
+  CHECK_ARCH_FEATURE (TSC_To_NS_Usable);
 
   return 0;
 }

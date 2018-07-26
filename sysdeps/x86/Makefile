@@ -9,6 +9,13 @@ tests += tst-get-cpu-features
 tests-static += tst-get-cpu-features-static
 endif
 
+ifeq ($(subdir),misc)
+sysdep_routines += tsc-ns
+
+tests += tst-tsc-ns
+tests-static += tst-tsc-ns-static
+endif
+
 ifeq ($(subdir),setjmp)
 gen-as-const-headers += jmp_buf-ssp.sym
 sysdep_routines += __longjmp_cancel
