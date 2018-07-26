@@ -53,7 +53,18 @@ get_extended_indices (struct cpu_features *cpu_features)
 	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000001].ebx,
 	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000001].ecx,
 	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000001].edx);
-
+  if (eax >= 0x80000007)
+    __cpuid (0x80000007,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000007].eax,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000007].ebx,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000007].ecx,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000007].edx);
+  if (eax >= 0x80000008)
+    __cpuid (0x80000008,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000008].eax,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000008].ebx,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000008].ecx,
+	     cpu_features->cpuid[COMMON_CPUID_INDEX_80000008].edx);
 }
 
 static void
@@ -85,6 +96,13 @@ get_common_indices (struct cpu_features *cpu_features,
 		   cpu_features->cpuid[COMMON_CPUID_INDEX_7].ebx,
 		   cpu_features->cpuid[COMMON_CPUID_INDEX_7].ecx,
 		   cpu_features->cpuid[COMMON_CPUID_INDEX_7].edx);
+
+  if (cpu_features->max_cpuid >= 0xd)
+    __cpuid_count (0xd, 1,
+		   cpu_features->cpuid[COMMON_CPUID_INDEX_D_ECX_1].eax,
+		   cpu_features->cpuid[COMMON_CPUID_INDEX_D_ECX_1].ebx,
+		   cpu_features->cpuid[COMMON_CPUID_INDEX_D_ECX_1].ecx,
+		   cpu_features->cpuid[COMMON_CPUID_INDEX_D_ECX_1].edx);
 
   /* Can we call xgetbv?  */
   if (CPU_FEATURES_CPU_P (cpu_features, OSXSAVE))
@@ -219,10 +237,8 @@ get_common_indices (struct cpu_features *cpu_features,
 	      cpu_features->xsave_state_full_size
 		= xsave_state_full_size;
 
-	      __cpuid_count (0xd, 1, eax, ebx, ecx, edx);
-
 	      /* Check if XSAVEC is available.  */
-	      if ((eax & (1 << 1)) != 0)
+	      if (CPU_FEATURES_CPU_P (cpu_features, XSAVEC))
 		{
 		  unsigned int xstate_comp_offsets[32];
 		  unsigned int xstate_comp_sizes[32];

@@ -306,6 +306,9 @@ The supported features are:
 @code{IBT} -- Intel Indirect Branch Tracking instruction extensions.
 
 @item
+@code{INVARIANT_TSC} -- Invariant TSC.
+
+@item
 @code{INVPCID} -- INVPCID instruction.
 
 @item
@@ -528,7 +531,13 @@ using a TSC deadline value.
 @code{WAITPKG} -- WAITPKG instruction extensions.
 
 @item
+@code{WBNOINVD} -- WBNOINVD instruction.
+
+@item
 @code{X2APIC} -- x2APIC.
+
+@item
+@code{XGETBV_ECX_1} -- XGETBV with ECX = 1.
 
 @item
 @code{XOP} -- XOP instruction extensions.
@@ -536,6 +545,15 @@ using a TSC deadline value.
 @item
 @code{XSAVE} -- The XSAVE/XRSTOR processor extended states feature, the
 XSETBV/XGETBV instructions, and XCR0.
+
+@item
+@code{XSAVEC} -- XSAVEC instruction.
+
+@item
+@code{XSAVEOPT} -- XSAVEOPT instruction.
+
+@item
+@code{XSAVES} -- XSAVES/XRSTORS instructions.
 
 @item
 @code{XTPRUPDCTRL} -- xTPR Update Control.

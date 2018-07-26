@@ -38,6 +38,9 @@ enum
     COMMON_CPUID_INDEX_1 = 0,
     COMMON_CPUID_INDEX_7,
     COMMON_CPUID_INDEX_80000001,
+    COMMON_CPUID_INDEX_D_ECX_1,
+    COMMON_CPUID_INDEX_80000007,
+    COMMON_CPUID_INDEX_80000008,
     /* Keep the following line at the end.  */
     COMMON_CPUID_INDEX_MAX
   };
@@ -167,6 +170,11 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define bit_arch_TBM_Usable			(1u << 0)
 #define bit_arch_SYSCALL_SYSRET_Usable		(1u << 0)
 #define bit_arch_RDTSCP_Usable			(1u << 0)
+#define bit_arch_XSAVEOPT_Usable		(1u << 0)
+#define bit_arch_XGETBV_ECX_1_Usable		(1u << 0)
+#define bit_arch_XSAVES_Usable			(1u << 0)
+#define bit_arch_INVARIANT_TSC_Usable		(1u << 0)
+#define bit_arch_WBNOINVD_Usable		(1u << 0)
 
 /* Unused.  Compiler will optimize them out.  */
 #define index_arch_SSE3_Usable			FEATURE_INDEX_1
@@ -218,6 +226,11 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define index_arch_TBM_Usable			FEATURE_INDEX_1
 #define index_arch_SYSCALL_SYSRET_Usable	FEATURE_INDEX_1
 #define index_arch_RDTSCP_Usable		FEATURE_INDEX_1
+#define index_arch_XSAVEOPT_Usable		FEATURE_INDEX_1
+#define index_arch_XGETBV_ECX_1_Usable		FEATURE_INDEX_1
+#define index_arch_XSAVES_Usable		FEATURE_INDEX_1
+#define index_arch_INVARIANT_TSC_Usable		FEATURE_INDEX_1
+#define index_arch_WBNOINVD_Usable		FEATURE_INDEX_1
 
 /* COMMON_CPUID_INDEX_1.  */
 
@@ -307,6 +320,12 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define need_arch_feature_TBM			0
 #define need_arch_feature_SYSCALL_SYSRET	0
 #define need_arch_feature_RDTSCP		0
+#define need_arch_feature_XSAVEOPT		0
+#define need_arch_feature_XSAVEC		1
+#define need_arch_feature_XGETBV_ECX_1		0
+#define need_arch_feature_XSAVES		0
+#define need_arch_feature_INVARIANT_TSC		0
+#define need_arch_feature_WBNOINVD		0
 
 /* CPU features.  */
 
@@ -456,6 +475,24 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define bit_cpu_RDTSCP		(1u << 27)
 #define bit_cpu_LM		(1u << 29)
 
+/* COMMON_CPUID_INDEX_D_ECX_1.  */
+
+/* EAX.  */
+#define bit_cpu_XSAVEOPT	(1u << 0)
+#define bit_cpu_XSAVEC		(1u << 1)
+#define bit_cpu_XGETBV_ECX_1	(1u << 2)
+#define bit_cpu_XSAVES		(1u << 3)
+
+/* COMMON_CPUID_INDEX_80000007.  */
+
+/* EDX.  */
+#define bit_cpu_INVARIANT_TSC	(1u << 8)
+
+/* COMMON_CPUID_INDEX_80000008.  */
+
+/* EBX.  */
+#define bit_cpu_WBNOINVD	(1u << 9)
+
 /* COMMON_CPUID_INDEX_1.  */
 
 /* ECX.  */
@@ -602,6 +639,24 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define index_cpu_RDTSCP	COMMON_CPUID_INDEX_80000001
 #define index_cpu_LM		COMMON_CPUID_INDEX_80000001
 
+/* COMMON_CPUID_INDEX_D_ECX_1.  */
+
+/* EAX.  */
+#define index_cpu_XSAVEOPT	COMMON_CPUID_INDEX_D_ECX_1
+#define index_cpu_XSAVEC	COMMON_CPUID_INDEX_D_ECX_1
+#define index_cpu_XGETBV_ECX_1	COMMON_CPUID_INDEX_D_ECX_1
+#define index_cpu_XSAVES	COMMON_CPUID_INDEX_D_ECX_1
+
+/* COMMON_CPUID_INDEX_80000007.  */
+
+/* EDX.  */
+#define index_cpu_INVARIANT_TSC	COMMON_CPUID_INDEX_80000007
+
+/* COMMON_CPUID_INDEX_80000008.  */
+
+/* EBX.  */
+#define index_cpu_WBNOINVD	COMMON_CPUID_INDEX_80000008
+
 /* COMMON_CPUID_INDEX_1.  */
 
 /* ECX.  */
@@ -747,6 +802,24 @@ extern unsigned int x86_get_arch_feature (unsigned int)
 #define reg_PAGE1GB		edx
 #define reg_RDTSCP		edx
 #define reg_LM			edx
+
+/* COMMON_CPUID_INDEX_D_ECX_1.  */
+
+/* EAX.  */
+#define reg_XSAVEOPT		eax
+#define reg_XSAVEC		eax
+#define reg_XGETBV_ECX_1	eax
+#define reg_XSAVES		eax
+
+/* COMMON_CPUID_INDEX_80000007.  */
+
+/* EDX.  */
+#define reg_INVARIANT_TSC	edx
+
+/* COMMON_CPUID_INDEX_80000008.  */
+
+/* EBX.  */
+#define reg_WBNOINVD		ebx
 
 __END_DECLS
 
