@@ -1,5 +1,5 @@
-/* Test case for x86 __get_cpu_features interface
-   Copyright (C) 2015-2018 Free Software Foundation, Inc.
+/* Test case for x86 <sys/platform/x86.h>.
+   Copyright (C) 2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,37 +16,12 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <cpu-features.h>
-#include <support/check.h>
-
-static const char * const cpu_kinds[] =
-{
-  "Unknown",
-  "Intel",
-  "AMD",
-  "Other",
-};
+extern int do_test_function (void);
 
 static int
 do_test (void)
 {
-  enum cpu_features_kind kind = __get_cpu_features ()->kind;
-
-  switch (kind)
-    {
-    case arch_kind_intel:
-    case arch_kind_amd:
-    case arch_kind_other:
-      printf ("Vendor: %s\n", cpu_kinds[kind]);
-      break;
-
-    default:
-      abort ();
-    }
-
-  return 0;
+  return do_test_function ();
 }
 
 #include <support/test-driver.c>

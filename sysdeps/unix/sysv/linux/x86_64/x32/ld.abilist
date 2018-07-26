@@ -6,3 +6,5 @@ GLIBC_2.16 calloc F
 GLIBC_2.16 free F
 GLIBC_2.16 malloc F
 GLIBC_2.16 realloc F
+GLIBC_2.29 x86_get_arch_feature F
+GLIBC_2.29 x86_get_cpuid_registers F

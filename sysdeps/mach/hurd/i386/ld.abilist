@@ -20,6 +20,8 @@ GLIBC_2.2.6 calloc F
 GLIBC_2.2.6 free F
 GLIBC_2.2.6 malloc F
 GLIBC_2.2.6 realloc F
+GLIBC_2.29 x86_get_arch_feature F
+GLIBC_2.29 x86_get_cpuid_registers F
 GLIBC_2.3 ___tls_get_addr F
 GLIBC_2.3 __tls_get_addr F
 GLIBC_2.4 __stack_chk_guard D 0x4

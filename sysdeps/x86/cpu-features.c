@@ -117,6 +117,18 @@ get_common_indices (struct cpu_features *cpu_features,
 	      if (CPU_FEATURES_CPU_P (cpu_features, FMA))
 		cpu_features->feature[index_arch_FMA_Usable]
 		  |= bit_arch_FMA_Usable;
+	      /* Determine if VAES is usable.  */
+	      if (CPU_FEATURES_CPU_P (cpu_features, VAES))
+		cpu_features->feature[index_arch_VAES_Usable]
+		  |= bit_arch_VAES_Usable;
+	      /* Determine if VPCLMULQDQ is usable.  */
+	      if (CPU_FEATURES_CPU_P (cpu_features, VPCLMULQDQ))
+		cpu_features->feature[index_arch_VPCLMULQDQ_Usable]
+		  |= bit_arch_VPCLMULQDQ_Usable;
+	      /* Determine if XOP is usable.  */
+	      if (CPU_FEATURES_CPU_P (cpu_features, XOP))
+		cpu_features->feature[index_arch_XOP_Usable]
+		  |= bit_arch_XOP_Usable;
 	    }
 
 	  /* Check if OPMASK state, upper 256-bit of ZMM0-ZMM15 and
@@ -130,10 +142,62 @@ get_common_indices (struct cpu_features *cpu_features,
 		{
 		  cpu_features->feature[index_arch_AVX512F_Usable]
 		    |= bit_arch_AVX512F_Usable;
+		  /* Determine if AVX512CD is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512CD))
+		    cpu_features->feature[index_arch_AVX512CD_Usable]
+		      |= bit_arch_AVX512CD_Usable;
+		  /* Determine if AVX512ER is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512ER))
+		    cpu_features->feature[index_arch_AVX512ER_Usable]
+		      |= bit_arch_AVX512ER_Usable;
+		  /* Determine if AVX512PF is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512PF))
+		    cpu_features->feature[index_arch_AVX512PF_Usable]
+		      |= bit_arch_AVX512PF_Usable;
+		  /* Determine if AVX512VL is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512VL))
+		    cpu_features->feature[index_arch_AVX512VL_Usable]
+		      |= bit_arch_AVX512VL_Usable;
 		  /* Determine if AVX512DQ is usable.  */
 		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512DQ))
 		    cpu_features->feature[index_arch_AVX512DQ_Usable]
 		      |= bit_arch_AVX512DQ_Usable;
+		  /* Determine if AVX512BW is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512BW))
+		    cpu_features->feature[index_arch_AVX512BW_Usable]
+		      |= bit_arch_AVX512BW_Usable;
+		  /* Determine if AVX512_4FMAPS is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_4FMAPS))
+		    cpu_features->feature[index_arch_AVX512_4FMAPS_Usable]
+		      |= bit_arch_AVX512_4FMAPS_Usable;
+		  /* Determine if AVX512_4VNNIW is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_4VNNIW))
+		    cpu_features->feature[index_arch_AVX512_4VNNIW_Usable]
+		      |= bit_arch_AVX512_4VNNIW_Usable;
+		  /* Determine if AVX512_BITALG is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_BITALG))
+		    cpu_features->feature[index_arch_AVX512_BITALG_Usable]
+		      |= bit_arch_AVX512_BITALG_Usable;
+		  /* Determine if AVX512_IFMA is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_IFMA))
+		    cpu_features->feature[index_arch_AVX512_IFMA_Usable]
+		      |= bit_arch_AVX512_IFMA_Usable;
+		  /* Determine if AVX512_VBMI is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_VBMI))
+		    cpu_features->feature[index_arch_AVX512_VBMI_Usable]
+		      |= bit_arch_AVX512_VBMI_Usable;
+		  /* Determine if AVX512_VBMI2 is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_VBMI2))
+		    cpu_features->feature[index_arch_AVX512_VBMI2_Usable]
+		      |= bit_arch_AVX512_VBMI2_Usable;
+		  /* Determine if is AVX512_VNNI usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_VNNI))
+		    cpu_features->feature[index_arch_AVX512_VNNI_Usable]
+		      |= bit_arch_AVX512_VNNI_Usable;
+		  /* Determine if AVX512_VPOPCNTDQ is usable.  */
+		  if (CPU_FEATURES_CPU_P (cpu_features, AVX512_VPOPCNTDQ))
+		    cpu_features->feature[index_arch_AVX512_VPOPCNTDQ_Usable]
+		      |= bit_arch_AVX512_VPOPCNTDQ_Usable;
 		}
 	    }
 	}
@@ -210,6 +274,18 @@ get_common_indices (struct cpu_features *cpu_features,
     }
 }
 
+_Static_assert (((index_arch_Fast_Unaligned_Load
+		  == index_arch_Fast_Unaligned_Copy)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Prefer_PMINUB_for_stringop)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Slow_SSE4_2)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Fast_Rep_String)
+		 && (index_arch_Fast_Unaligned_Load
+		     == index_arch_Fast_Copy_Backward)),
+		"Incorrect index_arch_Fast_Unaligned_Load");
+
 static inline void
 init_cpu_features (struct cpu_features *cpu_features)
 {
@@ -270,15 +346,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 	    case 0x5d:
 	      /* Unaligned load versions are faster than SSSE3
 		 on Silvermont.  */
-#if index_arch_Fast_Unaligned_Load != index_arch_Prefer_PMINUB_for_stringop
-# error index_arch_Fast_Unaligned_Load != index_arch_Prefer_PMINUB_for_stringop
-#endif
-#if index_arch_Fast_Unaligned_Load != index_arch_Slow_SSE4_2
-# error index_arch_Fast_Unaligned_Load != index_arch_Slow_SSE4_2
-#endif
-#if index_arch_Fast_Unaligned_Load != index_arch_Fast_Unaligned_Copy
-# error index_arch_Fast_Unaligned_Load != index_arch_Fast_Unaligned_Copy
-#endif
 	      cpu_features->feature[index_arch_Fast_Unaligned_Load]
 		|= (bit_arch_Fast_Unaligned_Load
 		    | bit_arch_Fast_Unaligned_Copy
@@ -301,15 +368,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 	    case 0x2f:
 	      /* Rep string instructions, unaligned load, unaligned copy,
 		 and pminub are fast on Intel Core i3, i5 and i7.  */
-#if index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Load
-# error index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Load
-#endif
-#if index_arch_Fast_Rep_String != index_arch_Prefer_PMINUB_for_stringop
-# error index_arch_Fast_Rep_String != index_arch_Prefer_PMINUB_for_stringop
-#endif
-#if index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Copy
-# error index_arch_Fast_Rep_String != index_arch_Fast_Unaligned_Copy
-#endif
 	      cpu_features->feature[index_arch_Fast_Rep_String]
 		|= (bit_arch_Fast_Rep_String
 		    | bit_arch_Fast_Unaligned_Load
@@ -375,9 +433,6 @@ init_cpu_features (struct cpu_features *cpu_features)
 
       if (family == 0x15)
 	{
-#if index_arch_Fast_Unaligned_Load != index_arch_Fast_Copy_Backward
-# error index_arch_Fast_Unaligned_Load != index_arch_Fast_Copy_Backward
-#endif
 	  /* "Excavator"   */
 	  if (model >= 0x60 && model <= 0x7f)
 	  {
