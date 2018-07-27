@@ -24,7 +24,7 @@
 # undef strcpy
 
 # define SYMBOL_NAME strcpy
-# include "ifunc-unaligned-ssse3.h"
+# include "ifunc-unaligned.h"
 
 libc_ifunc_redirected (__redirect_strcpy, strcpy, IFUNC_SELECTOR ());
 
