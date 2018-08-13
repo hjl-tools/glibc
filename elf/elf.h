@@ -1317,6 +1317,9 @@ typedef struct
 #define GNU_PROPERTY_X86_ISA_1_AVX512DQ		(1U << 16)
 #define GNU_PROPERTY_X86_ISA_1_AVX512BW		(1U << 17)
 
+/* Set by linker to indicate that the property is valid.  */
+#define GNU_PROPERTY_X86_UINT32_VALID		(1U << 31)
+
 /* This indicates that all executable sections are compatible with
    IBT.  */
 #define GNU_PROPERTY_X86_FEATURE_1_IBT		(1U << 0)
