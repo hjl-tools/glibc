@@ -44,6 +44,9 @@
 #  define VZEROUPPER	vzeroupper
 # endif
 
+#define xmmZ	xmm8
+#define ymmZ	ymm8
+
 # ifndef USE_AS_STRCAT
 
 .text
@@ -60,6 +63,8 @@ ENTRY (STRCPY)
 
 # endif
 
+	vpxor	%xmmZ, %xmmZ, %xmmZ
+
 	and	$((VEC_SIZE * 4) - 1), %rcx
 	cmp	$(VEC_SIZE * 2), %rcx
 	jbe	L(SourceStringAlignmentLessTwoVecSize)
@@ -69,7 +74,7 @@ ENTRY (STRCPY)
 	vpxor	%xmm0, %xmm0, %xmm0
 	vpxor	%xmm1, %xmm1, %xmm1
 
-	vpcmpeqb (%rsi), %ymm1, %ymm1
+	vpcmpeqb (%rsi), %ymmZ, %ymm1
 	vpmovmskb %ymm1, %rdx
 	shr	%cl, %rdx
 
@@ -88,7 +93,7 @@ ENTRY (STRCPY)
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeTail)
 
-	vpcmpeqb VEC_SIZE(%rsi), %ymm0, %ymm0
+	vpcmpeqb VEC_SIZE(%rsi), %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 
 # ifdef USE_AS_STRNCPY
@@ -115,7 +120,7 @@ L(UnalignVecSizeBoth):
 	vmovdqa (%rsi, %rcx), %ymm1
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm2
 	vmovdqu %ymm1, (%rdi, %rcx)
-	vpcmpeqb %ymm2, %ymm0, %ymm0
+	vpcmpeqb %ymm2, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
@@ -131,7 +136,7 @@ L(UnalignVecSizeBoth):
 
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm3
 	vmovdqu %ymm2, (%rdi, %rcx)
-	vpcmpeqb %ymm3, %ymm0, %ymm0
+	vpcmpeqb %ymm3, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
@@ -147,7 +152,7 @@ L(UnalignVecSizeBoth):
 
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm4
 	vmovdqu %ymm3, (%rdi, %rcx)
-	vpcmpeqb %ymm4, %ymm0, %ymm0
+	vpcmpeqb %ymm4, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
@@ -163,7 +168,7 @@ L(UnalignVecSizeBoth):
 
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm1
 	vmovdqu %ymm4, (%rdi, %rcx)
-	vpcmpeqb %ymm1, %ymm0, %ymm0
+	vpcmpeqb %ymm1, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
@@ -179,7 +184,7 @@ L(UnalignVecSizeBoth):
 
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm2
 	vmovdqu %ymm1, (%rdi, %rcx)
-	vpcmpeqb %ymm2, %ymm0, %ymm0
+	vpcmpeqb %ymm2, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
@@ -195,7 +200,7 @@ L(UnalignVecSizeBoth):
 
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm3
 	vmovdqu %ymm2, (%rdi, %rcx)
-	vpcmpeqb %ymm3, %ymm0, %ymm0
+	vpcmpeqb %ymm3, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
@@ -259,14 +264,12 @@ L(UnalignedFourVecSizeLoop_start):
 	jz	L(UnalignedFourVecSizeLoop_start)
 
 L(UnalignedFourVecSizeLeave):
-	vpxor	%xmm1, %xmm1, %xmm1
-
 	vpcmpeqb %ymm4, %ymm0, %ymm0
 	vpmovmskb %ymm0, %rdx
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeUnaligned_0)
 
-	vpcmpeqb %ymm5, %ymm1, %ymm1
+	vpcmpeqb %ymm5, %ymmZ, %ymm1
 	vpmovmskb %ymm1, %rcx
 	test	%rcx, %rcx
 	jnz	L(CopyVecSizeUnaligned_16)
@@ -276,7 +279,7 @@ L(UnalignedFourVecSizeLeave):
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeUnaligned_32)
 
-	vpcmpeqb %ymm7, %ymm1, %ymm1
+	vpcmpeqb %ymm7, %ymmZ, %ymm1
 	vpmovmskb %ymm1, %rcx
 	bsf	%rcx, %rdx
 	vmovdqu %ymm4, (%rdi)
@@ -300,10 +303,9 @@ L(UnalignedFourVecSizeLeave):
 /* If source address alignment == destination address alignment */
 
 L(SourceStringAlignmentLessTwoVecSize):
-	vpxor	%xmm0, %xmm0, %xmm0
 	vmovdqu (%rsi), %ymm1
 	vmovdqu VEC_SIZE(%rsi), %ymm2
-	vpcmpeqb %ymm1, %ymm0, %ymm0
+	vpcmpeqb %ymm1, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %rdx
 
 # ifdef USE_AS_STRNCPY
@@ -317,7 +319,7 @@ L(SourceStringAlignmentLessTwoVecSize):
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeTail1)
 
-	vpcmpeqb %ymm2, %ymm0, %ymm0
+	vpcmpeqb %ymm2, %ymmZ, %ymm0
 	vmovdqu %ymm1, (%rdi)
 	vpmovmskb %ymm0, %rdx
 
@@ -2815,47 +2817,47 @@ L(Fill14):
 
 	.p2align 4
 L(Fill15):
-	vmovdqu %xmm0, -1(%rdi)
+	vmovdqu %xmmZ, -1(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill16):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill17):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%dl, 16(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill18):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%dx, 16(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill19):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%edx, 15(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill20):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%edx, 16(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill21):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%edx, 16(%rdi)
 	mov	%dl, 20(%rdi)
 	VZEROUPPER
@@ -2863,7 +2865,7 @@ L(Fill21):
 
 	.p2align 4
 L(Fill22):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%edx, 16(%rdi)
 	mov	%dx, 20(%rdi)
 	VZEROUPPER
@@ -2871,21 +2873,21 @@ L(Fill22):
 
 	.p2align 4
 L(Fill23):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 15(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill24):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill25):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%dl, 24(%rdi)
 	VZEROUPPER
@@ -2893,7 +2895,7 @@ L(Fill25):
 
 	.p2align 4
 L(Fill26):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%dx, 24(%rdi)
 	VZEROUPPER
@@ -2901,7 +2903,7 @@ L(Fill26):
 
 	.p2align 4
 L(Fill27):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%edx, 23(%rdi)
 	VZEROUPPER
@@ -2909,7 +2911,7 @@ L(Fill27):
 
 	.p2align 4
 L(Fill28):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%edx, 24(%rdi)
 	VZEROUPPER
@@ -2917,7 +2919,7 @@ L(Fill28):
 
 	.p2align 4
 L(Fill29):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%rdx, 21(%rdi)
 	VZEROUPPER
@@ -2925,7 +2927,7 @@ L(Fill29):
 
 	.p2align 4
 L(Fill30):
-	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmmZ, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%rdx, 22(%rdi)
 	VZEROUPPER
@@ -2933,13 +2935,13 @@ L(Fill30):
 
 	.p2align 4
 L(Fill31):
-	vmovdqu %ymm0, -1(%rdi)
+	vmovdqu %ymmZ, -1(%rdi)
 	VZEROUPPER
 	ret
 
 	.p2align 4
 L(Fill32):
-	vmovdqu %ymm0, (%rdi)
+	vmovdqu %ymmZ, (%rdi)
 	VZEROUPPER
 	ret
 
@@ -2960,12 +2962,11 @@ L(CopyVecSizeVecExit):
 
 	.p2align 4
 L(StrncpyFillTailWithZero):
-	vpxor	%xmm0, %xmm0, %xmm0
-	xor	%rdx, %rdx
+	xor	%edx, %edx
 	sub	$VEC_SIZE, %r8
 	jbe	L(StrncpyFillExit)
 
-	vmovdqu %ymm0, (%rdi)
+	vmovdqu %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
 
 	mov	%rdi, %rsi
@@ -2976,10 +2977,10 @@ L(StrncpyFillTailWithZero):
 	jb	L(StrncpyFillLessFourVecSize)
 
 L(StrncpyFillLoopVmovdqa):
-	vmovdqa %ymm0, (%rdi)
-	vmovdqa %ymm0, VEC_SIZE(%rdi)
-	vmovdqa %ymm0, (VEC_SIZE * 2)(%rdi)
-	vmovdqa %ymm0, (VEC_SIZE * 3)(%rdi)
+	vmovdqa %ymmZ, (%rdi)
+	vmovdqa %ymmZ, VEC_SIZE(%rdi)
+	vmovdqa %ymmZ, (VEC_SIZE * 2)(%rdi)
+	vmovdqa %ymmZ, (VEC_SIZE * 3)(%rdi)
 	add	$(VEC_SIZE * 4), %rdi
 	sub	$(VEC_SIZE * 4), %r8
 	jae	L(StrncpyFillLoopVmovdqa)
@@ -2987,19 +2988,19 @@ L(StrncpyFillLoopVmovdqa):
 L(StrncpyFillLessFourVecSize):
 	add	$(VEC_SIZE * 2), %r8
 	jl	L(StrncpyFillLessTwoVecSize)
-	vmovdqa %ymm0, (%rdi)
-	vmovdqa %ymm0, VEC_SIZE(%rdi)
+	vmovdqa %ymmZ, (%rdi)
+	vmovdqa %ymmZ, VEC_SIZE(%rdi)
 	add	$(VEC_SIZE * 2), %rdi
 	sub	$VEC_SIZE, %r8
 	jl	L(StrncpyFillExit)
-	vmovdqa %ymm0, (%rdi)
+	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
 	BRANCH_TO_JMPTBL_ENTRY (L(FillTable), %r8, 4)
 
 L(StrncpyFillLessTwoVecSize):
 	add	$VEC_SIZE, %r8
 	jl	L(StrncpyFillExit)
-	vmovdqa %ymm0, (%rdi)
+	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
 	BRANCH_TO_JMPTBL_ENTRY (L(FillTable), %r8, 4)
 
