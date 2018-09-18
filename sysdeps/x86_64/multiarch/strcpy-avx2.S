@@ -1647,8 +1647,7 @@ L(StrncpyExit0):
 	mov	%rdi, %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, (%rdi)
+	movb	$0, (%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1661,8 +1660,7 @@ L(StrncpyExit1):
 	lea	1(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 1(%rdi)
+	movb	$0, 1(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1675,8 +1673,7 @@ L(StrncpyExit2):
 	lea	2(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 2(%rdi)
+	movb	$0, 2(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1691,8 +1688,7 @@ L(StrncpyExit3):
 	lea	3(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 3(%rdi)
+	movb	$0, 3(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1705,8 +1701,7 @@ L(StrncpyExit4):
 	lea	4(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 4(%rdi)
+	movb	$0, 4(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1721,8 +1716,7 @@ L(StrncpyExit5):
 	lea	5(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 5(%rdi)
+	movb	$0, 5(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1737,8 +1731,7 @@ L(StrncpyExit6):
 	lea	6(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 6(%rdi)
+	movb	$0, 6(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1753,8 +1746,7 @@ L(StrncpyExit7):
 	lea	7(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 7(%rdi)
+	movb	$0, 7(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1767,8 +1759,7 @@ L(StrncpyExit8):
 	lea	8(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 8(%rdi)
+	movb	$0, 8(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1783,8 +1774,7 @@ L(StrncpyExit9):
 	lea	9(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 9(%rdi)
+	movb	$0, 9(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1799,8 +1789,7 @@ L(StrncpyExit10):
 	lea	10(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 10(%rdi)
+	movb	$0, 10(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1815,8 +1804,7 @@ L(StrncpyExit11):
 	lea	11(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 11(%rdi)
+	movb	$0, 11(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1831,8 +1819,7 @@ L(StrncpyExit12):
 	lea	12(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 12(%rdi)
+	movb	$0, 12(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1847,8 +1834,7 @@ L(StrncpyExit13):
 	lea	13(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 13(%rdi)
+	movb	$0, 13(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1863,8 +1849,7 @@ L(StrncpyExit14):
 	lea	14(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 14(%rdi)
+	movb	$0, 14(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1879,8 +1864,7 @@ L(StrncpyExit15):
 	lea	15(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 15(%rdi)
+	movb	$0, 15(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1893,8 +1877,7 @@ L(StrncpyExit16):
 	lea	16(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 16(%rdi)
+	movb	$0, 16(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1909,8 +1892,7 @@ L(StrncpyExit17):
 	lea	17(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 17(%rdi)
+	movb	$0, 17(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1925,8 +1907,7 @@ L(StrncpyExit18):
 	lea	18(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 18(%rdi)
+	movb	$0, 18(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1941,8 +1922,7 @@ L(StrncpyExit19):
 	lea	19(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 19(%rdi)
+	movb	$0, 19(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1957,8 +1937,7 @@ L(StrncpyExit20):
 	lea	20(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 20(%rdi)
+	movb	$0, 20(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1973,8 +1952,7 @@ L(StrncpyExit21):
 	lea	21(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 21(%rdi)
+	movb	$0, 21(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1989,8 +1967,7 @@ L(StrncpyExit22):
 	lea	22(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 22(%rdi)
+	movb	$0, 22(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2005,8 +1982,7 @@ L(StrncpyExit23):
 	lea	23(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 23(%rdi)
+	movb	$0, 23(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2021,8 +1997,7 @@ L(StrncpyExit24):
 	lea	24(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 24(%rdi)
+	movb	$0, 24(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2037,8 +2012,7 @@ L(StrncpyExit25):
 	lea	25(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 25(%rdi)
+	movb	$0, 25(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2053,8 +2027,7 @@ L(StrncpyExit26):
 	lea	26(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 26(%rdi)
+	movb	$0, 26(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2069,8 +2042,7 @@ L(StrncpyExit27):
 	lea	27(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 27(%rdi)
+	movb	$0, 27(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2085,8 +2057,7 @@ L(StrncpyExit28):
 	lea	28(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 28(%rdi)
+	movb	$0, 28(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2101,8 +2072,7 @@ L(StrncpyExit29):
 	lea	29(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 29(%rdi)
+	movb	$0, 29(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2117,8 +2087,7 @@ L(StrncpyExit30):
 	lea	30(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 30(%rdi)
+	movb	$0, 30(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2133,8 +2102,7 @@ L(StrncpyExit31):
 	lea	31(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 31(%rdi)
+	movb	$0, 31(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2147,8 +2115,7 @@ L(StrncpyExit32):
 	lea	32(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 32(%rdi)
+	movb	$0, 32(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2163,8 +2130,7 @@ L(StrncpyExit33):
 	lea	33(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 33(%rdi)
+	movb	$0, 33(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2180,8 +2146,7 @@ L(StrncpyExit34):
 	lea	34(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 34(%rdi)
+	movb	$0, 34(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2197,8 +2162,7 @@ L(StrncpyExit35):
 	lea	35(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 35(%rdi)
+	movb	$0, 35(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2214,8 +2178,7 @@ L(StrncpyExit36):
 	lea	36(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 36(%rdi)
+	movb	$0, 36(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2231,8 +2194,7 @@ L(StrncpyExit37):
 	lea	37(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 37(%rdi)
+	movb	$0, 37(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2248,8 +2210,7 @@ L(StrncpyExit38):
 	lea	38(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 38(%rdi)
+	movb	$0, 38(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2265,8 +2226,7 @@ L(StrncpyExit39):
 	lea	39(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 39(%rdi)
+	movb	$0, 39(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2282,8 +2242,7 @@ L(StrncpyExit40):
 	lea	40(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 40(%rdi)
+	movb	$0, 40(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2299,8 +2258,7 @@ L(StrncpyExit41):
 	lea	41(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 41(%rdi)
+	movb	$0, 41(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2316,8 +2274,7 @@ L(StrncpyExit42):
 	lea	42(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 42(%rdi)
+	movb	$0, 42(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2333,8 +2290,7 @@ L(StrncpyExit43):
 	lea	43(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 43(%rdi)
+	movb	$0, 43(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2350,8 +2306,7 @@ L(StrncpyExit44):
 	lea	44(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 44(%rdi)
+	movb	$0, 44(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2367,8 +2322,7 @@ L(StrncpyExit45):
 	lea	45(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 45(%rdi)
+	movb	$0, 45(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2384,8 +2338,7 @@ L(StrncpyExit46):
 	lea	46(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 46(%rdi)
+	movb	$0, 46(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2401,8 +2354,7 @@ L(StrncpyExit47):
 	lea	47(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 47(%rdi)
+	movb	$0, 47(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2418,8 +2370,7 @@ L(StrncpyExit48):
 	lea	48(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 48(%rdi)
+	movb	$0, 48(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2435,8 +2386,7 @@ L(StrncpyExit49):
 	lea	49(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 49(%rdi)
+	movb	$0, 49(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2452,8 +2402,7 @@ L(StrncpyExit50):
 	lea	50(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 50(%rdi)
+	movb	$0, 50(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2469,8 +2418,7 @@ L(StrncpyExit51):
 	lea	51(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 51(%rdi)
+	movb	$0, 51(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2486,8 +2434,7 @@ L(StrncpyExit52):
 	lea	52(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 52(%rdi)
+	movb	$0, 52(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2503,8 +2450,7 @@ L(StrncpyExit53):
 	lea	53(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 53(%rdi)
+	movb	$0, 53(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2520,8 +2466,7 @@ L(StrncpyExit54):
 	lea	54(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 54(%rdi)
+	movb	$0, 54(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2537,8 +2482,7 @@ L(StrncpyExit55):
 	lea	55(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 55(%rdi)
+	movb	$0, 55(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2554,8 +2498,7 @@ L(StrncpyExit56):
 	lea	56(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 56(%rdi)
+	movb	$0, 56(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2571,8 +2514,7 @@ L(StrncpyExit57):
 	lea	57(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 57(%rdi)
+	movb	$0, 57(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2588,8 +2530,7 @@ L(StrncpyExit58):
 	lea	58(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 58(%rdi)
+	movb	$0, 58(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2605,8 +2546,7 @@ L(StrncpyExit59):
 	lea	59(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 59(%rdi)
+	movb	$0, 59(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2623,8 +2563,7 @@ L(StrncpyExit60):
 	lea	60(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 60(%rdi)
+	movb	$0, 60(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2640,8 +2579,7 @@ L(StrncpyExit61):
 	lea	61(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 61(%rdi)
+	movb	$0, 61(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2657,8 +2595,7 @@ L(StrncpyExit62):
 	lea	62(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 62(%rdi)
+	movb	$0, 62(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2674,8 +2611,7 @@ L(StrncpyExit63):
 	lea	63(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 63(%rdi)
+	movb	$0, 63(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2691,8 +2627,7 @@ L(StrncpyExit64):
 	lea	64(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 64(%rdi)
+	movb	$0, 64(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -2710,8 +2645,7 @@ L(StrncpyExit65):
 	lea	65(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, 65(%rdi)
+	movb	$0, 65(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -3034,8 +2968,7 @@ L(UnalignedFourVecSizeLeaveCase3):
 	lea	(VEC_SIZE * 4)(%rdi), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	xor	%ch, %ch
-	movb	%ch, (VEC_SIZE * 4)(%rdi)
+	movb	$0, (VEC_SIZE * 4)(%rdi)
 #  endif
 	VZEROUPPER
 	ret
