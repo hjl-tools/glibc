@@ -780,8 +780,8 @@ L(Exit15):
 
 	.p2align 4
 L(Exit16):
-	movdqu	(%rsi), %xmm0
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	%xmm0, (%rdi)
 # ifdef USE_AS_STPCPY
 	lea	15(%rdi), %rax
 # endif
@@ -795,8 +795,8 @@ L(Exit16):
 
 	.p2align 4
 L(Exit17):
-	movdqu	(%rsi), %xmm0
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	%xmm0, (%rdi)
 	mov	%dh, 16(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	16(%rdi), %rax
@@ -811,9 +811,9 @@ L(Exit17):
 
 	.p2align 4
 L(Exit18):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %cx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%cx, 16(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	17(%rdi), %rax
@@ -828,9 +828,9 @@ L(Exit18):
 
 	.p2align 4
 L(Exit19):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	15(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%ecx, 15(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	18(%rdi), %rax
@@ -845,9 +845,9 @@ L(Exit19):
 
 	.p2align 4
 L(Exit20):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%ecx, 16(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	19(%rdi), %rax
@@ -862,9 +862,9 @@ L(Exit20):
 
 	.p2align 4
 L(Exit21):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%ecx, 16(%rdi)
 	mov	%dh, 20(%rdi)
 # ifdef USE_AS_STPCPY
@@ -880,9 +880,9 @@ L(Exit21):
 
 	.p2align 4
 L(Exit22):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	14(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 14(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	21(%rdi), %rax
@@ -897,9 +897,9 @@ L(Exit22):
 
 	.p2align 4
 L(Exit23):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	15(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 15(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	22(%rdi), %rax
@@ -914,9 +914,9 @@ L(Exit23):
 
 	.p2align 4
 L(Exit24):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 16(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	23(%rdi), %rax
@@ -931,9 +931,9 @@ L(Exit24):
 
 	.p2align 4
 L(Exit25):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 16(%rdi)
 	mov	%dh, 24(%rdi)
 # ifdef USE_AS_STPCPY
@@ -949,10 +949,10 @@ L(Exit25):
 
 	.p2align 4
 L(Exit26):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	24(%rsi), %cx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%cx, 24(%rdi)
 # ifdef USE_AS_STPCPY
@@ -968,10 +968,10 @@ L(Exit26):
 
 	.p2align 4
 L(Exit27):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	23(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%ecx, 23(%rdi)
 # ifdef USE_AS_STPCPY
@@ -987,10 +987,10 @@ L(Exit27):
 
 	.p2align 4
 L(Exit28):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	24(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%ecx, 24(%rdi)
 # ifdef USE_AS_STPCPY
@@ -1006,10 +1006,10 @@ L(Exit28):
 
 	.p2align 4
 L(Exit29):
-	movdqu	(%rsi), %xmm0
-	movdqu	13(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 13(%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	13(%rsi), %xmm2
+	vmovdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm2, 13(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	28(%rdi), %rax
 # endif
@@ -1023,10 +1023,10 @@ L(Exit29):
 
 	.p2align 4
 L(Exit30):
-	movdqu	(%rsi), %xmm0
-	movdqu	14(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 14(%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	14(%rsi), %xmm2
+	vmovdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm2, 14(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	29(%rdi), %rax
 # endif
@@ -1040,10 +1040,10 @@ L(Exit30):
 
 	.p2align 4
 L(Exit31):
-	movdqu	(%rsi), %xmm0
-	movdqu	15(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 15(%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	15(%rsi), %xmm2
+	vmovdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm2, 15(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	30(%rdi), %rax
 # endif
@@ -1057,10 +1057,8 @@ L(Exit31):
 
 	.p2align 4
 L(Exit32):
-	movdqu	(%rsi), %xmm0
-	movdqu	16(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 16(%rdi)
+	vmovdqu	(%rsi), %ymm0
+	vmovdqu	%ymm0, (%rdi)
 # ifdef USE_AS_STPCPY
 	lea	31(%rdi), %rax
 # endif
@@ -1913,8 +1911,8 @@ L(StrncpyExit15):
 
 	.p2align 4
 L(StrncpyExit16):
-	movdqu	(%rsi), %xmm0
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	%xmm0, (%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	16(%rdi), %rax
 #  endif
@@ -1927,9 +1925,9 @@ L(StrncpyExit16):
 
 	.p2align 4
 L(StrncpyExit17):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %cl
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%cl, 16(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	17(%rdi), %rax
@@ -1943,9 +1941,9 @@ L(StrncpyExit17):
 
 	.p2align 4
 L(StrncpyExit18):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %cx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%cx, 16(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	18(%rdi), %rax
@@ -1959,9 +1957,9 @@ L(StrncpyExit18):
 
 	.p2align 4
 L(StrncpyExit19):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	15(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%ecx, 15(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	19(%rdi), %rax
@@ -1975,9 +1973,9 @@ L(StrncpyExit19):
 
 	.p2align 4
 L(StrncpyExit20):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%ecx, 16(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	20(%rdi), %rax
@@ -1991,10 +1989,10 @@ L(StrncpyExit20):
 
 	.p2align 4
 L(StrncpyExit21):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %ecx
 	mov	20(%rsi), %dl
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%ecx, 16(%rdi)
 	mov	%dl, 20(%rdi)
 #  ifdef USE_AS_STPCPY
@@ -2009,9 +2007,9 @@ L(StrncpyExit21):
 
 	.p2align 4
 L(StrncpyExit22):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	14(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 14(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	22(%rdi), %rax
@@ -2025,9 +2023,9 @@ L(StrncpyExit22):
 
 	.p2align 4
 L(StrncpyExit23):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	15(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 15(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	23(%rdi), %rax
@@ -2041,9 +2039,9 @@ L(StrncpyExit23):
 
 	.p2align 4
 L(StrncpyExit24):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rcx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rcx, 16(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	24(%rdi), %rax
@@ -2057,10 +2055,10 @@ L(StrncpyExit24):
 
 	.p2align 4
 L(StrncpyExit25):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	24(%rsi), %cl
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%cl, 24(%rdi)
 #  ifdef USE_AS_STPCPY
@@ -2075,10 +2073,10 @@ L(StrncpyExit25):
 
 	.p2align 4
 L(StrncpyExit26):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	24(%rsi), %cx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%cx, 24(%rdi)
 #  ifdef USE_AS_STPCPY
@@ -2093,10 +2091,10 @@ L(StrncpyExit26):
 
 	.p2align 4
 L(StrncpyExit27):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	23(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%ecx, 23(%rdi)
 #  ifdef USE_AS_STPCPY
@@ -2111,10 +2109,10 @@ L(StrncpyExit27):
 
 	.p2align 4
 L(StrncpyExit28):
-	movdqu	(%rsi), %xmm0
+	vmovdqu	(%rsi), %xmm0
 	mov	16(%rsi), %rdx
 	mov	24(%rsi), %ecx
-	movdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm0, (%rdi)
 	mov	%rdx, 16(%rdi)
 	mov	%ecx, 24(%rdi)
 #  ifdef USE_AS_STPCPY
@@ -2129,10 +2127,10 @@ L(StrncpyExit28):
 
 	.p2align 4
 L(StrncpyExit29):
-	movdqu	(%rsi), %xmm0
-	movdqu	13(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 13(%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	13(%rsi), %xmm2
+	vmovdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm2, 13(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	29(%rdi), %rax
 #  endif
@@ -2145,10 +2143,10 @@ L(StrncpyExit29):
 
 	.p2align 4
 L(StrncpyExit30):
-	movdqu	(%rsi), %xmm0
-	movdqu	14(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 14(%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	14(%rsi), %xmm2
+	vmovdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm2, 14(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	30(%rdi), %rax
 #  endif
@@ -2161,10 +2159,10 @@ L(StrncpyExit30):
 
 	.p2align 4
 L(StrncpyExit31):
-	movdqu	(%rsi), %xmm0
-	movdqu	15(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 15(%rdi)
+	vmovdqu	(%rsi), %xmm0
+	vmovdqu	15(%rsi), %xmm2
+	vmovdqu	%xmm0, (%rdi)
+	vmovdqu	%xmm2, 15(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	31(%rdi), %rax
 #  endif
@@ -2177,10 +2175,8 @@ L(StrncpyExit31):
 
 	.p2align 4
 L(StrncpyExit32):
-	movdqu	(%rsi), %xmm0
-	movdqu	16(%rsi), %xmm2
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 16(%rdi)
+	vmovdqu	(%rsi), %ymm0
+	vmovdqu	%ymm0, (%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	32(%rdi), %rax
 #  endif
@@ -2193,11 +2189,9 @@ L(StrncpyExit32):
 
 	.p2align 4
 L(StrncpyExit33):
-	movdqu	(%rsi), %xmm0
-	movdqu	16(%rsi), %xmm2
+	vmovdqu	(%rsi), %ymm0
 	mov	32(%rsi), %cl
-	movdqu	%xmm0, (%rdi)
-	movdqu	%xmm2, 16(%rdi)
+	vmovdqu	%ymm0, (%rdi)
 	mov	%cl, 32(%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	33(%rdi), %rax
