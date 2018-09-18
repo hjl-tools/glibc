@@ -65,12 +65,12 @@ ENTRY (STRCPY)
 
 	vpxor	%xmmZ, %xmmZ, %xmmZ
 
-	and	$((VEC_SIZE * 4) - 1), %rcx
-	cmp	$(VEC_SIZE * 2), %rcx
+	and	$((VEC_SIZE * 4) - 1), %ecx
+	cmp	$(VEC_SIZE * 2), %ecx
 	jbe	L(SourceStringAlignmentLessTwoVecSize)
 
 	and	$-VEC_SIZE, %rsi
-	and	$(VEC_SIZE - 1), %rcx
+	and	$(VEC_SIZE - 1), %ecx
 	vpxor	%xmm0, %xmm0, %xmm0
 	vpxor	%xmm1, %xmm1, %xmm1
 
@@ -335,7 +335,7 @@ L(SourceStringAlignmentLessTwoVecSize):
 	jnz	L(CopyTwoVecSize1)
 
 	and	$-VEC_SIZE, %rsi
-	and	$(VEC_SIZE - 1), %rcx
+	and	$(VEC_SIZE - 1), %ecx
 	jmp	L(UnalignVecSizeBoth)
 
 /*------End of main part with loops---------------------*/
@@ -2904,7 +2904,7 @@ L(StrncpyFillTailWithZero):
 	add	$VEC_SIZE, %rdi
 
 	mov	%rdi, %rsi
-	and	$(VEC_SIZE - 1), %rsi
+	and	$(VEC_SIZE - 1), %esi
 	sub	%rsi, %rdi
 	add	%rsi, %r8
 	sub	$(VEC_SIZE * 4), %r8
