@@ -75,7 +75,7 @@ ENTRY (STRCPY)
 	vpxor	%xmm1, %xmm1, %xmm1
 
 	vpcmpeqb (%rsi), %ymmZ, %ymm1
-	vpmovmskb %ymm1, %rdx
+	vpmovmskb %ymm1, %edx
 	shr	%cl, %rdx
 
 # ifdef USE_AS_STRNCPY
@@ -90,18 +90,18 @@ ENTRY (STRCPY)
 #  endif
 	jbe	L(CopyVecSizeTailCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 	jnz	L(CopyVecSizeTail)
 
 	vpcmpeqb VEC_SIZE(%rsi), %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 
 # ifdef USE_AS_STRNCPY
 	add	$VEC_SIZE, %r10
 	cmp	%r10, %r8
 	jbe	L(CopyTwoVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 	jnz	L(CopyTwoVecSize)
 
 	vmovdqu (%rsi, %rcx), %ymm1   /* copy VEC_SIZE bytes */
@@ -121,13 +121,13 @@ L(UnalignVecSizeBoth):
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm2
 	vmovdqu %ymm1, (%rdi, %rcx)
 	vpcmpeqb %ymm2, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
 	sub	$(VEC_SIZE * 3), %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec2)
 # else
@@ -137,13 +137,13 @@ L(UnalignVecSizeBoth):
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm3
 	vmovdqu %ymm2, (%rdi, %rcx)
 	vpcmpeqb %ymm3, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec3)
 # else
@@ -153,13 +153,13 @@ L(UnalignVecSizeBoth):
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm4
 	vmovdqu %ymm3, (%rdi, %rcx)
 	vpcmpeqb %ymm4, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec4)
 # else
@@ -169,13 +169,13 @@ L(UnalignVecSizeBoth):
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm1
 	vmovdqu %ymm4, (%rdi, %rcx)
 	vpcmpeqb %ymm1, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec1)
 # else
@@ -185,13 +185,13 @@ L(UnalignVecSizeBoth):
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm2
 	vmovdqu %ymm1, (%rdi, %rcx)
 	vpcmpeqb %ymm2, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec2)
 # else
@@ -201,13 +201,13 @@ L(UnalignVecSizeBoth):
 	vmovdqa VEC_SIZE(%rsi, %rcx), %ymm3
 	vmovdqu %ymm2, (%rdi, %rcx)
 	vpcmpeqb %ymm3, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$VEC_SIZE, %rcx
 # ifdef USE_AS_STRNCPY
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec3)
 # else
@@ -232,12 +232,12 @@ L(UnalignedFourVecSizeLoop):
 	vpminub %ymm7, %ymm6, %ymm3
 	vpminub %ymm2, %ymm3, %ymm3
 	vpcmpeqb %ymm0, %ymm3, %ymm3
-	vpmovmskb %ymm3, %rdx
+	vpmovmskb %ymm3, %edx
 # ifdef USE_AS_STRNCPY
 	sub	$(VEC_SIZE * 4), %r8
 	jbe	L(UnalignedLeaveCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 	jnz	L(UnalignedFourVecSizeLeave)
 
 L(UnalignedFourVecSizeLoop_start):
@@ -255,33 +255,33 @@ L(UnalignedFourVecSizeLoop_start):
 	vpminub %ymm7, %ymm6, %ymm3
 	vpminub %ymm2, %ymm3, %ymm3
 	vpcmpeqb %ymm0, %ymm3, %ymm3
-	vpmovmskb %ymm3, %rdx
+	vpmovmskb %ymm3, %edx
 # ifdef USE_AS_STRNCPY
 	sub	$(VEC_SIZE * 4), %r8
 	jbe	L(UnalignedLeaveCase2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 	jz	L(UnalignedFourVecSizeLoop_start)
 
 L(UnalignedFourVecSizeLeave):
 	vpcmpeqb %ymm4, %ymm0, %ymm0
-	vpmovmskb %ymm0, %rdx
-	test	%rdx, %rdx
+	vpmovmskb %ymm0, %edx
+	test	%edx, %edx
 	jnz	L(CopyVecSizeUnaligned_0)
 
 	vpcmpeqb %ymm5, %ymmZ, %ymm1
-	vpmovmskb %ymm1, %rcx
-	test	%rcx, %rcx
+	vpmovmskb %ymm1, %ecx
+	test	%ecx, %ecx
 	jnz	L(CopyVecSizeUnaligned_16)
 
 	vpcmpeqb %ymm6, %ymm0, %ymm0
-	vpmovmskb %ymm0, %rdx
-	test	%rdx, %rdx
+	vpmovmskb %ymm0, %edx
+	test	%edx, %edx
 	jnz	L(CopyVecSizeUnaligned_32)
 
 	vpcmpeqb %ymm7, %ymmZ, %ymm1
-	vpmovmskb %ymm1, %rcx
-	bsf	%rcx, %rdx
+	vpmovmskb %ymm1, %ecx
+	bsf	%ecx, %edx
 	vmovdqu %ymm4, (%rdi)
 	vmovdqu %ymm5, VEC_SIZE(%rdi)
 	vmovdqu %ymm6, (VEC_SIZE * 2)(%rdi)
@@ -306,7 +306,7 @@ L(SourceStringAlignmentLessTwoVecSize):
 	vmovdqu (%rsi), %ymm1
 	vmovdqu VEC_SIZE(%rsi), %ymm2
 	vpcmpeqb %ymm1, %ymmZ, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 
 # ifdef USE_AS_STRNCPY
 #  if defined USE_AS_STPCPY || defined USE_AS_STRCAT
@@ -316,12 +316,12 @@ L(SourceStringAlignmentLessTwoVecSize):
 #  endif
 	jbe	L(CopyVecSizeTail1Case2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 	jnz	L(CopyVecSizeTail1)
 
 	vpcmpeqb %ymm2, %ymmZ, %ymm0
 	vmovdqu %ymm1, (%rdi)
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 
 # ifdef USE_AS_STRNCPY
 #  if defined USE_AS_STPCPY || defined USE_AS_STRCAT
@@ -331,7 +331,7 @@ L(SourceStringAlignmentLessTwoVecSize):
 #  endif
 	jbe	L(CopyTwoVecSize1Case2OrCase3)
 # endif
-	test	%rdx, %rdx
+	test	%edx, %edx
 	jnz	L(CopyTwoVecSize1)
 
 	and	$-VEC_SIZE, %rsi
@@ -347,13 +347,13 @@ L(SourceStringAlignmentLessTwoVecSize):
 L(CopyVecSize):
 	add	%rcx, %rdi
 	add	%rcx, %rsi
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
 # endif
 	.p2align 4
 L(CopyVecSizeTail):
 	add	%rcx, %rsi
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
 
 	.p2align 4
@@ -364,20 +364,20 @@ L(CopyTwoVecSize1):
 	sub	$VEC_SIZE, %r8
 # endif
 L(CopyVecSizeTail1):
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
 
 	.p2align 4
 L(CopyTwoVecSize):
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 	add	%rcx, %rsi
-	add	$VEC_SIZE, %rdx
-	sub	%rcx, %rdx
+	add	$VEC_SIZE, %edx
+	sub	%ecx, %edx
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
 
 	.p2align 4
 L(CopyVecSizeUnaligned_0):
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 # ifdef USE_AS_STPCPY
 	lea	(%rdi, %rdx), %rax
@@ -393,7 +393,7 @@ L(CopyVecSizeUnaligned_0):
 
 	.p2align 4
 L(CopyVecSizeUnaligned_16):
-	bsf	%rcx, %rdx
+	bsf	%ecx, %edx
 	vmovdqu %ymm4, (%rdi)
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 # ifdef USE_AS_STPCPY
@@ -412,7 +412,7 @@ L(CopyVecSizeUnaligned_16):
 
 	.p2align 4
 L(CopyVecSizeUnaligned_32):
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 	vmovdqu %ymm4, (%rdi)
 	vmovdqu %ymm5, VEC_SIZE(%rdi)
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
@@ -469,31 +469,31 @@ L(CopyVecSizeCase2):
 	add	$VEC_SIZE, %r8
 	add	%rcx, %rdi
 	add	%rcx, %rsi
-	bsf	%rdx, %rdx
-	cmp	%r8, %rdx
+	bsf	%edx, %edx
+	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
 
 	.p2align 4
 L(CopyTwoVecSizeCase2):
 	add	%rcx, %rsi
-	bsf	%rdx, %rdx
-	add	$VEC_SIZE, %rdx
-	sub	%rcx, %rdx
-	cmp	%r8, %rdx
+	bsf	%edx, %edx
+	add	$VEC_SIZE, %edx
+	sub	%ecx, %edx
+	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
 
 L(CopyVecSizeTailCase2):
 	add	%rcx, %rsi
-	bsf	%rdx, %rdx
-	cmp	%r8, %rdx
+	bsf	%edx, %edx
+	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
 
 L(CopyVecSizeTail1Case2):
-	bsf	%rdx, %rdx
-	cmp	%r8, %rdx
+	bsf	%edx, %edx
+	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
 
@@ -2885,7 +2885,7 @@ L(CopyVecSizeUnalignedVec2):
 
 	.p2align 4
 L(CopyVecSizeVecExit):
-	bsf	%rdx, %rdx
+	bsf	%edx, %edx
 	add	$(VEC_SIZE - 1), %r8
 	add	%rcx, %rdi
 #   ifdef USE_AS_STPCPY
@@ -2977,22 +2977,22 @@ L(UnalignedFourVecSizeLeaveCase3):
 L(UnalignedFourVecSizeLeaveCase2):
 	xor	%ecx, %ecx
 	vpcmpeqb %ymm4, %ymm0, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	add	$(VEC_SIZE * 3), %r8
 	jle	L(CopyVecSizeCase2OrCase3)
-	test	%rdx, %rdx
+	test	%edx, %edx
 #  ifndef USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec4)
 #  else
 	jnz	L(CopyVecSize)
 #  endif
 	vpcmpeqb %ymm5, %ymm0, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	vmovdqu %ymm4, (%rdi)
 	add	$VEC_SIZE, %rcx
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
-	test	%rdx, %rdx
+	test	%edx, %edx
 #  ifndef USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec5)
 #  else
@@ -3000,12 +3000,12 @@ L(UnalignedFourVecSizeLeaveCase2):
 #  endif
 
 	vpcmpeqb %ymm6, %ymm0, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	vmovdqu %ymm5, VEC_SIZE(%rdi)
 	add	$VEC_SIZE, %rcx
 	sub	$VEC_SIZE, %r8
 	jbe	L(CopyVecSizeCase2OrCase3)
-	test	%rdx, %rdx
+	test	%edx, %edx
 #  ifndef USE_AS_STRCAT
 	jnz	L(CopyVecSizeUnalignedVec6)
 #  else
@@ -3013,12 +3013,12 @@ L(UnalignedFourVecSizeLeaveCase2):
 #  endif
 
 	vpcmpeqb %ymm7, %ymm0, %ymm0
-	vpmovmskb %ymm0, %rdx
+	vpmovmskb %ymm0, %edx
 	vmovdqu %ymm6, (VEC_SIZE * 2)(%rdi)
 	lea	VEC_SIZE(%rdi, %rcx), %rdi
 	lea	VEC_SIZE(%rsi, %rcx), %rsi
-	bsf	%rdx, %rdx
-	cmp	%r8, %rdx
+	bsf	%edx, %edx
+	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
 	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
 
