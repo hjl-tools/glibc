@@ -1319,15 +1319,16 @@ L(Exit46):
 L(Exit47):
 	/* 0/32, 31/16 */
 	vmovdqu (%rsi), %ymm0
-	vmovdqu 31(%rsi), %xmm1
+	vmovdqu -31(%rsi, %rdx), %ymm1
 	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 31(%rdi)
+	vmovdqu %ymm1, -31(%rdi, %rdx)
 # ifdef USE_AS_STPCPY
-	lea	46(%rdi), %rax
+	lea	(%rdi, %rdx), %rax
 # endif
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$47, %r8
-	lea	47(%rdi), %rdi
+	sub	%rdx, %r8
+	sub	$1, %r8
+	lea	1(%rdi, %rdx), %rdi
 	jnz	L(StrncpyFillTailWithZero)
 # endif
 	VZEROUPPER
