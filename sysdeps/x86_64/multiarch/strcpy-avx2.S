@@ -1065,258 +1065,7 @@ L(Exit32):
 	ret
 
 	.p2align 4
-L(Exit33):
-	/* 0/32, 32/1 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu %ymm0, (%rdi)
-	mov	%dh, 32(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	32(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$33, %r8
-	lea	33(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit34):
-	/* 0/32, 32/2 */
-	vmovdqu (%rsi), %ymm0
-	mov	32(%rsi), %dx
-	vmovdqu %ymm0, (%rdi)
-	mov	%dx, 32(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	33(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$34, %r8
-	lea	34(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit35):
-	/* 0/32, 31/4 */
-	vmovdqu (%rsi), %ymm0
-	mov	31(%rsi), %edx
-	vmovdqu %ymm0, (%rdi)
-	mov	%edx, 31(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	34(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$35, %r8
-	lea	35(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit36):
-	/* 0/32, 32/4 */
-	vmovdqu (%rsi), %ymm0
-	mov	32(%rsi), %edx
-	vmovdqu %ymm0, (%rdi)
-	mov	%edx, 32(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	35(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$36, %r8
-	lea	36(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit37):
-	/* 0/32, 29/8 */
-	vmovdqu (%rsi), %ymm0
-	mov	29(%rsi), %rdx
-	vmovdqu %ymm0, (%rdi)
-	mov	%rdx, 29(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	36(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$37, %r8
-	lea	37(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit38):
-	/* 0/32, 30/8 */
-	vmovdqu (%rsi), %ymm0
-	mov	30(%rsi), %rdx
-	vmovdqu %ymm0, (%rdi)
-	mov	%rdx, 30(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	37(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$38, %r8
-	lea	38(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit39):
-	/* 0/32, 31/8 */
-	vmovdqu (%rsi), %ymm0
-	mov	31(%rsi), %rdx
-	vmovdqu %ymm0, (%rdi)
-	mov	%rdx, 31(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	38(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$39, %r8
-	lea	39(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit40):
-	/* 0/32, 32/8 */
-	vmovdqu (%rsi), %ymm0
-	mov	32(%rsi), %rdx
-	vmovdqu %ymm0, (%rdi)
-	mov	%rdx, 32(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	39(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$40, %r8
-	lea	40(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit41):
-	/* 0/32, 32/8, 40/1 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu 25(%rsi), %xmm1
-	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 25(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	40(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$41, %r8
-	lea	41(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit42):
-	/* 0/32, 32/8, 40/2 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu 26(%rsi), %xmm1
-	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 26(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	41(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$42, %r8
-	lea	42(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit43):
-	/* 0/32, 27/16 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu 27(%rsi), %xmm1
-	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 27(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	42(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$43, %r8
-	lea	43(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit44):
-	/* 0/32, 28/16 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu 28(%rsi), %xmm1
-	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 28(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	43(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$44, %r8
-	lea	44(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit45):
-	/* 0/32, 29/16 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu 29(%rsi), %xmm1
-	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 29(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	44(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$45, %r8
-	lea	45(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit46):
-	/* 0/32, 30/16 */
-	vmovdqu (%rsi), %ymm0
-	vmovdqu 30(%rsi), %xmm1
-	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm1, 30(%rdi)
-# ifdef USE_AS_STPCPY
-	lea	45(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$46, %r8
-	lea	46(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit47):
+L(Exit33_63):
 	/* 0/32, 31/16 */
 	vmovdqu (%rsi), %ymm0
 	vmovdqu -31(%rsi, %rdx), %ymm1
@@ -3073,37 +2822,37 @@ L(ExitTable):
 	.int	JMPTBL(L(Exit30), L(ExitTable))
 	.int	JMPTBL(L(Exit31), L(ExitTable))
 	.int	JMPTBL(L(Exit32), L(ExitTable))
-	.int	JMPTBL(L(Exit33), L(ExitTable))
-	.int	JMPTBL(L(Exit34), L(ExitTable))
-	.int	JMPTBL(L(Exit35), L(ExitTable))
-	.int	JMPTBL(L(Exit36), L(ExitTable))
-	.int	JMPTBL(L(Exit37), L(ExitTable))
-	.int	JMPTBL(L(Exit38), L(ExitTable))
-	.int	JMPTBL(L(Exit39), L(ExitTable))
-	.int	JMPTBL(L(Exit40), L(ExitTable))
-	.int	JMPTBL(L(Exit41), L(ExitTable))
-	.int	JMPTBL(L(Exit42), L(ExitTable))
-	.int	JMPTBL(L(Exit43), L(ExitTable))
-	.int	JMPTBL(L(Exit44), L(ExitTable))
-	.int	JMPTBL(L(Exit45), L(ExitTable))
-	.int	JMPTBL(L(Exit46), L(ExitTable))
-	.int	JMPTBL(L(Exit47), L(ExitTable))
-	.int	JMPTBL(L(Exit48), L(ExitTable))
-	.int	JMPTBL(L(Exit49), L(ExitTable))
-	.int	JMPTBL(L(Exit50), L(ExitTable))
-	.int	JMPTBL(L(Exit51), L(ExitTable))
-	.int	JMPTBL(L(Exit52), L(ExitTable))
-	.int	JMPTBL(L(Exit53), L(ExitTable))
-	.int	JMPTBL(L(Exit54), L(ExitTable))
-	.int	JMPTBL(L(Exit55), L(ExitTable))
-	.int	JMPTBL(L(Exit56), L(ExitTable))
-	.int	JMPTBL(L(Exit57), L(ExitTable))
-	.int	JMPTBL(L(Exit58), L(ExitTable))
-	.int	JMPTBL(L(Exit59), L(ExitTable))
-	.int	JMPTBL(L(Exit60), L(ExitTable))
-	.int	JMPTBL(L(Exit61), L(ExitTable))
-	.int	JMPTBL(L(Exit62), L(ExitTable))
-	.int	JMPTBL(L(Exit63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
+	.int	JMPTBL(L(Exit33_63), L(ExitTable))
 	.int	JMPTBL(L(Exit64), L(ExitTable))
 # ifdef USE_AS_STRNCPY
 L(ExitStrncpyTable):
