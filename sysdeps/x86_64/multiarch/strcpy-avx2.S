@@ -1195,7 +1195,7 @@ L(StrncpyExit22):
 	ret
 
 	.p2align 4
-L(StrncpyExit23):
+L(StrncpyExit17_31):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu -16(%rsi, %r8), %xmm2
 	vmovdqu %xmm0, (%rdi)
@@ -2345,21 +2345,21 @@ L(ExitStrncpyTable):
 	.int	JMPTBL(L(StrncpyExit14), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit15), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit16), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit17), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit18), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit19), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit20), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit21), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit22), L(ExitStrncpyTable))
-	.int    JMPTBL(L(StrncpyExit23), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit24), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit25), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit26), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit27), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit28), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit29), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit30), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit32), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit33_63), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit33_63), L(ExitStrncpyTable))
