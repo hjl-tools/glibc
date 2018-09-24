@@ -1504,114 +1504,9 @@ L(Fill16):
 	ret
 
 	.p2align 4
-L(Fill17):
+L(Fill17_31):
 	vmovdqu %xmmZ, (%rdi)
-	mov	%dl, 16(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill18):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%dx, 16(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill19):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%edx, 15(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill20):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%edx, 16(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill21):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%edx, 16(%rdi)
-	mov	%dl, 20(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill22):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%edx, 16(%rdi)
-	mov	%dx, 20(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill23):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 15(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill24):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill25):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	mov	%dl, 24(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill26):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	mov	%dx, 24(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill27):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	mov	%edx, 23(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill28):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	mov	%edx, 24(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill29):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	mov	%rdx, 21(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill30):
-	vmovdqu %xmmZ, (%rdi)
-	mov	%rdx, 16(%rdi)
-	mov	%rdx, 22(%rdi)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill31):
-	vmovdqu %ymmZ, -1(%rdi)
+	vmovdqu %xmmZ, -16(%rdi, %r8)
 	VZEROUPPER
 	ret
 
@@ -1934,21 +1829,21 @@ L(FillTable):
 	.int	JMPTBL(L(Fill14), L(FillTable))
 	.int	JMPTBL(L(Fill15), L(FillTable))
 	.int	JMPTBL(L(Fill16), L(FillTable))
-	.int	JMPTBL(L(Fill17), L(FillTable))
-	.int	JMPTBL(L(Fill18), L(FillTable))
-	.int	JMPTBL(L(Fill19), L(FillTable))
-	.int	JMPTBL(L(Fill20), L(FillTable))
-	.int	JMPTBL(L(Fill21), L(FillTable))
-	.int	JMPTBL(L(Fill22), L(FillTable))
-	.int	JMPTBL(L(Fill23), L(FillTable))
-	.int	JMPTBL(L(Fill24), L(FillTable))
-	.int	JMPTBL(L(Fill25), L(FillTable))
-	.int	JMPTBL(L(Fill26), L(FillTable))
-	.int	JMPTBL(L(Fill27), L(FillTable))
-	.int	JMPTBL(L(Fill28), L(FillTable))
-	.int	JMPTBL(L(Fill29), L(FillTable))
-	.int	JMPTBL(L(Fill30), L(FillTable))
-	.int	JMPTBL(L(Fill31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
+	.int	JMPTBL(L(Fill17_31), L(FillTable))
 	.int	JMPTBL(L(Fill32), L(FillTable))
 #  endif
 # endif
