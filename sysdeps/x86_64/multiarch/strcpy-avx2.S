@@ -895,7 +895,7 @@ L(Exit22):
 	ret
 
 	.p2align 4
-L(Exit23):
+L(Exit17_31):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu -15(%rsi, %rdx), %xmm1
 	vmovdqu %xmm0, (%rdi)
@@ -2805,21 +2805,21 @@ L(ExitTable):
 	.int	JMPTBL(L(Exit14), L(ExitTable))
 	.int	JMPTBL(L(Exit15), L(ExitTable))
 	.int	JMPTBL(L(Exit16), L(ExitTable))
-	.int	JMPTBL(L(Exit17), L(ExitTable))
-	.int	JMPTBL(L(Exit18), L(ExitTable))
-	.int	JMPTBL(L(Exit19), L(ExitTable))
-	.int	JMPTBL(L(Exit20), L(ExitTable))
-	.int	JMPTBL(L(Exit21), L(ExitTable))
-	.int	JMPTBL(L(Exit22), L(ExitTable))
-	.int    JMPTBL(L(Exit23), L(ExitTable))
-	.int	JMPTBL(L(Exit24), L(ExitTable))
-	.int	JMPTBL(L(Exit25), L(ExitTable))
-	.int	JMPTBL(L(Exit26), L(ExitTable))
-	.int	JMPTBL(L(Exit27), L(ExitTable))
-	.int	JMPTBL(L(Exit28), L(ExitTable))
-	.int	JMPTBL(L(Exit29), L(ExitTable))
-	.int	JMPTBL(L(Exit30), L(ExitTable))
-	.int	JMPTBL(L(Exit31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
+	.int	JMPTBL(L(Exit17_31), L(ExitTable))
 	.int	JMPTBL(L(Exit32), L(ExitTable))
 	.int	JMPTBL(L(Exit33_63), L(ExitTable))
 	.int	JMPTBL(L(Exit33_63), L(ExitTable))
