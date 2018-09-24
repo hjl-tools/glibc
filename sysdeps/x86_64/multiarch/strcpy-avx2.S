@@ -896,17 +896,18 @@ L(Exit22):
 
 	.p2align 4
 L(Exit23):
-	vmovdqu	(%rsi), %xmm0
-	mov	15(%rsi), %rcx
-	vmovdqu	%xmm0, (%rdi)
-	mov	%rcx, 15(%rdi)
+	vmovdqu (%rsi), %xmm0
+	vmovdqu -15(%rsi, %rdx), %xmm1
+	vmovdqu %xmm0, (%rdi)
+	vmovdqu %xmm1, -15(%rdi, %rdx)
 # ifdef USE_AS_STPCPY
-	lea	22(%rdi), %rax
+	lea	(%rdi, %rdx), %rax
 # endif
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$23, %r8
-	lea	23(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
+	sub %rdx, %r8
+	sub $1, %r8
+	lea 1(%rdi, %rdx), %rdi
+	jnz L(StrncpyFillTailWithZero)
 # endif
 	VZEROUPPER
 	ret
