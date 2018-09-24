@@ -71,8 +71,6 @@ ENTRY (STRCPY)
 
 	and	$-VEC_SIZE, %rsi
 	and	$(VEC_SIZE - 1), %ecx
-	vpxor	%xmm0, %xmm0, %xmm0
-	vpxor	%xmm1, %xmm1, %xmm1
 
 	vpcmpeqb (%rsi), %ymmZ, %ymm1
 	vpmovmskb %ymm1, %edx
