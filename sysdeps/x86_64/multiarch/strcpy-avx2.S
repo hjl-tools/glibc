@@ -262,7 +262,7 @@ L(UnalignedFourVecSizeLoop_start):
 	jz	L(UnalignedFourVecSizeLoop_start)
 
 L(UnalignedFourVecSizeLeave):
-	vpcmpeqb %ymm4, %ymm0, %ymm0
+	vpcmpeqb %ymm4, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %edx
 	test	%edx, %edx
 	jnz	L(CopyVecSizeUnaligned_0)
@@ -272,7 +272,7 @@ L(UnalignedFourVecSizeLeave):
 	test	%ecx, %ecx
 	jnz	L(CopyVecSizeUnaligned_16)
 
-	vpcmpeqb %ymm6, %ymm0, %ymm0
+	vpcmpeqb %ymm6, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %edx
 	test	%edx, %edx
 	jnz	L(CopyVecSizeUnaligned_32)
@@ -2724,7 +2724,7 @@ L(UnalignedFourVecSizeLeaveCase3):
 	.p2align 4
 L(UnalignedFourVecSizeLeaveCase2):
 	xor	%ecx, %ecx
-	vpcmpeqb %ymm4, %ymm0, %ymm0
+	vpcmpeqb %ymm4, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %edx
 	add	$(VEC_SIZE * 3), %r8
 	jle	L(CopyVecSizeCase2OrCase3)
@@ -2734,7 +2734,7 @@ L(UnalignedFourVecSizeLeaveCase2):
 #  else
 	jnz	L(CopyVecSize)
 #  endif
-	vpcmpeqb %ymm5, %ymm0, %ymm0
+	vpcmpeqb %ymm5, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %edx
 	vmovdqu %ymm4, (%rdi)
 	add	$VEC_SIZE, %rcx
@@ -2747,7 +2747,7 @@ L(UnalignedFourVecSizeLeaveCase2):
 	jnz	L(CopyVecSize)
 #  endif
 
-	vpcmpeqb %ymm6, %ymm0, %ymm0
+	vpcmpeqb %ymm6, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %edx
 	vmovdqu %ymm5, VEC_SIZE(%rdi)
 	add	$VEC_SIZE, %rcx
@@ -2760,7 +2760,7 @@ L(UnalignedFourVecSizeLeaveCase2):
 	jnz	L(CopyVecSize)
 #  endif
 
-	vpcmpeqb %ymm7, %ymm0, %ymm0
+	vpcmpeqb %ymm7, %ymmZ, %ymm0
 	vpmovmskb %ymm0, %edx
 	vmovdqu %ymm6, (VEC_SIZE * 2)(%rdi)
 	lea	VEC_SIZE(%rdi, %rcx), %rdi
