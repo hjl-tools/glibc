@@ -1569,14 +1569,14 @@ L(StrncpyExit46):
 L(StrncpyExit47):
 	/*  0/32, 31/16 */
 	vmovdqu (%rsi), %ymm0
-	vmovdqu 31(%rsi), %xmm2
+	vmovdqu -VEC_SIZE(%rsi, %r8), %ymm2
 	vmovdqu %ymm0, (%rdi)
-	vmovdqu %xmm2, 31(%rdi)
+	vmovdqu %ymm2, -VEC_SIZE(%rdi, %r8)
 #  ifdef USE_AS_STPCPY
-	lea	47(%rdi), %rax
+	lea	(%rdi, %r8), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	movb	$0, 47(%rdi)
+	movb	$0, (%rdi, %r8)
 #  endif
 	VZEROUPPER
 	ret
