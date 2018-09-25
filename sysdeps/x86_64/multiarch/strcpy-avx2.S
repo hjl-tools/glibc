@@ -648,8 +648,8 @@ L(Exit9_15):
 
 	.p2align 4
 L(Exit16):
-	vmovdqu	(%rsi), %xmm0
-	vmovdqu	%xmm0, (%rdi)
+	vmovdqu (%rsi), %xmm0
+	vmovdqu %xmm0, (%rdi)
 # ifdef USE_AS_STPCPY
 	lea	15(%rdi), %rax
 # endif
@@ -681,8 +681,8 @@ L(Exit17_31):
 
 	.p2align 4
 L(Exit32):
-	vmovdqu	(%rsi), %ymm0
-	vmovdqu	%ymm0, (%rdi)
+	vmovdqu (%rsi), %ymm0
+	vmovdqu %ymm0, (%rdi)
 # ifdef USE_AS_STPCPY
 	lea	31(%rdi), %rax
 # endif
@@ -830,8 +830,8 @@ L(StrncpyExit15):
 
 	.p2align 4
 L(StrncpyExit16):
-	vmovdqu	(%rsi), %xmm0
-	vmovdqu	%xmm0, (%rdi)
+	vmovdqu (%rsi), %xmm0
+	vmovdqu %xmm0, (%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	16(%rdi), %rax
 #  endif
