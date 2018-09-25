@@ -998,7 +998,24 @@ L(StrncpyFillLessFourVecSize):
 	jl	L(StrncpyFillExit)
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
-	BRANCH_TO_JMPTBL_ENTRY (L(FillTable), %r8, 4)
+	cmp	$32, %r8
+	jz	L(Fill32)
+	cmp	$17, %r8
+	jae	L(Fill17_31)
+	cmp	$15, %r8
+	jae	L(Fill15_16)
+	cmp	$8, %r8
+	jae	L(Fill8_14)
+	cmp	$4, %r8
+	jae	L(Fill4_7)
+	cmp	$3, %r8
+	jz	L(Fill3)
+	cmp	$2, %r8
+	jz	L(Fill2)
+	cmp	$1, %r8
+	jz	L(Fill1)
+	cmp	$0, %r8
+	jz	L(Fill0)
 
 L(StrncpyFillLessTwoVecSize):
 	add	$VEC_SIZE, %r8
