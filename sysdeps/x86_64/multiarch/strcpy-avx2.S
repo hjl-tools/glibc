@@ -999,7 +999,7 @@ L(StrncpyFillLessFourVecSize):
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
 	cmp	$32, %r8
-	jz	L(Fill32)
+	je	L(Fill32)
 	cmp	$17, %r8
 	jae	L(Fill17_31)
 	cmp	$15, %r8
@@ -1009,14 +1009,14 @@ L(StrncpyFillLessFourVecSize):
 	cmp	$4, %r8
 	jae	L(Fill4_7)
 	cmp	$3, %r8
-	jz	L(Fill3)
-	cmp	$2, %r8
-	jz	L(Fill2)
+	je	L(Fill3)
 	cmp	$1, %r8
-	jz	L(Fill1)
-	cmp	$0, %r8
-	jz	L(Fill0)
+	ja	L(Fill2)
+	je	L(Fill1)
+	VZEROUPPER
+	ret
 
+	.p2align 4
 L(StrncpyFillLessTwoVecSize):
 	add	$VEC_SIZE, %r8
 	jl	L(StrncpyFillExit)
