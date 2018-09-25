@@ -931,104 +931,16 @@ L(StrncpyExit4_7):
 	ret
 
 	.p2align 4
-L(StrncpyExit8):
-	mov	(%rsi), %rdx
-	mov	%rdx, (%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	8(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 8(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit9):
+L(StrncpyExit8_14):
 	mov	(%rsi), %rcx
-	mov	8(%rsi), %dl
+	mov	-8(%rsi, %r8), %rdx
 	mov	%rcx, (%rdi)
-	mov	%dl, 8(%rdi)
+	mov	%rdx, -8(%rdi, %r8)
 #  ifdef USE_AS_STPCPY
-	lea	9(%rdi), %rax
+	lea	(%rdi, %r8), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	movb	$0, 9(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit10):
-	mov	(%rsi), %rcx
-	mov	8(%rsi), %dx
-	mov	%rcx, (%rdi)
-	mov	%dx, 8(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	10(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 10(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit11):
-	mov	(%rsi), %rcx
-	mov	7(%rsi), %edx
-	mov	%rcx, (%rdi)
-	mov	%edx, 7(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	11(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 11(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit12):
-	mov	(%rsi), %rcx
-	mov	8(%rsi), %edx
-	mov	%rcx, (%rdi)
-	mov	%edx, 8(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	12(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 12(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit13):
-	mov	(%rsi), %rcx
-	mov	5(%rsi), %rdx
-	mov	%rcx, (%rdi)
-	mov	%rdx, 5(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	13(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 13(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit14):
-	mov	(%rsi), %rcx
-	mov	6(%rsi), %rdx
-	mov	%rcx, (%rdi)
-	mov	%rdx, 6(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	14(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 14(%rdi)
+	movb	$0, (%rdi, %r8)
 #  endif
 	VZEROUPPER
 	ret
@@ -1642,13 +1554,13 @@ L(ExitStrncpyTable):
 	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit8), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit9), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit10), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit11), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit12), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit13), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit8_14), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit15), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit16), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit17_31), L(ExitStrncpyTable))
