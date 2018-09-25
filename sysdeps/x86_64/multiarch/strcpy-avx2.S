@@ -916,59 +916,16 @@ L(StrncpyExit3):
 	ret
 
 	.p2align 4
-L(StrncpyExit4):
-	mov	(%rsi), %edx
-	mov	%edx, (%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	4(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 4(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit5):
+L(StrncpyExit4_7):
 	mov	(%rsi), %ecx
-	mov	4(%rsi), %dl
+	mov	-4(%rsi, %r8), %edx
 	mov	%ecx, (%rdi)
-	mov	%dl, 4(%rdi)
+	mov	%edx, -4(%rdi, %r8)
 #  ifdef USE_AS_STPCPY
-	lea	5(%rdi), %rax
+	lea	(%rdi, %r8), %rax
 #  endif
 #  ifdef USE_AS_STRCAT
-	movb	$0, 5(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit6):
-	mov	(%rsi), %ecx
-	mov	4(%rsi), %dx
-	mov	%ecx, (%rdi)
-	mov	%dx, 4(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	6(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 6(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit7):
-	mov	(%rsi), %ecx
-	mov	3(%rsi), %edx
-	mov	%ecx, (%rdi)
-	mov	%edx, 3(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	7(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 7(%rdi)
+	movb	$0, (%rdi, %r8)
 #  endif
 	VZEROUPPER
 	ret
@@ -1681,10 +1638,10 @@ L(ExitStrncpyTable):
 	.int	JMPTBL(L(StrncpyExit1), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit2), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit3), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit4), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit5), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit6), L(ExitStrncpyTable))
-	.int	JMPTBL(L(StrncpyExit7), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
+	.int	JMPTBL(L(StrncpyExit4_7), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit8), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit9), L(ExitStrncpyTable))
 	.int	JMPTBL(L(StrncpyExit10), L(ExitStrncpyTable))
