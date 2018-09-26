@@ -1392,19 +1392,19 @@ L(StrncpyFillLessFourVecSize):
 	jl	L(StrncpyFillExit)
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
-	cmp	$32, %r8
+	cmp	$32, %r8d
 	je	L(Fill32)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(Fill17_31)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	jae	L(Fill15_16)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(Fill8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(Fill4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(Fill3)
-	cmp	$1, %r8
+	cmp	$1, %r8d
 	ja	L(Fill2)
 	je	L(Fill1)
 	VZEROUPPER
@@ -1416,19 +1416,19 @@ L(StrncpyFillLessTwoVecSize):
 	jl	L(StrncpyFillExit)
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
-	cmp	$32, %r8
+	cmp	$32, %r8d
 	je	L(Fill32)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(Fill17_31)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	jae	L(Fill15_16)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(Fill8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(Fill4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(Fill3)
-	cmp	$1, %r8
+	cmp	$1, %r8d
 	ja	L(Fill2)
 	je	L(Fill1)
 	VZEROUPPER
@@ -1436,19 +1436,19 @@ L(StrncpyFillLessTwoVecSize):
 
 L(StrncpyFillExit):
 	add	$VEC_SIZE, %r8
-	cmp	$32, %r8
+	cmp	$32, %r8d
 	je	L(Fill32)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(Fill17_31)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	jae	L(Fill15_16)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(Fill8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(Fill4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(Fill3)
-	cmp	$1, %r8
+	cmp	$1, %r8d
 	ja	L(Fill2)
 	je	L(Fill1)
 	VZEROUPPER
