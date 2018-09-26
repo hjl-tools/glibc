@@ -347,6 +347,7 @@ L(CopyVecSize):
 # endif
 L(CopyVecSizeTail):
 	add	%rcx, %rsi
+L(CopyVecSizeTail1):
 	bsf	%edx, %edx
 L(CopyVecSizeExit):
 	cmp	$63, %edx
@@ -382,33 +383,7 @@ L(CopyTwoVecSize1):
 # if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
 	sub	$VEC_SIZE, %r8
 # endif
-L(CopyVecSizeTail1):
-	bsf	%edx, %edx
-	cmp	$63, %edx
-	je	L(Exit64)
-	cmp	$32, %edx
-	jae	L(Exit33_63)
-	cmp	$31, %edx
-	je	L(Exit32)
-	cmp	$16, %edx
-	jae	L(Exit17_31)
-	cmp	$15, %edx
-	je	L(Exit16)
-	cmp	$8, %edx
-	jae	L(Exit9_15)
-	cmp	$7, %edx
-	je	L(Exit8)
-	cmp	$4, %edx
-	jae	L(Exit5_7)
-	cmp	$3, %edx
-	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
-	VZEROUPPER
-	ret
+	jmp	L(CopyVecSizeTail1)
 
 	.p2align 4
 L(CopyTwoVecSize):
