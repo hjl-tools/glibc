@@ -371,6 +371,8 @@ L(CopyVecSize):
 	add	%rcx, %rdi
 	add	%rcx, %rsi
 	bsf	%edx, %edx
+# endif
+L(CopyVecSizeExit):
 	cmp	$63, %edx
 	je	L(Exit64)
 	cmp	$32, %edx
@@ -396,7 +398,6 @@ L(CopyVecSize):
 	je	L(Exit1)
 	VZEROUPPER
 	ret
-# endif
 	.p2align 4
 L(CopyVecSizeTail):
 	add	%rcx, %rsi
@@ -507,31 +508,7 @@ L(CopyVecSizeUnaligned_0):
 	lea	1(%rdi, %rdx), %rdi
 	jmp	L(StrncpyFillTailWithZero)
 # else
-	cmp	$63, %edx
-	je	L(Exit64)
-	cmp	$32, %edx
-	jae	L(Exit33_63)
-	cmp	$31, %edx
-	je	L(Exit32)
-	cmp	$16, %edx
-	jae	L(Exit17_31)
-	cmp	$15, %edx
-	je	L(Exit16)
-	cmp	$8, %edx
-	jae	L(Exit9_15)
-	cmp	$7, %edx
-	je	L(Exit8)
-	cmp	$4, %edx
-	jae	L(Exit5_7)
-	cmp	$3, %edx
-	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
-	VZEROUPPER
-	ret
+	jmp	L(CopyVecSizeExit)
 # endif
 
 	.p2align 4
@@ -550,31 +527,7 @@ L(CopyVecSizeUnaligned_16):
 # else
 	add	$VEC_SIZE, %rsi
 	add	$VEC_SIZE, %rdi
-	cmp	$63, %edx
-	je	L(Exit64)
-	cmp	$32, %edx
-	jae	L(Exit33_63)
-	cmp	$31, %edx
-	je	L(Exit32)
-	cmp	$16, %edx
-	jae	L(Exit17_31)
-	cmp	$15, %edx
-	je	L(Exit16)
-	cmp	$8, %edx
-	jae	L(Exit9_15)
-	cmp	$7, %edx
-	je	L(Exit8)
-	cmp	$4, %edx
-	jae	L(Exit5_7)
-	cmp	$3, %edx
-	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
-	VZEROUPPER
-	ret
+	jmp	L(CopyVecSizeExit)
 # endif
 
 	.p2align 4
@@ -594,31 +547,7 @@ L(CopyVecSizeUnaligned_32):
 # else
 	add	$(VEC_SIZE * 2), %rsi
 	add	$(VEC_SIZE * 2), %rdi
-	cmp	$63, %edx
-	je	L(Exit64)
-	cmp	$32, %edx
-	jae	L(Exit33_63)
-	cmp	$31, %edx
-	je	L(Exit32)
-	cmp	$16, %edx
-	jae	L(Exit17_31)
-	cmp	$15, %edx
-	je	L(Exit16)
-	cmp	$8, %edx
-	jae	L(Exit9_15)
-	cmp	$7, %edx
-	je	L(Exit8)
-	cmp	$4, %edx
-	jae	L(Exit5_7)
-	cmp	$3, %edx
-	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
-	VZEROUPPER
-	ret
+	jmp	L(CopyVecSizeExit)
 # endif
 
 # ifdef USE_AS_STRNCPY
@@ -648,34 +577,6 @@ L(CopyVecSizeUnalignedVec1):
 	vmovdqu %ymm1, (%rdi, %rcx)
 	jmp	L(CopyVecSizeVecExit)
 #  endif
-
-	.p2align 4
-L(CopyVecSizeExit):
-	cmp	$63, %edx
-	je	L(Exit64)
-	cmp	$32, %edx
-	jae	L(Exit33_63)
-	cmp	$31, %edx
-	je	L(Exit32)
-	cmp	$16, %edx
-	jae	L(Exit17_31)
-	cmp	$15, %edx
-	je	L(Exit16)
-	cmp	$8, %edx
-	jae	L(Exit9_15)
-	cmp	$7, %edx
-	je	L(Exit8)
-	cmp	$4, %edx
-	jae	L(Exit5_7)
-	cmp	$3, %edx
-	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
-	VZEROUPPER
-	ret
 
 /* Case2 */
 
