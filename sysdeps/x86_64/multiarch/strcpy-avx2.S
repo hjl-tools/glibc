@@ -295,32 +295,7 @@ L(UnalignedFourVecSizeLeave):
 # else
 	add	$(VEC_SIZE * 3), %rsi
 	add	$(VEC_SIZE * 3), %rdi
-	cmp	$63, %edx
-	je	L(Exit64)
-	cmp	$32, %edx
-	jae	L(Exit33_63)
-	cmp	$31, %edx
-	je	L(Exit32)
-	cmp	$16, %edx
-	jae	L(Exit17_31)
-	cmp	$15, %edx
-	je	L(Exit16)
-	cmp	$8, %edx
-	jae	L(Exit9_15)
-	cmp	$7, %edx
-	je	L(Exit8)
-	cmp	$4, %edx
-	jae	L(Exit5_7)
-	cmp	$3, %edx
-	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
-	VZEROUPPER
-	ret
-
+	jmp	L(CopyVecSizeExit)
 # endif
 
 /* If source address alignment == destination address alignment */
