@@ -687,25 +687,25 @@ L(CopyVecSizeCase2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -719,25 +719,25 @@ L(CopyTwoVecSizeCase2):
 	sub	%ecx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -749,25 +749,25 @@ L(CopyVecSizeTailCase2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -777,25 +777,25 @@ L(CopyVecSizeTail1Case2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -811,25 +811,25 @@ L(CopyVecSizeCase3):
 	add	$VEC_SIZE, %r8
 	add	%rcx, %rdi
 	add	%rcx, %rsi
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -840,25 +840,25 @@ L(CopyTwoVecSizeCase2OrCase3):
 	test	%rdx, %rdx
 	jnz	L(CopyTwoVecSizeCase2)
 	add	%rcx, %rsi
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -869,25 +869,25 @@ L(CopyVecSizeTailCase2OrCase3):
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeTailCase2)
 	add	%rcx, %rsi
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -901,25 +901,25 @@ L(CopyTwoVecSize1Case2OrCase3):
 L(CopyVecSizeTail1Case2OrCase3):
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeTail1Case2)
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
@@ -1532,25 +1532,25 @@ L(UnalignedFourVecSizeLeaveCase2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	cmp	$65, %r8
+	cmp	$65, %r8d
 	je	L(StrncpyExit65)
-	cmp	$33, %r8
+	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8
+	cmp	$17, %r8d
 	jae	L(StrncpyExit17_32)
-	cmp	$16, %r8
+	cmp	$16, %r8d
 	je	L(StrncpyExit16)
-	cmp	$15, %r8
+	cmp	$15, %r8d
 	je	L(StrncpyExit15)
-	cmp	$8, %r8
+	cmp	$8, %r8d
 	jae	L(StrncpyExit8_14)
-	cmp	$4, %r8
+	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
-	cmp	$3, %r8
+	cmp	$3, %r8d
 	je	L(StrncpyExit3)
-	cmp	$2, %r8
+	cmp	$2, %r8d
 	je	L(StrncpyExit2)
-	cmp	$0, %r8
+	cmp	$0, %r8d
 	ja	L(StrncpyExit1)
 	je	L(StrncpyExit0)
 	VZEROUPPER
