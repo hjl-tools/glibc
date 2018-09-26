@@ -295,7 +295,32 @@ L(UnalignedFourVecSizeLeave):
 # else
 	add	$(VEC_SIZE * 3), %rsi
 	add	$(VEC_SIZE * 3), %rdi
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
+
 # endif
 
 /* If source address alignment == destination address alignment */
@@ -346,13 +371,61 @@ L(CopyVecSize):
 	add	%rcx, %rdi
 	add	%rcx, %rsi
 	bsf	%edx, %edx
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 # endif
 	.p2align 4
 L(CopyVecSizeTail):
 	add	%rcx, %rsi
 	bsf	%edx, %edx
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyTwoVecSize1):
@@ -363,7 +436,31 @@ L(CopyTwoVecSize1):
 # endif
 L(CopyVecSizeTail1):
 	bsf	%edx, %edx
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyTwoVecSize):
@@ -371,7 +468,31 @@ L(CopyTwoVecSize):
 	add	%rcx, %rsi
 	add	$VEC_SIZE, %edx
 	sub	%ecx, %edx
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyVecSizeUnaligned_0):
@@ -386,7 +507,31 @@ L(CopyVecSizeUnaligned_0):
 	lea	1(%rdi, %rdx), %rdi
 	jmp	L(StrncpyFillTailWithZero)
 # else
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 # endif
 
 	.p2align 4
@@ -405,7 +550,31 @@ L(CopyVecSizeUnaligned_16):
 # else
 	add	$VEC_SIZE, %rsi
 	add	$VEC_SIZE, %rdi
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 # endif
 
 	.p2align 4
@@ -425,7 +594,31 @@ L(CopyVecSizeUnaligned_32):
 # else
 	add	$(VEC_SIZE * 2), %rsi
 	add	$(VEC_SIZE * 2), %rdi
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 # endif
 
 # ifdef USE_AS_STRNCPY
@@ -458,7 +651,31 @@ L(CopyVecSizeUnalignedVec1):
 
 	.p2align 4
 L(CopyVecSizeExit):
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitTable), %rdx, 4)
+	cmp	$63, %edx
+	je	L(Exit64)
+	cmp	$32, %edx
+	jae	L(Exit33_63)
+	cmp	$31, %edx
+	je	L(Exit32)
+	cmp	$16, %edx
+	jae	L(Exit17_31)
+	cmp	$15, %edx
+	je	L(Exit16)
+	cmp	$8, %edx
+	jae	L(Exit9_15)
+	cmp	$7, %edx
+	je	L(Exit8)
+	cmp	$4, %edx
+	jae	L(Exit5_7)
+	cmp	$3, %edx
+	je	L(Exit4)
+	cmp	$2, %edx
+	je	L(Exit3)
+	cmp	$0, %edx
+	ja	L(Exit2)
+	je	L(Exit1)
+	VZEROUPPER
+	ret
 
 /* Case2 */
 
