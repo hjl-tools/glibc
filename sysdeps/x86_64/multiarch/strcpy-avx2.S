@@ -368,11 +368,18 @@ L(CopyVecSizeExit):
 	jae	L(Exit5_7)
 	cmp	$3, %edx
 	je	L(Exit4)
-	cmp	$2, %edx
-	je	L(Exit3)
-	cmp	$0, %edx
-	ja	L(Exit2)
-	je	L(Exit1)
+	cmp	$1, %edx
+	ja	L(Exit3)
+	je	L(Exit2)
+	movb	$0, (%rdi)
+# ifdef USE_AS_STPCPY
+	lea	(%rdi), %rax
+# endif
+# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
+	sub	$1, %r8
+	lea	1(%rdi), %rdi
+	jnz	L(StrncpyFillTailWithZero)
+# endif
 	VZEROUPPER
 	ret
 
@@ -727,20 +734,6 @@ L(CopyVecSizeTail1Case2OrCase3):
 # endif
 
 /*------------End labels regarding with copying 1-VEC_SIZE bytes--and 1-(VEC_SIZE*2) bytes----*/
-
-	.p2align 4
-L(Exit1):
-	mov	%dh, (%rdi)
-# ifdef USE_AS_STPCPY
-	lea	(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$1, %r8
-	lea	1(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
 
 	.p2align 4
 L(Exit2):
