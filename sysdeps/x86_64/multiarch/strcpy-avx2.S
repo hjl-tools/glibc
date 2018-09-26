@@ -1022,11 +1022,43 @@ L(StrncpyFillLessTwoVecSize):
 	jl	L(StrncpyFillExit)
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
-	BRANCH_TO_JMPTBL_ENTRY (L(FillTable), %r8, 4)
+	cmp	$32, %r8
+	je	L(Fill32)
+	cmp	$17, %r8
+	jae	L(Fill17_31)
+	cmp	$15, %r8
+	jae	L(Fill15_16)
+	cmp	$8, %r8
+	jae	L(Fill8_14)
+	cmp	$4, %r8
+	jae	L(Fill4_7)
+	cmp	$3, %r8
+	je	L(Fill3)
+	cmp	$1, %r8
+	ja	L(Fill2)
+	je	L(Fill1)
+	VZEROUPPER
+	ret
 
 L(StrncpyFillExit):
 	add	$VEC_SIZE, %r8
-	BRANCH_TO_JMPTBL_ENTRY (L(FillTable), %r8, 4)
+	cmp	$32, %r8
+	je	L(Fill32)
+	cmp	$17, %r8
+	jae	L(Fill17_31)
+	cmp	$15, %r8
+	jae	L(Fill15_16)
+	cmp	$8, %r8
+	jae	L(Fill8_14)
+	cmp	$4, %r8
+	jae	L(Fill4_7)
+	cmp	$3, %r8
+	je	L(Fill3)
+	cmp	$1, %r8
+	ja	L(Fill2)
+	je	L(Fill1)
+	VZEROUPPER
+	ret
 
 /* end of ifndef USE_AS_STRCAT */
 #  endif
