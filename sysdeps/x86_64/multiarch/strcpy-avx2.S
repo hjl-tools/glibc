@@ -470,7 +470,29 @@ L(CopyVecSizeCase2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyTwoVecSizeCase2):
@@ -480,20 +502,87 @@ L(CopyTwoVecSizeCase2):
 	sub	%ecx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
+
 
 L(CopyVecSizeTailCase2):
 	add	%rcx, %rsi
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 L(CopyVecSizeTail1Case2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 /* Case2 or Case3,  Case3 */
 
@@ -505,21 +594,87 @@ L(CopyVecSizeCase3):
 	add	$VEC_SIZE, %r8
 	add	%rcx, %rdi
 	add	%rcx, %rsi
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyTwoVecSizeCase2OrCase3):
 	test	%rdx, %rdx
 	jnz	L(CopyTwoVecSizeCase2)
 	add	%rcx, %rsi
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyVecSizeTailCase2OrCase3):
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeTailCase2)
 	add	%rcx, %rsi
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(CopyTwoVecSize1Case2OrCase3):
@@ -529,7 +684,29 @@ L(CopyTwoVecSize1Case2OrCase3):
 L(CopyVecSizeTail1Case2OrCase3):
 	test	%rdx, %rdx
 	jnz	L(CopyVecSizeTail1Case2)
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 # endif
 
@@ -1138,7 +1315,29 @@ L(UnalignedFourVecSizeLeaveCase2):
 	bsf	%edx, %edx
 	cmp	%r8d, %edx
 	jb	L(CopyVecSizeExit)
-	BRANCH_TO_JMPTBL_ENTRY (L(ExitStrncpyTable), %r8, 4)
+	cmp	$65, %r8
+	je	L(StrncpyExit65)
+	cmp	$33, %r8
+	jae	L(StrncpyExit33_64)
+	cmp	$17, %r8
+	jae	L(StrncpyExit17_32)
+	cmp	$16, %r8
+	je	L(StrncpyExit16)
+	cmp	$15, %r8
+	je	L(StrncpyExit15)
+	cmp	$8, %r8
+	jae	L(StrncpyExit8_14)
+	cmp	$4, %r8
+	jae	L(StrncpyExit4_7)
+	cmp	$3, %r8
+	je	L(StrncpyExit3)
+	cmp	$2, %r8
+	je	L(StrncpyExit2)
+	cmp	$0, %r8
+	ja	L(StrncpyExit1)
+	je	L(StrncpyExit0)
+	VZEROUPPER
+	ret
 
 	.p2align 4
 L(ExitZero):
