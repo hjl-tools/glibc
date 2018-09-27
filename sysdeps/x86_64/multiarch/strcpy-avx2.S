@@ -890,11 +890,6 @@ L(StrncpyExit65):
 #  ifndef USE_AS_STRCAT
 
 	.p2align 4
-L(Fill0):
-	VZEROUPPER
-	ret
-
-	.p2align 4
 L(Fill1):
 	mov	%dl, (%rdi)
 	VZEROUPPER
@@ -995,23 +990,7 @@ L(StrncpyFillLessFourVecSize):
 	jl	L(StrncpyFillExit)
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
-	cmp	$32, %r8d
-	je	L(Fill32)
-	cmp	$17, %r8d
-	jae	L(Fill17_31)
-	cmp	$15, %r8d
-	jae	L(Fill15_16)
-	cmp	$8, %r8d
-	jae	L(Fill8_14)
-	cmp	$4, %r8d
-	jae	L(Fill4_7)
-	cmp	$3, %r8d
-	je	L(Fill3)
-	cmp	$1, %r8d
-	ja	L(Fill2)
-	je	L(Fill1)
-	VZEROUPPER
-	ret
+	jmp	L(Fill)
 
 	.p2align 4
 L(StrncpyFillLessTwoVecSize):
@@ -1019,26 +998,12 @@ L(StrncpyFillLessTwoVecSize):
 	jl	L(StrncpyFillExit)
 	vmovdqa %ymmZ, (%rdi)
 	add	$VEC_SIZE, %rdi
-	cmp	$32, %r8d
-	je	L(Fill32)
-	cmp	$17, %r8d
-	jae	L(Fill17_31)
-	cmp	$15, %r8d
-	jae	L(Fill15_16)
-	cmp	$8, %r8d
-	jae	L(Fill8_14)
-	cmp	$4, %r8d
-	jae	L(Fill4_7)
-	cmp	$3, %r8d
-	je	L(Fill3)
-	cmp	$1, %r8d
-	ja	L(Fill2)
-	je	L(Fill1)
-	VZEROUPPER
-	ret
+	jmp	L(Fill)
 
+	.p2align 4
 L(StrncpyFillExit):
 	add	$VEC_SIZE, %r8
+L(Fill):
 	cmp	$32, %r8d
 	je	L(Fill32)
 	cmp	$17, %r8d
