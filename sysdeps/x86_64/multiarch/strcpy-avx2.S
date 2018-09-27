@@ -28,13 +28,6 @@
 
 # endif
 
-# define JMPTBL(I, B)	I - B
-# define BRANCH_TO_JMPTBL_ENTRY(TABLE, INDEX, SCALE)             \
-	lea	TABLE(%rip), %r11;                              \
-	movslq	(%r11, INDEX, SCALE), %rcx;                     \
-	lea	(%r11, %rcx), %rcx;                             \
-	_CET_NOTRACK jmp *%rcx
-
 /* Number of bytes in a vector register */
 # ifndef VEC_SIZE
 #  define VEC_SIZE	32
