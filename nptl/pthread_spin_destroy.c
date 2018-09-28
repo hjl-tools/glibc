@@ -22,6 +22,7 @@
 int
 pthread_spin_destroy (pthread_spinlock_t *lock)
 {
+  lock->mcs_lock = NULL;
   /* Nothing to do.  */
   return 0;
 }

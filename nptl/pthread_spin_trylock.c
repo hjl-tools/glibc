@@ -50,7 +50,7 @@ pthread_spin_trylock (pthread_spinlock_t *lock)
   /* Try to acquire the lock with an exchange instruction as this architecture
      has such an instruction and we assume it is faster than a CAS.
      The acquisition succeeds if the lock is not in an acquired state.  */
-  if (atomic_exchange_acquire (lock, 1) == 0)
+  if (atomic_exchange_acquire (&lock->spin_lock, 1) == 0)
     return 0;
 #else
   /* Try to acquire the lock with a CAS instruction as this architecture
@@ -59,7 +59,7 @@ pthread_spin_trylock (pthread_spinlock_t *lock)
   do
     {
       int val = 0;
-      if (atomic_compare_exchange_weak_acquire (lock, &val, 1))
+      if (atomic_compare_exchange_weak_acquire (&lock->spin_lock, &val, 1))
 	return 0;
     }
   /* atomic_compare_exchange_weak_acquire can fail spuriously.  Whereas
@@ -72,7 +72,7 @@ pthread_spin_trylock (pthread_spinlock_t *lock)
      checking with a relaxed MO load that the lock is really acquired before
      returning EBUSY; the additional overhead this may cause is on the slow
      path.  */
-  while (atomic_load_relaxed (lock) == 0);
+  while (atomic_load_relaxed (&lock->spin_lock) == 0);
 #endif
 
   return EBUSY;
