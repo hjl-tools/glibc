@@ -18,6 +18,7 @@
 
 #include <atomic.h>
 #include "pthreadP.h"
+#include <mcs_lock.h>
 
 int
 pthread_spin_lock (pthread_spinlock_t *lock)
@@ -39,15 +40,17 @@ pthread_spin_lock (pthread_spinlock_t *lock)
   /* Try to acquire the lock with an exchange instruction as this architecture
      has such an instruction and we assume it is faster than a CAS.
      The acquisition succeeds if the lock is not in an acquired state.  */
-  if (__glibc_likely (atomic_exchange_acquire (lock, 1) == 0))
+  if (__glibc_likely (atomic_exchange_acquire (&lock->spin_lock, 1) == 0))
     return 0;
 #else
   /* Try to acquire the lock with a CAS instruction as this architecture
      has no exchange instruction.  The acquisition succeeds if the lock is not
      acquired.  */
-  if (__glibc_likely (atomic_compare_exchange_weak_acquire (lock, &val, 1)))
+  if (__glibc_likely (atomic_compare_exchange_weak_acquire (&lock->spin_lock, &val, 1)))
     return 0;
 #endif
+
+  mcs_lock ((mcs_lock_t **)&lock->mcs_lock);
 
   do
     {
@@ -67,14 +70,15 @@ pthread_spin_lock (pthread_spinlock_t *lock)
 
 	  atomic_spin_nop ();
 
-	  val = atomic_load_relaxed (lock);
+	  val = atomic_load_relaxed (&lock->spin_lock);
 	}
       while (val != 0);
 
       /* We need acquire memory order here for the same reason as mentioned
 	 for the first try to lock the spinlock.  */
     }
-  while (!atomic_compare_exchange_weak_acquire (lock, &val, 1));
+  while (!atomic_compare_exchange_weak_acquire (&lock->spin_lock, &val, 1));
 
+  mcs_unlock ((mcs_lock_t **)&lock->mcs_lock);
   return 0;
 }
