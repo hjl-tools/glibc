@@ -819,20 +819,7 @@ L(StrncpyExit15):
 	ret
 
 	.p2align 4
-L(StrncpyExit16):
-	vmovdqu (%rsi), %xmm0
-	vmovdqu %xmm0, (%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	16(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 16(%rdi)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit17_32):
+L(StrncpyExit16_32):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu -16(%rsi, %r8), %xmm2
 	vmovdqu %xmm0, (%rdi)
@@ -1098,10 +1085,8 @@ L(StrncpyExit):
 	je	L(StrncpyExit65)
 	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$17, %r8d
-	jae	L(StrncpyExit17_32)
 	cmp	$16, %r8d
-	je	L(StrncpyExit16)
+	jae	L(StrncpyExit16_32)
 	cmp	$15, %r8d
 	je	L(StrncpyExit15)
 	cmp	$8, %r8d
