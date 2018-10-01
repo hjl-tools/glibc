@@ -983,7 +983,7 @@ L(Fill):
 	je	L(Fill3)
 	cmp	$1, %r8d
 	ja	L(Fill2)
-	mov	%dl, (%rdi)
+	je	L(Fill1)
 	VZEROUPPER
 	ret
 
