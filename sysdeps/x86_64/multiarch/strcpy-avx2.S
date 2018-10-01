@@ -789,7 +789,7 @@ L(StrncpyExit4_7):
 	ret
 
 	.p2align 4
-L(StrncpyExit8_15):
+L(StrncpyExit9_16):
 	mov	(%rsi), %rcx
 	mov	-8(%rsi, %r8), %rdx
 	mov	%rcx, (%rdi)
@@ -804,7 +804,7 @@ L(StrncpyExit8_15):
 	ret
 
 	.p2align 4
-L(StrncpyExit16_32):
+L(StrncpyExit17_32):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu -16(%rsi, %r8), %xmm2
 	vmovdqu %xmm0, (%rdi)
@@ -1070,10 +1070,10 @@ L(StrncpyExit):
 	je	L(StrncpyExit65)
 	cmp	$33, %r8d
 	jae	L(StrncpyExit33_64)
-	cmp	$16, %r8d
-	jae	L(StrncpyExit16_32)
-	cmp	$8, %r8d
-	jae	L(StrncpyExit8_15)
+	cmp	$17, %r8d
+	jae	L(StrncpyExit17_32)
+	cmp	$9, %r8d
+	jae	L(StrncpyExit9_16)
 	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
 	cmp	$3, %r8d
