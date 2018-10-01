@@ -993,10 +993,9 @@ L(StrncpyExit):
 	jae	L(StrncpyExit5_8)
 	cmp	$3, %r8d
 	jae	L(StrncpyExit3_4)
-	cmp	$2, %r8d
-	je	L(StrncpyExit2)
-	cmp	$0, %r8d
-	ja	L(StrncpyExit1)
+	cmp	$1, %r8d
+	ja	L(StrncpyExit2)
+	je	L(StrncpyExit1)
 #  ifdef USE_AS_STPCPY
 	mov	%rdi, %rax
 #  endif
