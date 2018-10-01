@@ -345,10 +345,8 @@ L(CopyVecSizeTail1):
 L(CopyVecSizeExit):
 	cmp	$32, %edx
 	jae	L(Exit32_63)
-	cmp	$31, %edx
-	je	L(Exit31)
 	cmp	$16, %edx
-	jae	L(Exit16_30)
+	jae	L(Exit16_31)
 	cmp	$15, %edx
 	je	L(Exit15)
 	cmp	$8, %edx
@@ -661,7 +659,7 @@ L(Exit15):
 	ret
 
 	.p2align 4
-L(Exit16_30):
+L(Exit16_31):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu -15(%rsi, %rdx), %xmm1
 	vmovdqu %xmm0, (%rdi)
@@ -674,21 +672,6 @@ L(Exit16_30):
 	sub $1, %r8
 	lea 1(%rdi, %rdx), %rdi
 	jnz L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit31):
-	vmovdqu (%rsi), %ymm0
-	vmovdqu %ymm0, (%rdi)
-# ifdef USE_AS_STPCPY
-	lea	31(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$32, %r8
-	lea	32(%rdi), %rdi
-	jnz	L(StrncpyFillTailWithZero)
 # endif
 	VZEROUPPER
 	ret
