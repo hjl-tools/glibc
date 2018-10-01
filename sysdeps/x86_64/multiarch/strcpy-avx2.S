@@ -349,10 +349,8 @@ L(CopyVecSizeExit):
 	jae	L(Exit16_31)
 	cmp	$8, %edx
 	jae	L(Exit8_15)
-	cmp	$7, %edx
-	je	L(Exit7)
 	cmp	$4, %edx
-	jae	L(Exit4_6)
+	jae	L(Exit4_7)
 	cmp	$3, %edx
 	je	L(Exit3)
 	cmp	$1, %edx
@@ -591,7 +589,7 @@ L(Exit3):
 	ret
 
 	.p2align 4
-L(Exit4_6):
+L(Exit4_7):
 	mov	(%rsi), %ecx
 	mov	%ecx, (%rdi)
 	mov	-3(%rsi, %rdx), %ecx
@@ -603,21 +601,6 @@ L(Exit4_6):
 	sub	%rdx, %r8
 	sub	$1, %r8
 	lea	1(%rdi, %rdx), %rdi
-	jnz	L(StrncpyFillTailWithZero)
-# endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Exit7):
-	mov	(%rsi), %rdx
-	mov	%rdx, (%rdi)
-# ifdef USE_AS_STPCPY
-	lea	7(%rdi), %rax
-# endif
-# if defined USE_AS_STRNCPY && !defined USE_AS_STRCAT
-	sub	$8, %r8
-	lea	8(%rdi), %rdi
 	jnz	L(StrncpyFillTailWithZero)
 # endif
 	VZEROUPPER
