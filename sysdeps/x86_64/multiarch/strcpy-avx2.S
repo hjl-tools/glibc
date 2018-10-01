@@ -867,28 +867,23 @@ L(Fill2):
 	ret
 
 	.p2align 4
-L(Fill3):
-	mov	%edx, -1(%rdi)
+L(Fill3_4):
+	mov	%dx, (%rdi)
+	mov     %dx, -2(%rdi, %r8)
 	VZEROUPPER
 	ret
 
 	.p2align 4
-L(Fill4_7):
+L(Fill5_8):
 	mov	%edx, (%rdi)
 	mov     %edx, -4(%rdi, %r8)
 	VZEROUPPER
 	ret
 
 	.p2align 4
-L(Fill8_14):
+L(Fill9_16):
 	mov	%rdx, (%rdi)
 	mov	%rdx, -8(%rdi, %r8)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill15_16):
-	vmovdqu %xmmZ, -16(%rdi,%r8)
 	VZEROUPPER
 	ret
 
@@ -965,14 +960,12 @@ L(StrncpyFillExit):
 L(Fill):
 	cmp	$17, %r8d
 	jae	L(Fill17_32)
-	cmp	$15, %r8d
-	jae	L(Fill15_16)
-	cmp	$8, %r8d
-	jae	L(Fill8_14)
-	cmp	$4, %r8d
-	jae	L(Fill4_7)
+	cmp	$9, %r8d
+	jae	L(Fill9_16)
+	cmp	$5, %r8d
+	jae	L(Fill5_8)
 	cmp	$3, %r8d
-	je	L(Fill3)
+	jae	L(Fill3_4)
 	cmp	$1, %r8d
 	ja	L(Fill2)
 	je	L(Fill1)
