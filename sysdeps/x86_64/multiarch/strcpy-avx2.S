@@ -561,7 +561,7 @@ L(Exit1):
 L(Exit2):
 	mov	(%rsi), %cx
 	mov	%cx, (%rdi)
-	mov	%dh, 2(%rdi)
+	movb	$0, 2(%rdi)
 # ifdef USE_AS_STPCPY
 	lea	2(%rdi), %rax
 # endif
