@@ -893,15 +893,9 @@ L(Fill15_16):
 	ret
 
 	.p2align 4
-L(Fill17_31):
+L(Fill17_32):
 	vmovdqu %xmmZ, (%rdi)
 	vmovdqu %xmmZ, -16(%rdi, %r8)
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(Fill32):
-	vmovdqu %ymmZ, (%rdi)
 	VZEROUPPER
 	ret
 
@@ -969,10 +963,8 @@ L(StrncpyFillLessTwoVecSize):
 L(StrncpyFillExit):
 	add	$VEC_SIZE, %r8
 L(Fill):
-	cmp	$32, %r8d
-	je	L(Fill32)
 	cmp	$17, %r8d
-	jae	L(Fill17_31)
+	jae	L(Fill17_32)
 	cmp	$15, %r8d
 	jae	L(Fill15_16)
 	cmp	$8, %r8d
