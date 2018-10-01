@@ -544,7 +544,7 @@ L(CopyVecSizeTail1Case2OrCase3):
 
 	.p2align 4
 L(Exit1):
-	mov	(%rsi), %dx
+	movzwl	(%rsi), %edx
 	mov	%dx, (%rdi)
 # ifdef USE_AS_STPCPY
 	lea	1(%rdi), %rax
@@ -559,7 +559,7 @@ L(Exit1):
 
 	.p2align 4
 L(Exit2):
-	mov	(%rsi), %cx
+	movzwl	(%rsi), %ecx
 	mov	%cx, (%rdi)
 	movb	$0, 2(%rdi)
 # ifdef USE_AS_STPCPY
@@ -677,7 +677,7 @@ L(StrncpyExit1):
 
 	.p2align 4
 L(StrncpyExit2):
-	mov	(%rsi), %dx
+	movzwl	(%rsi), %edx
 	mov	%dx, (%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	2(%rdi), %rax
@@ -690,8 +690,8 @@ L(StrncpyExit2):
 
 	.p2align 4
 L(StrncpyExit3_4):
-	mov	(%rsi), %cx
-	mov	-2(%rsi, %r8), %dx
+	movzwl	(%rsi), %ecx
+	movzwl	-2(%rsi, %r8), %edx
 	mov	%cx, (%rdi)
 	mov	%dx, -2(%rdi, %r8)
 #  ifdef USE_AS_STPCPY
