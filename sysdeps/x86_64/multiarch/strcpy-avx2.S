@@ -344,26 +344,26 @@ L(CopyVecSizeTail1):
 	bsf	%edx, %edx
 L(CopyVecSizeExit):
 	cmp	$63, %edx
-	je	L(Exit64)
+	je	L(Exit63)
 	cmp	$32, %edx
-	jae	L(Exit33_63)
+	jae	L(Exit32_62)
 	cmp	$31, %edx
-	je	L(Exit32)
+	je	L(Exit31)
 	cmp	$16, %edx
-	jae	L(Exit17_31)
+	jae	L(Exit16_30)
 	cmp	$15, %edx
-	je	L(Exit16)
+	je	L(Exit15)
 	cmp	$8, %edx
-	jae	L(Exit9_15)
+	jae	L(Exit8_14)
 	cmp	$7, %edx
-	je	L(Exit8)
+	je	L(Exit7)
 	cmp	$4, %edx
-	jae	L(Exit5_7)
+	jae	L(Exit4_6)
 	cmp	$3, %edx
-	je	L(Exit4)
+	je	L(Exit3)
 	cmp	$1, %edx
-	ja	L(Exit3)
-	je	L(Exit2)
+	ja	L(Exit2)
+	je	L(Exit1)
 	movb	$0, (%rdi)
 # ifdef USE_AS_STPCPY
 	lea	(%rdi), %rax
@@ -551,7 +551,7 @@ L(CopyVecSizeTail1Case2OrCase3):
 /*------------End labels regarding with copying 1-VEC_SIZE bytes--and 1-(VEC_SIZE*2) bytes----*/
 
 	.p2align 4
-L(Exit2):
+L(Exit1):
 	mov	(%rsi), %dx
 	mov	%dx, (%rdi)
 # ifdef USE_AS_STPCPY
@@ -566,7 +566,7 @@ L(Exit2):
 	ret
 
 	.p2align 4
-L(Exit3):
+L(Exit2):
 	mov	(%rsi), %cx
 	mov	%cx, (%rdi)
 	mov	%dh, 2(%rdi)
@@ -582,7 +582,7 @@ L(Exit3):
 	ret
 
 	.p2align 4
-L(Exit4):
+L(Exit3):
 	mov	(%rsi), %edx
 	mov	%edx, (%rdi)
 # ifdef USE_AS_STPCPY
@@ -597,7 +597,7 @@ L(Exit4):
 	ret
 
 	.p2align 4
-L(Exit5_7):
+L(Exit4_6):
 	mov	(%rsi), %ecx
 	mov	%ecx, (%rdi)
 	mov	-3(%rsi, %rdx), %ecx
@@ -615,7 +615,7 @@ L(Exit5_7):
 	ret
 
 	.p2align 4
-L(Exit8):
+L(Exit7):
 	mov	(%rsi), %rdx
 	mov	%rdx, (%rdi)
 # ifdef USE_AS_STPCPY
@@ -630,7 +630,7 @@ L(Exit8):
 	ret
 
 	.p2align 4
-L(Exit9_15):
+L(Exit8_14):
 	mov	(%rsi), %rcx
 	mov	-7(%rsi, %rdx), %r9
 	mov	%rcx, (%rdi)
@@ -648,7 +648,7 @@ L(Exit9_15):
 	ret
 
 	.p2align 4
-L(Exit16):
+L(Exit15):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu %xmm0, (%rdi)
 # ifdef USE_AS_STPCPY
@@ -663,7 +663,7 @@ L(Exit16):
 	ret
 
 	.p2align 4
-L(Exit17_31):
+L(Exit16_30):
 	vmovdqu (%rsi), %xmm0
 	vmovdqu -15(%rsi, %rdx), %xmm1
 	vmovdqu %xmm0, (%rdi)
@@ -681,7 +681,7 @@ L(Exit17_31):
 	ret
 
 	.p2align 4
-L(Exit32):
+L(Exit31):
 	vmovdqu (%rsi), %ymm0
 	vmovdqu %ymm0, (%rdi)
 # ifdef USE_AS_STPCPY
@@ -696,7 +696,7 @@ L(Exit32):
 	ret
 
 	.p2align 4
-L(Exit33_63):
+L(Exit32_62):
 	vmovdqu (%rsi), %ymm0
 	vmovdqu -31(%rsi, %rdx), %ymm1
 	vmovdqu %ymm0, (%rdi)
@@ -714,7 +714,7 @@ L(Exit33_63):
 	ret
 
 	.p2align 4
-L(Exit64):
+L(Exit63):
 	vmovdqu (%rsi), %ymm0
 	vmovdqu 32(%rsi), %ymm1
 	vmovdqu %ymm0, (%rdi)
