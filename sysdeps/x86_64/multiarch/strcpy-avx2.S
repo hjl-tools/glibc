@@ -789,7 +789,7 @@ L(StrncpyExit4_7):
 	ret
 
 	.p2align 4
-L(StrncpyExit8_14):
+L(StrncpyExit8_15):
 	mov	(%rsi), %rcx
 	mov	-8(%rsi, %r8), %rdx
 	mov	%rcx, (%rdi)
@@ -799,21 +799,6 @@ L(StrncpyExit8_14):
 #  endif
 #  ifdef USE_AS_STRCAT
 	movb	$0, (%rdi, %r8)
-#  endif
-	VZEROUPPER
-	ret
-
-	.p2align 4
-L(StrncpyExit15):
-	mov	(%rsi), %rcx
-	mov	7(%rsi), %rdx
-	mov	%rcx, (%rdi)
-	mov	%rdx, 7(%rdi)
-#  ifdef USE_AS_STPCPY
-	lea	15(%rdi), %rax
-#  endif
-#  ifdef USE_AS_STRCAT
-	movb	$0, 15(%rdi)
 #  endif
 	VZEROUPPER
 	ret
@@ -1087,10 +1072,8 @@ L(StrncpyExit):
 	jae	L(StrncpyExit33_64)
 	cmp	$16, %r8d
 	jae	L(StrncpyExit16_32)
-	cmp	$15, %r8d
-	je	L(StrncpyExit15)
 	cmp	$8, %r8d
-	jae	L(StrncpyExit8_14)
+	jae	L(StrncpyExit8_15)
 	cmp	$4, %r8d
 	jae	L(StrncpyExit4_7)
 	cmp	$3, %r8d
