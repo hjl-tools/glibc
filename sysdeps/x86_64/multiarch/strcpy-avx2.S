@@ -664,7 +664,7 @@ L(Exit32_63):
 
 	.p2align 4
 L(StrncpyExit1):
-	mov	(%rsi), %dl
+	movzbl	(%rsi), %edx
 	mov	%dl, (%rdi)
 #  ifdef USE_AS_STPCPY
 	lea	1(%rdi), %rax
@@ -769,7 +769,7 @@ L(StrncpyExit65):
 	/* 0/32, 32/32, 64/1 */
 	vmovdqu (%rsi), %ymm0
 	vmovdqu 32(%rsi), %ymm2
-	mov	64(%rsi), %cl
+	movzbl	64(%rsi), %ecx
 	vmovdqu %ymm0, (%rdi)
 	vmovdqu %ymm2, 32(%rdi)
 	mov	%cl, 64(%rdi)
