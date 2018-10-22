@@ -20,6 +20,10 @@
 #include <math.h>
 #include "math_config.h"
 
+typedef double v2df_t __attribute__ ((vector_size (2 * sizeof (double))));
+
+#include <v2df_to_sf.h>
+
 /* 2PI * 2^-64.  */
 static const double pi63 = 0x1.921FB54442D18p-62;
 /* PI / 4.  */
@@ -31,8 +35,10 @@ typedef struct
   double sign[4];		/* Sign of sine in quadrants 0..3.  */
   double hpi_inv;		/* 2 / PI ( * 2^24 if !TOINT_INTRINSICS).  */
   double hpi;			/* PI / 2.  */
-  double c0, c1, c2, c3, c4;	/* Cosine polynomial.  */
-  double s1, s2, s3;		/* Sine polynomial.  */
+  /* Cosine polynomial: c0, c1, c2, c3, c4.
+     Sine polynomial: s1, s2, s3.  */
+  double c0, c1;
+  v2df_t s1c2, s2c3, s3c4;
 } sincos_t;
 
 /* Polynomial data (the cosine polynomial is negated in the 2nd entry).  */
@@ -55,27 +61,28 @@ static inline void
 sincosf_poly (double x, double x2, const sincos_t *p, int n, float *sinp,
 	      float *cosp)
 {
-  double x3, x4, x5, x6, s, c, c1, c2, s1;
+  v2df_t vx2x2 = { x2, x2 };
+  v2df_t vxx2 = { x, x2 };
+  v2df_t vx3x4, vs1c2;
 
-  x4 = x2 * x2;
-  x3 = x2 * x;
-  c2 = p->c3 + x2 * p->c4;
-  s1 = p->s2 + x2 * p->s3;
+  vx3x4 = vx2x2 * vxx2;
+  vs1c2 = p->s2c3 + vx2x2 * p->s3c4;
 
   /* Swap sin/cos result based on quadrant.  */
-  float *tmp = (n & 1 ? cosp : sinp);
-  cosp = (n & 1 ? sinp : cosp);
-  sinp = tmp;
+  if (n & 1)
+    {
+      float *tmp = cosp;
+      cosp = sinp;
+      sinp = tmp;
+    }
 
-  c1 = p->c0 + x2 * p->c1;
-  x5 = x3 * x2;
-  x6 = x4 * x2;
+  double c1 = p->c0 + x2 * p->c1;
+  v2df_t vxc1 = { x, c1 };
+  v2df_t vx5x6 = vx3x4 * vx2x2;
 
-  s = x + x3 * p->s1;
-  c = c1 + x4 * p->c2;
-
-  *sinp = s + x5 * s1;
-  *cosp = c + x6 * c2;
+  v2df_t vsincos = vxc1 + vx3x4 * p->s1c2;
+  vsincos = vsincos + vx5x6 * vs1c2;
+  v2df_to_sf (vsincos, sinp, cosp);
 }
 
 /* Return the sine of inputs X and X2 (X squared) using the polynomial P.
@@ -88,21 +95,21 @@ sinf_poly (double x, double x2, const sincos_t *p, int n)
   if ((n & 1) == 0)
     {
       x3 = x * x2;
-      s1 = p->s2 + x2 * p->s3;
+      s1 = p->s2c3[0] + x2 * p->s3c4[0];
 
       x7 = x3 * x2;
-      s = x + x3 * p->s1;
+      s = x + x3 * p->s1c2[0];
 
       return s + x7 * s1;
     }
   else
     {
       x4 = x2 * x2;
-      c2 = p->c3 + x2 * p->c4;
+      c2 = p->s2c3[1] + x2 * p->s3c4[1];
       c1 = p->c0 + x2 * p->c1;
 
       x6 = x4 * x2;
-      c = c1 + x4 * p->c2;
+      c = c1 + x4 * p->s1c2[1];
 
       return c + x6 * c2;
     }

@@ -46,3 +46,7 @@ sysdep_headers += sys/platform/ppc.h
 tests += test-gettimebase
 tests += tst-set_ppr
 endif
+
+ifeq ($(subdir),math)
+CFLAGS-s_sincosf.c += -Wno-psabi
+endif
