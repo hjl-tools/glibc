@@ -202,13 +202,36 @@ mprotect_failure:
 					  N_("mprotect legacy bitmap failed"));
 		    }
 		}
-	      else
+	      else if (!GL(dl_x86_legacy_bitmap)[0])
 		{
-		  /* Allocate legacy bitmap.  */
-		  int res = dl_cet_allocate_legacy_bitmap
+		  /* Allocate and enable legacy bitmap.  */
+		  size_t legacy_bitmap_size
+		    = ((uintptr_t) __libc_stack_end
+		       / GLRO(dl_pagesize) / 8);
+		  void *legacy_bitmap_addr
+		    = __mmap (NULL, legacy_bitmap_size,
+			      PROT_READ | PROT_WRITE,
+			      MAP_ANON | MAP_PRIVATE | MAP_NORESERVE,
+			      -1, 0);
+		  if (legacy_bitmap_addr == MAP_FAILED)
+		    {
+		      struct dl_exception exception;
+		      _dl_exception_create_format
+			(&exception, DSO_FILENAME (l->l_name),
+			 N_("mmap size 0x%zx for legacy bitmap failed"),
+			 legacy_bitmap_size);
+		      _dl_signal_cexception
+			(errno, &exception, N_("legacy bitmap error"));
+		      _dl_exception_free (&exception);
+		    }
+		  GL(dl_x86_legacy_bitmap)[0]
+		    = (uintptr_t) legacy_bitmap_addr;
+		  GL(dl_x86_legacy_bitmap)[1] = legacy_bitmap_size;
+		  int res = dl_cet_enable_legacy_bitmap
 		    (GL(dl_x86_legacy_bitmap));
 		  if (res != 0)
 		    {
+		      __munmap (legacy_bitmap_addr, legacy_bitmap_size);
 		      if (program)
 			_dl_fatal_printf ("%s: legacy bitmap isn't available\n",
 					  l->l_name);
