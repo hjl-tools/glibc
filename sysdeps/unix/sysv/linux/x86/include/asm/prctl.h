@@ -24,9 +24,9 @@
      OUT: allocated shadow stack address: *addr.
  */
 # define ARCH_CET_ALLOC_SHSTK	0x3004
-/* Return legacy region bitmap info in unsigned long long *addr:
+/* Enable legacy region bitmap with unsigned long long *addr:
      address: addr[0].
      size: addr[1].
  */
-# define ARCH_CET_LEGACY_BITMAP	0x3005
+# define ARCH_CET_LEGACY_BITMAP	0x3006
 #endif /* ARCH_CET_STATUS */
