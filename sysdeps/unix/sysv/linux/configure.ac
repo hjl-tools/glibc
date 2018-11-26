@@ -89,6 +89,9 @@ fi
 # One Linux we use ldconfig.
 use_ldconfig=yes
 
+# One Linux we build libnuma_spinlock.
+build_libnuma_spinlock=yes
+
 if test $host = $build; then
   # If $prefix/include/{net,scsi} are symlinks, make install will
   # clobber what they're linked to (probably a kernel tree).

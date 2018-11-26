@@ -1,0 +1,7 @@
+libnuma_spinlock {
+  GLIBC_2.29 {
+    apply_numa_spinlock;
+    init_numa_spinlock;
+    init_numa_spinlock_info;
+  }
+}
