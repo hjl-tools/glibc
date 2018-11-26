@@ -6779,6 +6779,9 @@ fi
 config_vars="$config_vars
 build-mathvec = $build_mathvec"
 
+config_vars="$config_vars
+build-libnuma_spinlock = $build_libnuma_spinlock"
+
 
 
 

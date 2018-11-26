@@ -1791,6 +1791,8 @@ if test x"$build_mathvec" = xnotset; then
 fi
 LIBC_CONFIG_VAR([build-mathvec], [$build_mathvec])
 
+LIBC_CONFIG_VAR([build-libnuma_spinlock], [$build_libnuma_spinlock])
+
 AC_SUBST(libc_extra_cflags)
 AC_SUBST(libc_extra_cppflags)
 

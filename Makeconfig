@@ -566,7 +566,8 @@ link-libc-printers-tests = $(link-libc-rpath) \
 			   $(link-libc-tests-after-rpath-link)
 
 # This is how to find at build-time things that will be installed there.
-rpath-dirs = math elf dlfcn nss nis rt resolv mathvec support
+rpath-dirs = math elf dlfcn nss nis rt resolv mathvec support \
+	     numa-spinlock
 rpath-link = \
 $(common-objdir):$(subst $(empty) ,:,$(patsubst ../$(subdir),.,$(rpath-dirs:%=$(common-objpfx)%)))
 else  # build-static
@@ -1250,6 +1251,12 @@ else
 libsupport = $(common-objpfx)support/libsupport.a
 endif
 
+ifeq ($(build-shared),yes)
+libnuma-spinlock = $(common-objpfx)numa-spinlock/libnuma-spinlock.so$(libnuma-spinlock.so-version)
+else
+libnuma-spinlock = $(common-objpfx)numa-spinlock/libnuma-spinlock.a
+endif
+
 # These are the subdirectories containing the library source.  The order
 # is more or less arbitrary.  The sorting step will take care of the
 # dependencies.
@@ -1258,7 +1265,7 @@ all-subdirs = csu assert ctype locale intl catgets math setjmp signal	    \
 	      grp pwd posix io termios resource misc socket sysvipc gmon    \
 	      gnulib iconv iconvdata wctype manual shadow gshadow po argp   \
 	      localedata timezone rt conform debug mathvec support	    \
-	      dlfcn elf
+	      dlfcn elf numa-spinlock
 
 ifeq ($(build-crypt),yes)
 all-subdirs += crypt

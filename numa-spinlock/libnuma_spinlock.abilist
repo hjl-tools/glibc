@@ -1,0 +1,3 @@
+GLIBC_2.29 init_numa_spinlock_queue F
+GLIBC_2.29 init_numa_spinlock_queue_info F
+GLIBC_2.29 insert_numa_spinlock_queue F
