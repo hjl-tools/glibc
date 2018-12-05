@@ -32,6 +32,7 @@ primitive functions to do each step individually instead.
 * Running a Command::           The easy way to run another program.
 * Process Creation Concepts::   An overview of the hard way to do it.
 * Process Identification::      How to get the process ID of a process.
+* Process Information::         How to get current CPU and node of a process.
 * Creating a Process::          How to fork a child process.
 * Executing a File::            How to make a process execute another program.
 * Process Completion::          How to tell when a child process has completed.
@@ -200,6 +201,29 @@ The @code{getpid} function returns the process ID of the current process.
 @safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
 The @code{getppid} function returns the process ID of the parent of the
 current process.
+@end deftypefun
+
+@node Process Information
+@section Process Information
+
+@deftypefun int getcpu (unsigned int *cpu, unsigned int *node)
+@standards{Linux, <sched.h>}
+@safety{@prelim{}@mtsafe{}@assafe{}@acsafe{}}
+The @code{getcpu} function identifies the processor and node on which
+the calling thread or process is currently running and writes them into
+the integers pointed to by the @var{cpu} and @var{node} arguments.  The
+processor is a unique small integer identifying a CPU.  The node is a
+unique small identifier identifying a NUMA node.  When either @var{cpu}
+or @var{node} is @code{NULL}, nothing is written to the respective
+pointer.
+
+The return value is @code{0} on success and @code{-1} on failure.  The
+following @code{errno} error condition is defined for this function:
+
+@table @code
+@item EFAULT
+Arguments point outside the calling process's address space.
+@end table
 @end deftypefun
 
 @node Creating a Process

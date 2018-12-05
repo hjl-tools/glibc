@@ -165,6 +165,18 @@ test_size (const struct conf *conf, size_t size)
   for (int cpu = 0; cpu <= conf->last_cpu; ++cpu)
     {
       int active_cpu = sched_getcpu ();
+      unsigned int numa_cpu, numa_node;
+      if (getcpu (&numa_cpu, &numa_node))
+	{
+	  printf ("error: getcpu: %m\n");
+	  return false;
+	}
+      if ((unsigned int) active_cpu != numa_cpu)
+	{
+	  printf ("error: Unexpected CPU %d, expected %d\n",
+		  active_cpu, numa_cpu);
+	  return false;
+	}
       if (last_active_cpu >= 0 && last_active_cpu != active_cpu)
 	{
 	  printf ("error: Unexpected CPU %d, expected %d\n",
