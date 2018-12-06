@@ -98,7 +98,7 @@ __get_max_numa_node (void)
   const int flags = O_RDONLY | O_CLOEXEC;
   int fd = __open_nocancel ("/sys/devices/system/node/online", flags);
   char *l;
-  int result = 0;
+  int result = 1;
   if (fd != -1)
     {
       l = next_line (fd, buffer, &cp, &re, buffer_end);
@@ -125,7 +125,8 @@ __get_max_numa_node (void)
 		  }
 	      }
 
-	    result += m - n + 1;
+	    if (m >= result)
+	      result = m + 1;
 
 	    l = endp;
 	    while (l < re && isspace (*l))
@@ -135,9 +136,6 @@ __get_max_numa_node (void)
 
       __close_nocancel_nostatus (fd);
     }
-
-  if (!result)
-    result = 1;
 
   cached_result = result;
   atomic_write_barrier ();
