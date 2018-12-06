@@ -16,7 +16,7 @@
 # <http://www.gnu.org/licenses/>.
 
 ifeq ($(subdir),numa-spinlock)
-libnuma_spinlock-tests += tst-spinlock-overhead tst-numa-spinlock-overhead
+libnuma_spinlock-tests += tst-spinlock-overhead tst-numa-spinlock-overhead tst-spinlock-overhead-hashwork tst-numa-spinlock-overhead-hashwork
 
 ifeq (yes,$(build-shared))
 $(addprefix $(objpfx),$(libnuma_spinlock-tests)): $(shared-thread-library)
