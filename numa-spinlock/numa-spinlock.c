@@ -10,7 +10,7 @@ run_numa_spinlock_queue (struct numa_spinlock_queue_info *old, void **cpu)
 {
   struct numa_spinlock_queue_info *next, *current;
 
-  old->func (old->argument);
+  old->value = old->func (old->argument);
 
 retry:
   current = __sync_val_compare_and_swap (cpu, old, NULL);
@@ -36,18 +36,12 @@ repeat:
   goto repeat;
 }
 
-int
+void
 insert_numa_spinlock_queue (struct numa_spinlock_queue *queue,
 			    struct numa_spinlock_queue_info *current)
 {
   struct numa_spinlock_queue_info *old;
   void **core;
-  unsigned int node;
-  int err_ret;
-
-  err_ret = getcpu (NULL, &node);
-  if (err_ret)
-    return err_ret;
 
   current->next = NULL;
   current->pending = 1;
@@ -58,7 +52,7 @@ insert_numa_spinlock_queue (struct numa_spinlock_queue *queue,
       atomic_store_release (&current->next, old);
       while (atomic_load_relaxed (&current->pending))
 	atomic_spin_nop ();
-      return 0;
+      return;
     }
 
   old = atomic_exchange_acquire (&queue->owner.core, current);
@@ -74,13 +68,12 @@ insert_numa_spinlock_queue (struct numa_spinlock_queue *queue,
 
   current = __sync_val_compare_and_swap (&queue->owner.core, old, NULL);
   if (current == old)
-    return 0;
+    return;
 
   while (!(current = atomic_load_relaxed (&old->next)))
     atomic_spin_nop ();
 
   atomic_store_release (&current->pending, 0);
-  return 0;
 }
 
 int
