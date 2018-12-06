@@ -18,7 +18,6 @@
 #define CACHELINE_SIZE	64
 #define CACHE_ALIGNED	__attribute__((aligned(CACHELINE_SIZE)))
 
-#define constant_time 5
 unsigned long g_val CACHE_ALIGNED;
 unsigned long g_val2 CACHE_ALIGNED;
 unsigned long g_val3 CACHE_ALIGNED;
@@ -26,8 +25,6 @@ unsigned long cmplock CACHE_ALIGNED;
 struct count
 {
   unsigned long long total;
-  unsigned long long spinlock;
-  unsigned long long wall;
 } __attribute__((aligned(128)));
 
 struct count *gcount;
@@ -54,23 +51,15 @@ init_spin (void)
 struct ops
 {
   void *(*test) (void *arg);
-  void (*print_thread) (void *res, int);
 } *ops;
-
-struct stats_result
-{
-  unsigned long num;
-};
 
 void *work_thread (void *arg);
 
-void test_threads (int numthreads, unsigned long time);
+void test_threads (int numthreads);
 
 #define iterations (10000 * 5)
 
 static volatile int start_thread;
-static volatile int stop_flag;
-
 
 /* Delay some fixed time */
 static void
@@ -112,16 +101,7 @@ work_thread (void *arg)
 {
   long i;
   unsigned long pid = (unsigned long) arg;
-  struct stats_result *res;
   unsigned long long start, end;
-  int err_ret = posix_memalign ((void **)&res, CACHELINE_SIZE,
-				roundup (sizeof (*res), CACHELINE_SIZE));
-  if (err_ret)
-    {
-      printf ("posix_memalign failure: %s\n", strerror (err_ret));
-      exit (err_ret);
-    }
-  long num = 0;
 
   while (!start_thread)
     pause ();
@@ -134,13 +114,11 @@ work_thread (void *arg)
       work_todo ();
       unlock ();
       wait_a_bit (delay_time_unlocked);
-      num++;
     }
   end = __builtin_ia32_rdtscp (&aux);
   gcount[pid].total = end - start;
-  res->num = num;
 
-  return res;
+  return NULL;
 }
 
 
@@ -154,15 +132,13 @@ init_global_data(void)
 }
 
 void
-test_threads (int numthreads, unsigned long time)
+test_threads (int numthreads)
 {
   start_thread = 0;
-  stop_flag = 0;
 
   memory_barrier ();
 
   pthread_t thr[numthreads];
-  void *res[numthreads];
   int i;
 
   init_global_data ();
@@ -182,26 +158,11 @@ test_threads (int numthreads, unsigned long time)
   memory_barrier ();
   sched_yield ();
 
-  if (time)
-    {
-      struct timespec ts =
-	{
-	  ts.tv_sec = time,
-	  ts.tv_nsec = 0
-	};
-      clock_nanosleep (CLOCK_MONOTONIC, 0, &ts, NULL);
-      memory_barrier ();
-      stop_flag = 1;
-    }
-
-  for (i = 0; i < numthreads; i++) {
-    pthread_join (thr[i], (void *)&res[i]);
-    free (res[i]);
-  }
-
+  for (i = 0; i < numthreads; i++)
+    pthread_join (thr[i], NULL);
 }
 
-struct ops hashwork_ops =
+struct ops cmpxchg_ops =
 {
   .test = work_thread,
 };
@@ -213,25 +174,15 @@ total_cost (int numthreads)
 {
   int i;
   unsigned long long total = 0;
-  unsigned long long spinlock = 0;
 
   memset (gcount, 0, sizeof(gcount[0]) * numthreads);
 
-  unsigned long long start, end, diff;
-  unsigned int aux;
-
-  start = __builtin_ia32_rdtscp (&aux);
-  test_threads (numthreads, constant_time);
-  end = __builtin_ia32_rdtscp (&aux);
-  diff = end - start;
+  test_threads (numthreads);
 
   for (i = 0; i < numthreads; i++)
-    {
       total += gcount[i].total;
-      spinlock += gcount[i].spinlock;
-    }
-
-  struct count cost = { total, spinlock, diff };
+	
+  struct count cost = {total};
   return cost;
 }
 
@@ -242,7 +193,7 @@ main (void)
   if (numthreads < 8)
     return 1;
 
-  ops = &hashwork_ops;
+  ops = &cmpxchg_ops;
 
   int err_ret = posix_memalign ((void **)&gcount, 4096,
 				sizeof(gcount[0]) * numthreads);
