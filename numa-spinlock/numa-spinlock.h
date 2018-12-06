@@ -16,6 +16,7 @@ struct numa_spinlock_queue_node
 struct numa_spinlock_queue
 {
   struct numa_spinlock_queue_node owner;
+  unsigned int node_count;
   struct numa_spinlock_queue_node cpu[];
 };
 

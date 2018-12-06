@@ -16,5 +16,5 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-extern int __get_max_numa_node (void)
+extern unsigned int __get_max_numa_node (void)
   __attribute__ ((visibility ("hidden")));

@@ -96,12 +96,13 @@ init_numa_spinlock_queue_info (struct numa_spinlock_queue_info *info)
 struct numa_spinlock_queue *
 init_numa_spinlock_queue (void)
 {
-  int node_count = __get_max_numa_node ();
+  unsigned int node_count = __get_max_numa_node ();
   size_t size = (sizeof (struct numa_spinlock_queue)
 		 + node_count * sizeof (struct numa_spinlock_queue_node));
   struct numa_spinlock_queue *queue;
   if (posix_memalign ((void **) &queue, 64, size))
     return NULL;
   memset (queue, 0, size);
+  queue->node_count = node_count;
   return queue;
 }

@@ -77,16 +77,16 @@ next_line (int fd, char *const buffer, char **cp, char **re,
   return res == *re ? NULL : res;
 }
 
-int
+unsigned int
 __get_max_numa_node (void)
 {
-  static int cached_result = -1;
+  static unsigned int cached_result;
   static time_t timestamp;
 
   time_t now = time (NULL);
   time_t prev = timestamp;
   atomic_read_barrier ();
-  if (now == prev && cached_result > -1)
+  if (now == prev && cached_result)
     return cached_result;
 
   const size_t buffer_size = 1024;
@@ -98,7 +98,7 @@ __get_max_numa_node (void)
   const int flags = O_RDONLY | O_CLOEXEC;
   int fd = __open_nocancel ("/sys/devices/system/node/online", flags);
   char *l;
-  int result = 1;
+  unsigned int result = 1;
   if (fd != -1)
     {
       l = next_line (fd, buffer, &cp, &re, buffer_end);
