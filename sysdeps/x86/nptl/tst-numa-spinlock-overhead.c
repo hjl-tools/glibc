@@ -122,7 +122,7 @@ work_thread (void *arg)
       exit (err_ret);
     }
 
-  if (init_numa_spinlock_queue_info (&queue_info))
+  if (init_numa_spinlock_queue_info (queue, &queue_info))
     {
       printf ("init_numa_spinlock_queue_info failure: %m\n");
       exit (1);
