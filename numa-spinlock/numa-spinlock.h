@@ -32,8 +32,8 @@ struct numa_spinlock_queue_info
 } __attribute__((aligned (64)));
 
 extern struct numa_spinlock_queue *init_numa_spinlock_queue (void);
-extern int init_numa_spinlock_queue_info
-  (struct numa_spinlock_queue_info *);
+extern int init_numa_spinlock_queue_info (struct numa_spinlock_queue *,
+					  struct numa_spinlock_queue_info *);
 extern void insert_numa_spinlock_queue (struct numa_spinlock_queue *,
 					struct numa_spinlock_queue_info *);
 

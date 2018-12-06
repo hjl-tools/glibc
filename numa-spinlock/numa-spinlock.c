@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sched.h>
+#include <errno.h>
 #include <atomic.h>
 #include "numa-spinlock.h"
 #include "getmaxnumanode.h"
@@ -77,13 +78,19 @@ insert_numa_spinlock_queue (struct numa_spinlock_queue *queue,
 }
 
 int
-init_numa_spinlock_queue_info (struct numa_spinlock_queue_info *info)
+init_numa_spinlock_queue_info (struct numa_spinlock_queue *queue,
+			       struct numa_spinlock_queue_info *info)
 {
   memset (info, 0, sizeof (*info));
   int err_ret = getcpu (NULL, &info->node);
   if (err_ret)
     return err_ret;
-  return 0;
+  if (info->node >= queue->node_count)
+    {
+      errno = EINVAL;
+      return -1;
+    }
+  return err_ret;
 }
 
 struct numa_spinlock_queue *
