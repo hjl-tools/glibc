@@ -292,8 +292,6 @@ dl_open_worker (void *a)
   _dl_debug_state ();
   LIBC_PROBE (map_complete, 3, args->nsid, r, new);
 
-  _dl_open_check (new);
-
   /* Print scope information.  */
   if (__glibc_unlikely (GLRO(dl_debug_mask) & DL_DEBUG_SCOPES))
     _dl_show_scope (new, 0);
@@ -365,6 +363,11 @@ dl_open_worker (void *a)
 #endif
 	_dl_relocate_object (l, l->l_scope, reloc_mode, 0);
     }
+
+  /* NB: Since _dl_open_check may throw an exception, it must be called
+     after relocation is finished.   Otherwise, a shared object may be
+     mmapped without relocation.  */
+  _dl_open_check (new);
 
   /* If the file is not loaded now as a dependency, add the search
      list of the newly loaded object to the scope.  */
