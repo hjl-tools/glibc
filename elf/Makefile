@@ -328,6 +328,9 @@ tests-ifuncstatic := ifuncmain1static ifuncmain1picstatic \
 		ifuncmain5static ifuncmain5picstatic \
 		ifuncmain7static ifuncmain7picstatic \
 		ifuncmain9static ifuncmain9picstatic
+ifeq (yes,$(enable-static-pie))
+tests-ifuncstatic += ifuncmain1static-no-pie
+endif
 tests-static += $(tests-ifuncstatic)
 tests-internal += $(tests-ifuncstatic)
 ifeq (yes,$(build-shared))
@@ -1310,6 +1313,10 @@ $(objpfx)ifuncmain2: $(addprefix $(objpfx),ifuncdep2.o)
 $(objpfx)ifuncmain2pic: $(addprefix $(objpfx),ifuncdep2pic.o)
 $(objpfx)ifuncmain2static: $(addprefix $(objpfx),ifuncdep2.o)
 $(objpfx)ifuncmain2picstatic: $(addprefix $(objpfx),ifuncdep2pic.o)
+
+CRT-ifuncmain1static-no-pie := $(csu-objpfx)gcrt1.o
+tst-ifuncmain1static-no-pie-no-pie = yes
+$(objpfx)ifuncmain1static-no-pie: $(addprefix $(objpfx),ifuncdep1.o)
 
 $(objpfx)ifuncmain3: $(libdl)
 $(objpfx)ifuncmain3.out: $(objpfx)ifuncmod3.so
