@@ -28,4 +28,10 @@ struct link_map;
 
 extern void _dl_unmap (struct link_map *map) attribute_hidden;
 
+#ifdef __CET__
+extern void _dl_cet_unmap (struct link_map *map) attribute_hidden;
+
+#define DL_UNMAP(map) _dl_cet_unmap (map)
+#else
 #define DL_UNMAP(map) _dl_unmap (map)
+#endif

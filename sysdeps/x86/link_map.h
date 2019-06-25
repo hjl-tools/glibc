@@ -23,5 +23,6 @@ enum
     lc_none = 1 << 0,			 /* Not enabled with CET.  */
     lc_ibt = 1 << 1,			 /* Enabled with IBT.  */
     lc_shstk = 1 << 2,			 /* Enabled with STSHK.  */
+    lc_legacy_bitmap = 1 << 3,		 /* Legacy bitmap is used.  */
     lc_ibt_and_shstk = lc_ibt | lc_shstk /* Enabled with both.  */
-  } l_cet:3;
+  } l_cet:4;

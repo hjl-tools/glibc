@@ -34,60 +34,26 @@
 #endif
 
 static int
-dl_cet_mark_legacy_region (struct link_map *l)
+dl_cet_mark_legacy_region (struct link_map *l, unsigned int set)
 {
   /* Mark PT_LOAD segments with PF_X in legacy code page bitmap.  */
   size_t i, phnum = l->l_phnum;
   const ElfW(Phdr) *phdr = l->l_phdr;
-#ifdef __x86_64__
-  typedef unsigned long long word_t;
-#else
-  typedef unsigned long word_t;
-#endif
-  unsigned int bits_to_set;
-  word_t mask_to_set;
-#define BITS_PER_WORD (sizeof (word_t) * 8)
-#define BITMAP_FIRST_WORD_MASK(start) \
-  (~((word_t) 0) << ((start) & (BITS_PER_WORD - 1)))
-#define BITMAP_LAST_WORD_MASK(nbits) \
-  (~((word_t) 0) >> (-(nbits) & (BITS_PER_WORD - 1)))
+  unsigned long legacy_bitmap[3];
+  int res = 0;
 
-  word_t *bitmap = (word_t *) GL(dl_x86_legacy_bitmap)[0];
-  word_t bitmap_size = GL(dl_x86_legacy_bitmap)[1];
-  word_t *p;
-  size_t page_size = GLRO(dl_pagesize);
-
+  legacy_bitmap[2] = set;
   for (i = 0; i < phnum; i++)
     if (phdr[i].p_type == PT_LOAD && (phdr[i].p_flags & PF_X))
       {
-	/* One bit in legacy bitmap represents a page.  */
-	ElfW(Addr) start = (phdr[i].p_vaddr + l->l_addr) / page_size;
-	ElfW(Addr) len = (phdr[i].p_memsz + page_size - 1) / page_size;
-	ElfW(Addr) end = start + len;
-
-	if ((end / 8) > bitmap_size)
-	  return -EINVAL;
-
-	p = bitmap + (start / BITS_PER_WORD);
-	bits_to_set = BITS_PER_WORD - (start % BITS_PER_WORD);
-	mask_to_set = BITMAP_FIRST_WORD_MASK (start);
-
-	while (len >= bits_to_set)
-	  {
-	    *p |= mask_to_set;
-	    len -= bits_to_set;
-	    bits_to_set = BITS_PER_WORD;
-	    mask_to_set = ~((word_t) 0);
-	    p++;
-	  }
-	if (len)
-	  {
-	    mask_to_set &= BITMAP_LAST_WORD_MASK (end);
-	    *p |= mask_to_set;
-	  }
+	legacy_bitmap[0] = phdr[i].p_vaddr + l->l_addr;
+	legacy_bitmap[1] = phdr[i].p_memsz;
+	res = dl_cet_mark_legacy_code (legacy_bitmap);
+	if (res)
+	  break;
       }
 
-  return 0;
+  return res;
 }
 
 /* Check if object M is compatible with CET.  */
@@ -186,38 +152,6 @@ dl_cet_check (struct link_map *m, const char *program)
 
 	  if (need_legacy_bitmap)
 	    {
-	      if (GL(dl_x86_legacy_bitmap)[0])
-		{
-		  /* Change legacy bitmap to writable.  */
-		  if (__mprotect ((void *) GL(dl_x86_legacy_bitmap)[0],
-				  GL(dl_x86_legacy_bitmap)[1],
-				  PROT_READ | PROT_WRITE) < 0)
-		    {
-mprotect_failure:
-		      if (program)
-			_dl_fatal_printf ("%s: mprotect legacy bitmap failed\n",
-					  l->l_name);
-		      else
-			_dl_signal_error (EINVAL, l->l_name, "dlopen",
-					  N_("mprotect legacy bitmap failed"));
-		    }
-		}
-	      else
-		{
-		  /* Allocate legacy bitmap.  */
-		  int res = dl_cet_allocate_legacy_bitmap
-		    (GL(dl_x86_legacy_bitmap));
-		  if (res != 0)
-		    {
-		      if (program)
-			_dl_fatal_printf ("%s: legacy bitmap isn't available\n",
-					  l->l_name);
-		      else
-			_dl_signal_error (EINVAL, l->l_name, "dlopen",
-					  N_("legacy bitmap isn't available"));
-		    }
-		}
-
 	      /* Put legacy shared objects in legacy bitmap.  */
 	      for (i = first_legacy; i <= last_legacy; i++)
 		{
@@ -236,7 +170,7 @@ mprotect_failure:
 		  /* If IBT is enabled in executable and IBT isn't enabled
 		     in this shard object, mark PT_LOAD segments with PF_X
 		     in legacy code page bitmap.  */
-		  res = dl_cet_mark_legacy_region (l);
+		  res = dl_cet_mark_legacy_region (l, 1);
 		  if (res != 0)
 		    {
 		      if (program)
@@ -246,12 +180,8 @@ mprotect_failure:
 			_dl_signal_error (-res, l->l_name, "dlopen",
 					  N_("failed to mark legacy code region"));
 		    }
+		  l->l_cet |= lc_legacy_bitmap;
 		}
-
-	      /* Change legacy bitmap to read-only.  */
-	      if (__mprotect ((void *) GL(dl_x86_legacy_bitmap)[0],
-			      GL(dl_x86_legacy_bitmap)[1], PROT_READ) < 0)
-		goto mprotect_failure;
 	    }
 	}
 
@@ -323,6 +253,15 @@ mprotect_failure:
 	  THREAD_SETMEM (self, header.feature_1, feature_1);
 	}
     }
+}
+
+void
+_dl_cet_unmap (struct link_map *l)
+{
+  if (l->l_cet & lc_legacy_bitmap)
+    dl_cet_mark_legacy_region (l, 0);
+
+  _dl_unmap (l);
 }
 
 void
