@@ -20,6 +20,9 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include <support/check.h>
 
 static int
 do_test (void)
@@ -31,22 +34,18 @@ do_test (void)
   h = dlopen (modname, RTLD_LAZY);
   if (h == NULL)
     {
-      printf ("cannot open '%s': %s\n", modname, dlerror ());
-      exit (1);
+      const char *err = dlerror ();
+      if (!strstr (err, "rebuild shared object with IBT support enabled"))
+	FAIL_EXIT1 ("incorrect dlopen '%s' error: %s\n", modname, err);
+      return 0;
     }
 
   fp = dlsym (h, "test");
   if (fp == NULL)
-    {
-      printf ("cannot get symbol 'test': %s\n", dlerror ());
-      exit (1);
-    }
+    FAIL_EXIT1 ("cannot get symbol 'test': %s\n", dlerror ());
 
   if (fp () != 0)
-    {
-      puts ("test () != 0");
-      exit (1);
-    }
+    FAIL_EXIT1 ("test () != 0");
 
   dlclose (h);
 
