@@ -49,6 +49,11 @@
 # else
 PROCINFO_CLASS unsigned int _dl_x86_feature_1[2]
 # endif
+# ifndef PROCINFO_DECL
+= {
+    0, DEFAULT_DL_X86_FEATURE_1_1
+  }
+# endif
 # if !defined SHARED || defined PROCINFO_DECL
 ;
 # else

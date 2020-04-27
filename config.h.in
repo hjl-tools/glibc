@@ -262,4 +262,7 @@
    in i386 6 argument syscall issue).  */
 #define CAN_USE_REGISTER_ASM_EBP 0
 
+/* The default value of _dl_x86_feature_1[1].  */
+#define DEFAULT_DL_X86_FEATURE_1_1 0
+
 #endif
