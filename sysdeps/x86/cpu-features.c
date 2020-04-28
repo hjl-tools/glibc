@@ -594,10 +594,9 @@ no_cpuid:
 	    }
 
 	  /* Lock CET if IBT or SHSTK is enabled in executable.  Don't
-	     lock CET if SHSTK is enabled permissively.  */
-	  if (((GL(dl_x86_feature_1)[1] >> CET_MAX)
-	       & ((1 << CET_MAX) - 1))
-	       != CET_PERMISSIVE)
+	     lock CET if IBT or SHSTK is enabled permissively.  */
+	  if (get_cet_control_value (CET_IBT_SHIFT) != CET_PERMISSIVE
+	      && get_cet_control_value (CET_SHSTK_SHIFT) != CET_PERMISSIVE)
 	    dl_cet_lock_cet ();
 	}
 # endif

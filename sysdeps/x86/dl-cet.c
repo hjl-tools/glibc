@@ -39,11 +39,9 @@ static void
 dl_cet_check (struct link_map *m, const char *program)
 {
   /* Check how IBT should be enabled.  */
-  unsigned int enable_ibt_type
-    = GL(dl_x86_feature_1)[1] & ((1 << CET_MAX) - 1);
+  unsigned int enable_ibt_type = get_cet_control_value (CET_IBT_SHIFT);
   /* Check how SHSTK should be enabled.  */
-  unsigned int enable_shstk_type
-    = ((GL(dl_x86_feature_1)[1] >> CET_MAX) & ((1 << CET_MAX) - 1));
+  unsigned int enable_shstk_type = get_cet_control_value (CET_SHSTK_SHIFT);
 
   /* No legacy object check if both IBT and SHSTK are always on.  */
   if (enable_ibt_type == CET_ALWAYS_ON

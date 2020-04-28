@@ -16,14 +16,32 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-/* Valid control values:
+#ifndef _CET_TUNABLES_H
+#define _CET_TUNABLES_H
+
+/* For each CET feature, IBT and SHSTK, valid control values:
    0: Enable CET features based on ELF property note.
    1: Always disable CET features.
    2: Always enable CET features.
    3: Enable CET features permissively.
+
+   Bits 0-1: IBT
+   Bits 2-3: SHSTK
  */
 #define CET_ELF_PROPERTY	0
 #define CET_ALWAYS_OFF		1
 #define CET_ALWAYS_ON		2
 #define CET_PERMISSIVE		3
-#define CET_MAX			CET_PERMISSIVE
+#define CET_CONTROL_MASK	3
+#define CET_IBT_SHIFT		0
+#define CET_SHSTK_SHIFT		2
+
+/* Get CET control value.  */
+
+static inline unsigned int
+get_cet_control_value (unsigned int shift)
+{
+  return (GL(dl_x86_feature_1)[1] >> shift) & CET_CONTROL_MASK;
+}
+
+#endif /* cet-tunables.h */

@@ -338,26 +338,26 @@ TUNABLE_CALLBACK (set_hwcaps) (tunable_val_t *valp)
 # if CET_ENABLED
 #  include <cet-tunables.h>
 
+/* Set CET control value.  */
+
+static inline void
+set_cet_control_value (unsigned int value, unsigned int shift)
+{
+   GL(dl_x86_feature_1)[1] &= ~(CET_CONTROL_MASK << shift);
+   GL(dl_x86_feature_1)[1] |= value << shift;
+}
+
 attribute_hidden
 void
 TUNABLE_CALLBACK (set_x86_ibt) (tunable_val_t *valp)
 {
   if (DEFAULT_MEMCMP (valp->strval, "on", sizeof ("on")) == 0)
-    {
-      GL(dl_x86_feature_1)[1] &= ~((1 << CET_MAX) - 1);
-      GL(dl_x86_feature_1)[1] |= CET_ALWAYS_ON;
-    }
+    set_cet_control_value (CET_ALWAYS_ON, CET_IBT_SHIFT);
   else if (DEFAULT_MEMCMP (valp->strval, "off", sizeof ("off")) == 0)
-    {
-      GL(dl_x86_feature_1)[1] &= ~((1 << CET_MAX) - 1);
-      GL(dl_x86_feature_1)[1] |= CET_ALWAYS_OFF;
-    }
+    set_cet_control_value (CET_ALWAYS_OFF, CET_IBT_SHIFT);
   else if (DEFAULT_MEMCMP (valp->strval, "permissive",
 			   sizeof ("permissive")) == 0)
-    {
-      GL(dl_x86_feature_1)[1] &= ~((1 << CET_MAX) - 1);
-      GL(dl_x86_feature_1)[1] |= CET_PERMISSIVE;
-    }
+    set_cet_control_value (CET_PERMISSIVE, CET_IBT_SHIFT);
 }
 
 attribute_hidden
@@ -365,21 +365,12 @@ void
 TUNABLE_CALLBACK (set_x86_shstk) (tunable_val_t *valp)
 {
   if (DEFAULT_MEMCMP (valp->strval, "on", sizeof ("on")) == 0)
-    {
-      GL(dl_x86_feature_1)[1] &= ~(((1 << CET_MAX) - 1) << CET_MAX);
-      GL(dl_x86_feature_1)[1] |= (CET_ALWAYS_ON << CET_MAX);
-    }
+    set_cet_control_value (CET_ALWAYS_ON, CET_SHSTK_SHIFT);
   else if (DEFAULT_MEMCMP (valp->strval, "off", sizeof ("off")) == 0)
-    {
-      GL(dl_x86_feature_1)[1] &= ~(((1 << CET_MAX) - 1) << CET_MAX);
-      GL(dl_x86_feature_1)[1] |= (CET_ALWAYS_OFF << CET_MAX);
-    }
+    set_cet_control_value (CET_ALWAYS_OFF, CET_SHSTK_SHIFT);
   else if (DEFAULT_MEMCMP (valp->strval, "permissive",
 			   sizeof ("permissive")) == 0)
-    {
-      GL(dl_x86_feature_1)[1] &= ~(((1 << CET_MAX) - 1) << CET_MAX);
-      GL(dl_x86_feature_1)[1] |= (CET_PERMISSIVE << CET_MAX);
-    }
+    set_cet_control_value (CET_PERMISSIVE, CET_SHSTK_SHIFT);
 }
 # endif
 #endif
